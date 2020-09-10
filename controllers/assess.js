@@ -2,7 +2,7 @@ var exports = module.exports = {};
 
 let Report = require("../models/Report");
 
-exports.newReport = function(req, res) {
+exports.newAssess = function(req, res) {
     // let token = getToken(req.headers);
     // if (token) {
         let newReport = new Report({

@@ -7,6 +7,7 @@ let morgan = require('morgan');
 let mongoose = require('mongoose');
 let http = require('http');
 let config = require('./config');
+let auth = require('./controllers/auth')
 
 let app = express();
 
@@ -26,6 +27,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(morgan('dev'));
 
+app.use(require('./routes/unless'))
+app.use(auth.verifyToken)
 require('./routes/v1')(app)
 
 app.use(function(req, res, next) {

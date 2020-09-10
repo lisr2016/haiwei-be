@@ -1,5 +1,5 @@
-var exports = module.exports = {};
-
+let exports = module.exports = {};
+let _ = lodash();
 let config = require('../config'),
     jwt = require('jsonwebtoken');
 
@@ -22,23 +22,37 @@ exports.signup = function(req, res) {
     }
 };
 
-exports.signin = function(req, res) {
+exports.login = function(req, res) {
     User.findOne({
         username: req.body.username
     }, function(err, user) {
         if (err) throw err;
-
         if (!user) {
-            res.status(401).send({success: false, msg: 'Authentication failed. User not found.'});
+            res.status(401).send({success: false, msg: '用户名不存在'});
         } else {
             user.comparePassword(req.body.password, function (err, isMatch) {
                 if (isMatch && !err) {
                     let token = jwt.sign(user.toJSON(), config.secret);
                     res.json({success: true, token: 'JWT ' + token});
                 } else {
-                    res.status(401).send({success: false, msg: 'Authentication failed. Wrong password.'});
+                    res.status(401).send({success: false, msg: '密码错误'});
                 }
             });
         }
     });
 };
+
+exports.verifyToken = async function (req, res, next) {
+    let token = req.query.token || req.headers.token || req.cookies.token || req.body.token
+    if (_.isEmpty(token)) {
+        res.status(401).json({ msg: `没有访问权限` })
+        return
+    }
+    try {
+        let decode = jwt.verify(token, config.secret)
+        req.user = decode.user || decode
+        next()
+    } catch (err) {
+        res.status(500).json({ msg: `未能识别权限标识` })
+    }
+}

@@ -1,23 +1,34 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var BookSchema = new Schema({
-  isbn: {
+// 考核
+var AssessSchema = new Schema({
+  // 考核类型
+  // 1.自我考核，2.互相考核
+  type: {
     type: String,
     required: true
   },
-  title: {
+  // 开始时间
+  start_time: {
+    type: Date,
+    required: true
+  },
+  // 结束时间
+  end_time: {
+    type: Date,
+    required: true
+  },
+  // 考核名称
+  name: {
     type: String,
     required: true
   },
-  author: {
+  // 考核目标
+  target: {
     type: String,
     required: true
   },
-  publisher: {
-    type: String,
-    required: true
-  }
-});
+}, {timestamps: {create_time: 'created', update_time: 'updated'}});
 
-module.exports = mongoose.model('Book', BookSchema);
+module.exports = mongoose.model('Assess', AssessSchema);
