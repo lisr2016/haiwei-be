@@ -1,6 +1,6 @@
 var exports = module.exports = {};
 
-let Report = require("../models/Report");
+let Report = require("../models/DomesticGarbageDaily");
 
 exports.newAssess = function(req, res) {
     // let token = getToken(req.headers);
