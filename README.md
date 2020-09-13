@@ -29,7 +29,7 @@
       }
     }
 
-2.GET /getVerifyCode
+2.GET /get/VerifyCode
 
 功能: 获取验证码
 
