@@ -2,19 +2,30 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt-nodejs');
 
-var UserSchema = new Schema({
-  username: {
+var AdminSchema = new Schema({
+    phone: {
         type: String,
         unique: true,
         required: true
     },
-  password: {
+    username: {
+        type: String,
+        unique: true,
+        required: false
+    },
+    password: {
         type: String,
         required: true
+    },
+    // 权限级别 1.普通管理员 2.officer(只浏览报表) 3.超级管理员(可以配置其他admin)
+    authority: {
+        type: String,
+        required: true,
+        default: '1'
     }
 });
 
-UserSchema.pre('save', function (next) {
+AdminSchema.pre('save', function (next) {
     var user = this;
     if (this.isModified('password') || this.isNew) {
         bcrypt.genSalt(10, function (err, salt) {
@@ -34,7 +45,7 @@ UserSchema.pre('save', function (next) {
     }
 });
 
-UserSchema.methods.comparePassword = function (passw, cb) {
+AdminSchema.methods.comparePassword = function (passw, cb) {
     bcrypt.compare(passw, this.password, function (err, isMatch) {
         if (err) {
             return cb(err);
@@ -43,4 +54,4 @@ UserSchema.methods.comparePassword = function (passw, cb) {
     });
 };
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('Admin', AdminSchema);

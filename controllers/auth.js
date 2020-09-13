@@ -1,5 +1,5 @@
-let exports = module.exports = {};
-let _ = lodash();
+// let exports = module.exports = {};
+let _ = require('lodash');
 let config = require('../config'),
     jwt = require('jsonwebtoken');
 

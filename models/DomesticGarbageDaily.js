@@ -1,69 +1,85 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-// 量化填报
-var ReportSchema = new Schema({
+// 生活垃圾日报
+var DomesticGarbageDailySchema = new Schema({
   // 填报人id
   // 机构id
-  // 专兼职人员
-  consignee: { // 收运人员
+  // 填报日期
+  // 分类管理工作会议
+  meeting_times: { // 管理工作会议次数
     type: Number,
     required: true
   },
-  guide: { // 看守引导人员
+  meeting_host: { // 管理工作会议主持人
+    type: String,
+    required: true
+  },
+  meeting_content: { // 会议具体事项
+    type: String,
+    required: true
+  },
+  
+  // 自测、巡查
+  self_inspection_times: { //  自测、巡查次数
     type: Number,
     required: true
   },
-  inspector: { // 监督检查人员
+  self_inspection_problems: { // 存在问题数目
     type: Number,
     required: true
   },
-  // 收集设施设备配置
-  kitchen_waste_collector: { // 收集容器(个)
+  self_inspection_content: { // 主要涉及问题
+    type: String,
+    required: true
+  },
+  self_inspection_corrected: { // 是否改正到位
+    type: Boolean,
+    required: true
+  },
+  
+  // 分类宣传
+  advertise_times: { //  宣传次数
     type: Number,
     required: true
   },
-  kitchen_waste_positon: { // 单位暂时存放点(处)
+  advertise_content: { // 宣传方式
+    type: String,
+    required: true
+  },
+  
+  // 分类培训
+  traning_times: { //  培训次数
     type: Number,
     required: true
   },
-  recyclable_waste_collector: {
+  trainees: { //  培训人数
     type: Number,
     required: true
   },
-  recyclable_waste_positon: {
+  traning_content: { // 培训内容
+    type: String,
+    required: true
+  },
+  
+  // 政府检查
+  gov_inspection_times: { //  检查次数
     type: Number,
     required: true
   },
-  harmful_waste_collector: {
+  gov_inspection_problems: { // 存在问题数目
     type: Number,
     required: true
   },
-  harmful_waste_positon: {
-    type: Number,
+  gov_inspection_content: { // 主要涉及问题
+    type: String,
     required: true
   },
-  // 垃圾收集情况
-  kitchen_waste: { // 厨余垃圾(公斤)
-    type: Number,
+  gov_inspection_corrected: { // 是否改正到位
+    type: Boolean,
     required: true
   },
-  recyclable_waste: { // 可回收垃圾(公斤)
-    type: Number,
-    required: true
-  },
-  harmful_waste: { // 有害垃圾(公斤)
-    type: Number,
-    required: true
-  },
-  bulky_waste: { // 大件垃圾(公斤)
-    type: Number,
-    required: true
-  },
-  other_waste: { // 其他垃圾(公斤)
-    type: Number,
-    required: true
-  }
+  
 }, {timestamps: {create_time: 'created', update_time: 'updated'}});
 
-module.exports = mongoose.model('Report', ReportSchema);
+module.exports = mongoose.model('DomesticGarbageDaily', DomesticGarbageDailySchema);
