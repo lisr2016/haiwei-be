@@ -12,19 +12,15 @@ var UserSchema = new Schema({
         type: String,
         unique: false,
     },
-  password: {
+    password: {
         type: String,
         required: true
     },
-  organization_id: {
+    organization_id: {
       type: String,
       required: true
-  },
-  initialized: {
-      type: Boolean,
-      default: false
-  },
-});
+    }
+}, {timestamps: {createAt: 'created', updateAt: 'updated'}});
 
 UserSchema.pre('save', function (next) {
     var user = this;
@@ -55,4 +51,4 @@ UserSchema.methods.comparePassword = function (passw, cb) {
     });
 };
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('user', UserSchema);

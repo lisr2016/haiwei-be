@@ -4,8 +4,20 @@ var Schema = mongoose.Schema;
 // 生活垃圾周报
 var DomesticGarbageWeeklySchema = new Schema({
   // 填报人id
+  user_id: {
+    type: String,
+    required: true
+  },
   // 机构id
+  organization_id: {
+    type: String,
+    required: true
+  },
   // 填报日期
+  time: {
+    type: Date,
+    required: true
+  },
   // 专兼职人员
   consignee: { // 收运人员
     type: Number,
@@ -92,5 +104,5 @@ var DomesticGarbageWeeklySchema = new Schema({
     type: Number,
     required: true
   },
-}, {timestamps: {create_time: 'created', update_time: 'updated'}});
-module.exports = mongoose.model('DomesticGarbageWeekly', DomesticGarbageWeeklySchema);
+}, {timestamps: {createAt: 'created', updateAt: 'updated'}});
+module.exports = mongoose.model('domestic_garbage_weekly', DomesticGarbageWeeklySchema);

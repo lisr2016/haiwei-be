@@ -3,10 +3,26 @@ var Schema = mongoose.Schema;
 
 // 医疗垃圾月报
 var MedicGarbageMonthlySchema = new Schema({
-  // 填报人id
-  // 机构id
-  // 填报日期
-  // 专兼职人员
-}, {timestamps: {create_time: 'created', update_time: 'updated'}});
+    // 填报人id
+    user_id: {
+        type: String,
+        required: true
+    },
+    // 机构id
+    organization_id: {
+        type: String,
+        required: true
+    },
+    // 填报日期
+    time: {
+        type: Date,
+        required: true
+    },
+    // 月度医疗垃圾产量(公斤)
+    total_weight: {
+        type: Number,
+        required: true
+    },
+}, {timestamps: {createAt: 'created', updateAt: 'updated'}});
 
-module.exports = mongoose.model('MedicGarbageMonthly', MedicGarbageMonthlySchema);
+module.exports = mongoose.model('medic_garbage_monthly', MedicGarbageMonthlySchema);

@@ -17,12 +17,13 @@
 
 返回格式 
     
-      {msg: '错误原因'}
+      { 'code': 5, 'msg': '错误原因'}
 成功
 状态码 200
 返回格式
 
     {
+      'code': 0, 
       'msg': '登陆成功',
       'data': {
         'token': 1
@@ -44,13 +45,14 @@
 
 返回格式
 
-     {msg: '错误原因'}
+      {'code': 5, 'msg': '错误原因'}
      
 成功
 状态码 200
 返回格式
 
     {
+      'code': 0, 
       'msg': '成功',
       'data': {
         'verifyCode': XXX
@@ -73,13 +75,18 @@
 状态码 400
 返回格式 
 
-    {msg: '验证码错误'}
+    { 
+      'code': 5, msg: '验证码错误'
+    }
     
 成功
 状态码 200
 返回格式
  
-    {msg: '校验成功'}
+    {
+      'code': 0, 
+       msg: '校验成功' 
+    }
 
 4.POST /reset/password
 
@@ -101,13 +108,17 @@
 状态码 400
 返回格式 
 
-    {msg: '用户不存在'} 或者 {msg: '密码不正确'}
+    {
+      'code': 5, 
+      'msg': '用户不存在'
+    } 
     
 成功
 状态码 200
 返回格式
 
     {
+      'code': 0, 
       'msg': '更改成功',
       'data': {
         'token': xxx
@@ -127,22 +138,21 @@
 状态码 400
 返回格式 
 
-    {msg: '未登录'}
+    {  
+      'code': 5, 
+       'msg': '未登录'
+    }
     
 成功
 状态码 200
 返回格式
 
     {
-      'data': [
-        userInfo: {
-          'userId': 1,
-          'username': '123',
-        },
+      'code': 0, 
+      'data': {
         orgInfo:
         {
-          'orgId': 2,   // 机构id
-          'name': '学前端', // 机构名称
+          'name': 'xxx', // 机构名称
           'initialized': false,             // 是否进行过初始化信息填报
           'corporationPhone': xxx   // 法人电话
           'managerPhone': xxx   // 负责人电话
@@ -151,7 +161,6 @@
           'level': xxx   // 级别
           'street': xxx   // 街道
         }
-      ]
     }
 
 6.POST /v1/init/org/info
@@ -161,13 +170,12 @@
 参数字段
 
     body{ 
-              'initialized': false,             // 是否进行过初始化信息填报
-              'corporationPhone': xxx   // 法人电话
-              'managerPhone': xxx   // 负责人电话
-              'bednum': xxx   // 床位数
-              'address': xxx   // 地址
-              'level': xxx   // 级别
-              'street': xxx   // 街道
+              'corporationPhone': xxx   // String,非必填 法人电话
+              'managerPhone': xxx   // String,必填 负责人电话
+              'bednum': xxx   // Number,非必填, 床位数
+              'address': xxx   // String,必填 地址
+              'level': xxx   // String,必填 级别
+              'street': xxx   // String,必填 街道
     }
     
 返回数据
@@ -175,13 +183,17 @@
 状态码 400
 返回格式 
 
-    {msg: '登录后才能操作'}
+    {
+      'code': 5, 
+       'msg': 'XXX'
+      }
     
 成功
 状态码 200
 返回格式
 
     {
+      'code': 0, 
       'msg': '更新成功'
     }
     
@@ -201,27 +213,64 @@
 状态码 400
 返回格式 
 
-    {'msg': 'XXX'}
+    {
+      'code': 5, 
+        'msg': 'XXX'
+    }
     
 成功
 状态码 200
 
 返回格式
  
-    { 'msg': '查询成功'
+    {       
+     'code': 0,  
+     'msg': '查询成功'
      'data': {
          list:[
             {
                 content: XXX // 内容
                 type: XXX  // 消息类型，(根据type枚举值判断跳转)
                 isRead: false // 是否已读
-                time: XXX // 推送时间
+                createTime: XXX // 推送时间
             }, ...
          ]
      }
     }
+
+8.GET /v1/message/:id
+
+功能: 消息事项已处理(已跳转)
+
+提交参数
+
+参数字段
+
+    无
+    
+返回数据
+
+失败
+状态码 400
+返回格式 
+
+    {
+      'code': 5, 
+        'msg': 'XXX'
+    }
+    
+成功
+状态码 200
+
+返回格式
  
-8.POST /v1/domestic/daily
+    {       
+     'code': 0,  
+     'msg': '提交成功'
+    }
+ 
+ 
+9.POST /v1/domestic/daily
 
 功能: 提交生活垃圾日报。
 
@@ -229,8 +278,6 @@
 
     body :{
           time: 填报日期 本日零点时间戳
-          orgId: 机构id
-          userId: 填报人
             
           meetingTimes: XXX  // Number, 管理工作会议次数
           meetingHost: XXX // String,管理工作会议主持人
@@ -260,16 +307,22 @@
 状态码 400
 返回格式范例
 
-    {'msg': 'XXX'}
+    {
+     'code': 5, 
+    'msg': 'XXX'
+    }
     
 成功
 状态码 200
 返回格式
  
-    { 'msg': '提交成功' }
+    {     
+      'code': 0, 
+      'msg': '提交成功' 
+      }
 
  
-9.POST /v1/domestic/weekly
+10.POST /v1/domestic/weekly
 
 功能: 提交生活垃圾周报。
 
@@ -277,9 +330,10 @@
 
     body :{
           time: 填报日期 填报周周四零点时间戳
-          orgId: 机构id
-          userId: 填报人
          
+          consignee: XXX // Number, 收运人员人数
+          guide: XXX // Number, 看守引导人员人数
+          inspector: XXX // Number, 监督检查人员人数
           kitchenWasteCollectors: XXX // Number, 厨余垃圾投放收集容器(个)
           kitchenWastePositions: XXX // Number, 厨余垃圾单位暂时存放点(个)
           recyclableWasteCollectors: XXX // Number, 可回收垃圾投放收集容器(个)
@@ -304,25 +358,29 @@
 状态码 400
 返回格式范例
 
-    {'msg': 'XXX'}
+    {
+     'code': 5, 
+     'msg': 'XXX'
+    }
     
 成功
 状态码 200
 返回格式
  
-    { 'msg': '提交成功' }
+    { 
+      'code': 0, 
+      'msg': '提交成功'
+     }
     
  
-10.POST /v1/domestic/monthly
+11.POST /v1/domestic/monthly
 
 功能: 提交生活垃圾月报。
 
 提交参数：
 
     body :{
-          time: 填报日期 填报月份
-          orgId: 机构id
-          userId: 填报人
+          time: 1, // Number填报月份
           
           kitchenWaste: XXX // Number, 厨余垃圾(公斤)
           recyclableWaste: XXX // Number, 可回收垃圾(公斤)
@@ -337,27 +395,33 @@
 状态码 400
 返回格式范例
 
-    {'msg': 'XXX'}
+    
+
+    {
+     'code': 5, 
+     'msg': 'XXX'
+    }
     
 成功
 状态码 200
 返回格式
  
-    { 'msg': '提交成功' }
+    { 
+      'code': 0, 
+      'msg': '提交成功'
+     }
     
  
-11.POST /v1/medic/monthly
+12.POST /v1/medic/monthly
 
 功能: 提交医疗垃圾月报。
 
 提交参数：
 
     body :{
-          time: 填报日期 填报月份
-          orgId: 机构id
-          userId: 填报人
+          time: 1, // Number填报月份
           
-          // 待定
+          totalWeight:  XXX // Number, 月医疗垃圾产量(公斤)
     }
 
 返回数据
@@ -366,15 +430,21 @@
 状态码 400
 返回格式范例
 
-    {'msg': 'XXX'}
+    {
+     'code': 5, 
+     'msg': 'XXX'
+    }
     
 成功
 状态码 200
 返回格式
  
-    { 'msg': '提交成功' } 
+    { 
+      'code': 0, 
+      'msg': '提交成功'
+     }
 
-12.POST /v1/cms/get/user/list
+13.POST /v1/cms/get/user/list
 
 功能: 获取用户列表。
 
@@ -392,13 +462,18 @@
 状态码 400
 返回格式范例
 
-    {'msg': 'XXX'}
+    {
+     'code': 5, 
+     'msg': 'XXX'
+    }
     
 成功
 状态码 200
 返回格式
  
-    { 'msg': '查询成功',
+    { 
+      'code': 200,
+      'msg': '查询成功',
       'data': 
         'list': [
            {
@@ -416,7 +491,7 @@
      }
 
 
-13.POST /v1/cms/new/user/
+14.POST /v1/cms/new/user/
 
 功能: 新增用户。
 
@@ -436,15 +511,21 @@
 状态码 400
 返回格式范例
 
-    {'msg': 'XXX'}
+    {
+     'code': 5, 
+     'msg': 'XXX'
+    }
     
 成功
 状态码 200
 返回格式
  
-    { 'msg': '提交成功' } 
+    { 
+      'code': 0, 
+      'msg': '提交成功'
+     }
 
-14.POST /v1/cms/update/user/info
+15.POST /v1/cms/update/user/info
 
 功能: 修改用户信息。
 
@@ -453,7 +534,6 @@
     body :{
       phone,    // 必填
       password, // 非必填
-      username, // 
     }
 
 返回数据
@@ -462,15 +542,21 @@
 状态码 400
 返回格式范例
 
-    {'msg': 'XXX'}
+    {
+     'code': 5, 
+     'msg': 'XXX'
+    }
     
 成功
 状态码 200
 返回格式
  
-    { 'msg': '提交成功' } 
+    { 
+      'code': 0, 
+      'msg': '提交成功'
+     }
 
-15.POST /v1/cms/update/org/info
+16.POST /v1/cms/update/org/info
 
 功能: 修改机构信息。
 
@@ -492,15 +578,21 @@
 状态码 400
 返回格式范例
 
-    {'msg': 'XXX'}
+    {
+     'code': 5, 
+     'msg': 'XXX'
+    }
     
 成功
 状态码 200
 返回格式
  
-    { 'msg': '提交成功' } 
+    { 
+      'code': 0, 
+      'msg': '提交成功'
+     }
     
-16.POST /v1/cms/report/summary
+17.POST /v1/cms/report/summary
 
 功能: 获取量化填报汇总数据。
 
@@ -519,13 +611,18 @@
 状态码 400
 返回格式范例
 
-    {'msg': 'XXX'}
+    {
+     'code': 5, 
+     'msg': 'XXX'
+    }
     
 成功
 状态码 200
 返回格式
  
-    { 'msg': '查询成功',
+    { 
+    'code': 200,
+    'msg': '查询成功',
       'data': {
         'list': [{
         

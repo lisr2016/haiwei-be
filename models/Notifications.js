@@ -24,4 +24,4 @@ var NotificationsSchema = new Schema({
   }
 });
 
-module.exports = mongoose.model('Notifications', NotificationsSchema);
+module.exports = mongoose.model('notifications', NotificationsSchema);

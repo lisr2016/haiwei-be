@@ -29,6 +29,6 @@ var AssessSchema = new Schema({
     type: String,
     required: true
   },
-}, {timestamps: {create_time: 'created', update_time: 'updated'}});
+}, {timestamps: {createAt: 'created', updateAt: 'updated'}});
 
-module.exports = mongoose.model('Assess', AssessSchema);
+module.exports = mongoose.model('assess', AssessSchema);

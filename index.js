@@ -1,13 +1,12 @@
 let express = require('express');
 let cors = require('cors');
-let logger = require('morgan');
 let cookieParser = require('cookie-parser');
 let bodyParser = require('body-parser');
 let morgan = require('morgan');
 let mongoose = require('mongoose');
 let http = require('http');
 let config = require('./config');
-let auth = require('./controllers/auth')
+let auth = require('./controllers/auth');
 
 let app = express();
 

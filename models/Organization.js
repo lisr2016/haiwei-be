@@ -5,17 +5,18 @@ var OrganizationSchema = new Schema({
   // 名称
   name : {
     type: String,
+    unique: true,
     required: true
   },
   // 基础信息是否初始化
   is_initiated: {
     type: Boolean,
-    required: true
+    default: false
   },
   // 法人电话
   corporation_phone: {
     type: String,
-    required: true
+    required: false
   },
   // 负责人电话
   manager_phone: {
@@ -25,7 +26,7 @@ var OrganizationSchema = new Schema({
   // 床位数
   bednum: {
     type: Number,
-    required: true
+    required: false
   },
   // 地址
   address: {
@@ -43,6 +44,6 @@ var OrganizationSchema = new Schema({
     type: String,
     required: true
   }
-});
+}, {timestamps: {createAt: 'created', updateAt: 'updated'}});
 
-module.exports = mongoose.model('Organization', OrganizationSchema);
+module.exports = mongoose.model('organization', OrganizationSchema);

@@ -4,8 +4,20 @@ var Schema = mongoose.Schema;
 // 生活垃圾月报
 var DomesticGarbageMonthlySchema = new Schema({
   // 填报人id
+  user_id: {
+    type: String,
+    required: true
+  },
   // 机构id
+  organization_id: {
+    type: String,
+    required: true
+  },
   // 填报日期
+  time: {
+    type: Number,
+    required: true
+  },
   // 垃圾收集情况
   kitchen_waste: { // 厨余垃圾(公斤)
     type: Number,
@@ -27,6 +39,6 @@ var DomesticGarbageMonthlySchema = new Schema({
     type: Number,
     required: true
   }
-}, {timestamps: {create_time: 'created', update_time: 'updated'}});
+}, {timestamps: {createAt: 'created', updateAt: 'updated'}});
 
-module.exports = mongoose.model('DomesticGarbageMonthly', DomesticGarbageMonthlySchema);
+module.exports = mongoose.model('domestic_garbage_monthly', DomesticGarbageMonthlySchema);
