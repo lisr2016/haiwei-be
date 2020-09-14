@@ -30,7 +30,7 @@
       }
     }
 
-2.GET /get/VerifyCode
+2.GET /get/verifyCode
 
 功能: 获取验证码
 
@@ -60,7 +60,7 @@
     }
 
 
-3.GET /check/VerifyCode
+3.GET /check/verifyCode
 
 功能: 校验验证码
 
