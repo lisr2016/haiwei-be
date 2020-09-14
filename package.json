@@ -6,6 +6,8 @@
     "dev": " NODE_ENV=development nodemon $NODE_DEBUG_OPTION --max_old_space_size=2048 index.js"
   },
   "dependencies": {
+    "append-query": "2.1.0",
+    "axios": "0.20.0",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.19.0",
     "clean-css": "^4.2.3",

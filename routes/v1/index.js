@@ -6,6 +6,8 @@ const ctrls = requireDir('../../controllers')
 router.get('/user/info', ctrls.user.fetchUserInfo);
 // 机构信息初始化填报
 router.post('/init/org/info', ctrls.user.initOrgInfo);
+// 重置密码
+router.post('/reset/password', ctrls.user.resetPassword);
 
 // 获取用户消息列表
 router.get('/message/list', ctrls.message.fetchUserMessageList);

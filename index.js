@@ -7,6 +7,7 @@ let mongoose = require('mongoose');
 let http = require('http');
 let config = require('./config');
 let auth = require('./controllers/auth');
+let session = require('express-session');
 
 let app = express();
 
@@ -24,6 +25,14 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session({
+  secret: '12345',
+  name: 'session',
+  cookie: { maxAge: 600000 },
+  resave: false,
+  saveUninitialized: true
+}));
+
 app.use(morgan('dev'));
 
 app.use(require('./routes/unless'))
