@@ -1,0 +1,9 @@
+node_modules
+npm-debug.log*
+.tmp
+.idea
+.vscode
+.DS_Store
+dump.rdb
+*.log
+package-lock.json
