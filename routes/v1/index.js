@@ -23,6 +23,9 @@ router.post('/domestic/monthly', ctrls.report.summitDomMonthly);
 // 提交医疗垃圾月报
 router.post('/medic/monthly', ctrls.report.summitMedMonthly);
 
+// 获取用户信息
+router.get('/user/info', ctrls.user.fetchUserInfo);
+
 module.exports = function vRouter (app) {
     app.use('/v1', router)
 }

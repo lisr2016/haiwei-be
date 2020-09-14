@@ -64,20 +64,40 @@ exports.login = function(req, res) {
 };
 
 exports.verifyToken = function (req, res, next) {
-    let token = req.query.token || req.headers.token || req.cookies.token || req.body.token
+    let token = req.query.token || req.headers.token || req.cookies.token || req.body.token;
     if (_.isEmpty(token)) {
-        res.status(401).json({ msg: `没有访问权限` })
+        res.status(401).json({ msg: `没有访问权限` });
         return
     }
     try {
-        let decode = jwt.verify(token, config.secret)
+        let decode = jwt.verify(token, config.secret);
         req.user = {
             id: decode._id,
             phone: decode.phone,
             organizationId : decode.organization_id
-        }
+        };
         next()
     } catch (err) {
         res.status(500).json({ msg: `未能识别权限标识` })
     }
-}
+};
+
+exports.verifyCmsToken = function (req, res, next) {
+    let token = req.query.token || req.headers.token || req.cookies.token || req.body.token;
+    if (_.isEmpty(token)) {
+        res.status(401).json({ msg: `没有访问权限` });
+        return
+    }
+    try {
+        let decode = jwt.verify(token, config.cms_secret);
+        req.admin = {
+            id: decode._id,
+            phone: decode.phone,
+            username: decode.username,
+            authority: decode.authority
+        };
+        next()
+    } catch (err) {
+        res.status(500).json({ msg: `未能识别权限标识` })
+    }
+};

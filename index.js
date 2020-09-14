@@ -35,6 +35,7 @@ app.use(session({
 
 app.use(morgan('dev'));
 
+app.use(require('./routes/cms'))
 app.use(require('./routes/unless'))
 app.use(auth.verifyToken)
 require('./routes/v1')(app)

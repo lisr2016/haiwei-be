@@ -2,8 +2,8 @@ let _ = require('lodash');
 let config = require('../config');
 let lib = require('../util/lib')
 
-let User = require("../models/User");
-let Organization = require("../models/Organization");
+let User = require('../models/User');
+let Organization = require('../models/Organization');
 const ObjectId = require('mongodb').ObjectId;
 
 const {MEDIC_LEVEL} = require('../util/CONST')
@@ -34,7 +34,7 @@ exports.fetchUserInfo = function (req, res) {
                 level: org.level,
                 street: org.street,
             }
-            res.status(400).send({code: 0, data: {orgInfo}, msg: '查询成功'});
+            res.status(200).send({code: 0, data: {orgInfo}, msg: '查询成功'});
         }
     });
 };
@@ -130,9 +130,11 @@ exports.genVerifyCode = async function (req, res) {
         for (let i = 0; i < 4; i++) {
             verifyCode += Math.floor(Math.random() * 10);
         }
-        let result = await lib.sendSms(req.query.phone, verifyCode)
+        let result = true;
+        // let result = await lib.sendSms(req.query.phone, verifyCode)
         if (result) {
             req.session[req.query.phone] = verifyCode;
+            console.log(req.session)
             res.status(200).send({code: 0, msg: '获取成功'});
             return;
         }

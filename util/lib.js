@@ -17,3 +17,12 @@ exports.sendSms = async function (phone, code) {
         return false;
     }
 }
+
+exports.isPhoneNum = function (content) {
+    let myreg = /^[1][0-9]{10}$/;
+    if (!myreg.test(content)) {
+        return false;
+    } else {
+        return true;
+    }
+}

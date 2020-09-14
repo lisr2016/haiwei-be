@@ -97,6 +97,7 @@
 参数字段
 
     body{
+        verifyCode: 验证码, 必填
         password : 密码, 长度6到16个任意字符，必填
         newPassword : 新密码, 长度6到16个任意字符，必填
     }
@@ -196,7 +197,7 @@
       'msg': '更新成功'
     }
     
-7.POST /v1/message/list
+7.GET /v1/message/list
 
 功能: 用户消息列表
 
@@ -443,16 +444,15 @@
       'msg': '提交成功'
      }
 
-13.POST /v1/cms/get/user/list
+13.POST /cms/login
 
-功能: 获取用户列表。
+功能: 管理端登陆。
 
 提交参数：
 
     body :{
-      search,
-      sort,
-      isAdmin,
+      phone,
+      password
     }
 
 返回数据
@@ -479,7 +479,88 @@
              username: XXX,
              password: XXX,
              orgInfo: {
-                  // 同接口2 orgInfo
+                  // 同接口5 orgInfo
+                }
+             initialized: true,
+             
+             isAdmin: false,
+             authority: XXX, //管理员级别
+           },
+         ]
+     }
+     
+14.POST /cms/reset/password
+
+功能: 管理端登陆。
+
+提交参数：
+
+    body{
+        verifyCode: 验证码, 必填
+        password : 密码, 长度6到16个任意字符，必填
+        newPassword : 新密码, 长度6到16个任意字符，必填
+    }
+
+返回数据
+
+失败
+状态码 400
+返回格式范例
+
+    {
+     'code': 5, 
+     'msg': 'XXX'
+    }
+    
+成功
+状态码 200
+返回格式
+ 
+    { 
+      'code': 200,
+      'msg': '修改成功
+     }
+
+15.POST /cms/get/user/list
+
+功能: 获取用户列表。
+
+提交参数：
+
+    body :{
+      search, // String, 查询 手机号、机构名称
+      offset, // 页数, 默认1
+      limit, // 每页大小, 默认50
+      
+      rule // 正序/倒叙 暂不支持
+      sort,  // String, 暂不支持
+      isAdmin, // Boolean，是否是管理员，暂不支持
+    }
+
+返回数据
+
+失败
+状态码 400
+返回格式范例
+
+    {
+     'code': 5, 
+     'msg': 'XXX'
+    }
+    
+成功
+状态码 200
+返回格式
+ 
+    { 
+      'code': 200,
+      'msg': '查询成功',
+      'data': 
+        'list': [
+           {
+             phone: XX,
+             orgInfo: {
+                  // 同接口5 orgInfo
                 }
              initialized: true,
              
@@ -490,7 +571,7 @@
      }
 
 
-14.POST /v1/cms/new/user/
+16.POST /cms/new/user
 
 功能: 新增用户。
 
@@ -524,7 +605,7 @@
       'msg': '提交成功'
      }
 
-15.POST /v1/cms/update/user/info
+17.POST /cms/update/user/info
 
 功能: 修改用户信息。
 
@@ -555,7 +636,7 @@
       'msg': '提交成功'
      }
 
-16.POST /v1/cms/update/org/info
+18.POST /cms/update/org/info
 
 功能: 修改机构信息。
 
@@ -590,10 +671,168 @@
       'code': 0, 
       'msg': '提交成功'
      }
-    
-17.POST /v1/cms/report/summary
+   
+19.POST /cms/summary/domestic/daily
 
-功能: 获取量化填报汇总数据。
+功能: 生活垃圾日报汇总。
+
+提交参数：
+
+      body{ 
+        startTime:  // 开始时间,
+        endTime:  // 结束时间,
+        wasteType: // String 垃圾种类 1.厨余垃圾，2.可回收垃圾，3.有害垃圾，4.大件垃圾，1、5.医疗垃圾，6.其他垃圾
+        reportType: // String 报告类型 1.生活垃圾日报,2.生活垃圾月报,3.生活垃圾年报,4.医疗垃圾月报
+      }
+
+返回数据
+
+失败
+状态码 400
+返回格式范例
+
+    {
+     'code': 5, 
+     'msg': 'XXX'
+    }
+    
+成功
+状态码 200
+返回格式
+ 
+    { 
+    'code': 200,
+    'msg': '查询成功',
+      'data': {
+        'list': [{
+        
+        },...
+        ]
+      }
+      } 
+
+20.POST /cms/summary/domestic/weekly
+
+功能: 生活垃圾周报汇总。
+
+提交参数：
+
+      body{ 
+        startTime:  // 开始时间,
+        endTime:  // 结束时间,
+        wasteType: // String 垃圾种类 1.厨余垃圾，2.可回收垃圾，3.有害垃圾，4.大件垃圾，1、5.医疗垃圾，6.其他垃圾
+        reportType: // String 报告类型 1.生活垃圾日报,2.生活垃圾月报,3.生活垃圾年报,4.医疗垃圾月报
+      }
+
+返回数据
+
+失败
+状态码 400
+返回格式范例
+
+    {
+     'code': 5, 
+     'msg': 'XXX'
+    }
+    
+成功
+状态码 200
+返回格式
+ 
+    { 
+    'code': 200,
+    'msg': '查询成功',
+      'data': {
+        'list': [{
+        
+        },...
+        ]
+      }
+      } 
+
+21.POST /cms/summary/domestic/monthly
+
+功能: 生活垃圾月报汇总。
+
+提交参数：
+
+      body{ 
+        startTime:  // 开始时间,
+        endTime:  // 结束时间,
+        wasteType: // String 垃圾种类 1.厨余垃圾，2.可回收垃圾，3.有害垃圾，4.大件垃圾，1、5.医疗垃圾，6.其他垃圾
+        reportType: // String 报告类型 1.生活垃圾日报,2.生活垃圾月报,3.生活垃圾年报,4.医疗垃圾月报
+      }
+
+返回数据
+
+失败
+状态码 400
+返回格式范例
+
+    {
+     'code': 5, 
+     'msg': 'XXX'
+    }
+    
+成功
+状态码 200
+返回格式
+ 
+    { 
+    'code': 200,
+    'msg': '查询成功',
+      'data': {
+        'list': [{
+        
+        },...
+        ]
+      }
+      } 
+
+ 
+22.POST /cms/summary/medic/monthly
+
+功能: 医疗垃圾月报汇总。
+
+提交参数：
+
+      body{ 
+        startTime:  // 开始时间,
+        endTime:  // 结束时间,
+        wasteType: // String 垃圾种类 1.厨余垃圾，2.可回收垃圾，3.有害垃圾，4.大件垃圾，1、5.医疗垃圾，6.其他垃圾
+        reportType: // String 报告类型 1.生活垃圾日报,2.生活垃圾月报,3.生活垃圾年报,4.医疗垃圾月报
+      }
+
+返回数据
+
+失败
+状态码 400
+返回格式范例
+
+    {
+     'code': 5, 
+     'msg': 'XXX'
+    }
+    
+成功
+状态码 200
+返回格式
+ 
+    { 
+    'code': 200,
+    'msg': '查询成功',
+      'data': {
+        'list': [{
+        
+        },...
+        ]
+      }
+      } 
+      
+      
+23.POST /cms/screen
+
+功能: 数据大屏数据汇总。
 
 提交参数：
 
