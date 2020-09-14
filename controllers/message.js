@@ -2,7 +2,6 @@ let _ = require('lodash');
 let config = require('../config');
 
 let Message = require("../models/Message");
-const ObjectId = require('mongodb').ObjectId;
 
 exports.fetchUserMessageList = async function (req, res) {
     let user = req.user

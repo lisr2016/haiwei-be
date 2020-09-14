@@ -2,8 +2,8 @@ let _ = require('lodash');
 let config = require('../config');
 let jwt = require('jsonwebtoken');
 
-let User = require("../models/User");
-let Organization = require("../models/Organization");
+let User = require('../models/User');
+let Organization = require('../models/Organization');
 
 exports.orgsignup = function (req, res) {
     let newOrganization = new Organization({
