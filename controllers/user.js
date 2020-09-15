@@ -40,12 +40,12 @@ exports.fetchUserInfo = function (req, res) {
 };
 
 const initOrgInfoSchema = {
-    corporationPhone: Joi.string().error(new Error('法人电话格式不正确')),
-    managerPhone: Joi.string().required().error(new Error('负责人电话格式不正确')),
-    bednum: Joi.number().integer().error(new Error('床位数格式不正确')),
-    address: Joi.string().required().error(new Error('地址格式不正确')),
-    level: Joi.number().integer().valid(Object.keys(MEDIC_LEVEL)).required().error(new Error('机构级别不正确')),
-    street: Joi.string().required().error(new Error('街道信息格式不正确')),
+    corporationPhone: Joi.string(),
+    managerPhone: Joi.string(),
+    bednum: Joi.number().integer(),
+    address: Joi.string().required(),
+    level: Joi.number().integer().valid(Object.keys(MEDIC_LEVEL)).required(),
+    street: Joi.string().required(),
 }
 
 exports.initOrgInfo = async function (req, res) {
@@ -69,6 +69,12 @@ exports.initOrgInfo = async function (req, res) {
         await Organization.updateOne({_id: ObjectId(user.organizationId)}, updateInfo);
         res.status(200).send({code: 0, msg: '更新成功'});
     } catch (e) {
+        let data = '';
+        if(_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
         console.log(e)
         res.status(400).send({code: 5, msg: '修改失败'});
     }
