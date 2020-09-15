@@ -58,6 +58,7 @@ exports.initOrgInfo = async function (req, res) {
             return
         }
         const updateInfo = {
+            is_initiated: true,
             corporation_phone: initOrgInfo.corporationPhone,
             manager_phone: initOrgInfo.managerPhone,
             bednum: initOrgInfo.bednum,
