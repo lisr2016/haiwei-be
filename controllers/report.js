@@ -75,6 +75,7 @@ exports.summitDomDaily = async function (req, res) {
                 data += item.message;
             });
         }
+        console.log(e);
         res.status(400).send({code: 5, data, msg: '提交失败'});
     }
 };
@@ -119,23 +120,23 @@ exports.summitDomWeekly = async function (req, res) {
             consignee: domWeeklyInfo.consignee,
             guide: domWeeklyInfo.guide,
             inspector: domWeeklyInfo.inspector,
-            kitchenWasteCollectors: domWeeklyInfo.kitchen_waste_collectors,
-            kitchenWastePositions: domWeeklyInfo.kitchen_waste_positons,
-            recyclableWasteCollectors: domWeeklyInfo.recyclable_waste_collectors,
-            recyclableWastePositions: domWeeklyInfo.recyclable_waste_positons,
-            harmfulWasteCollectors: domWeeklyInfo.harmful_waste_collectors,
-            harmfulWastePositions: domWeeklyInfo.harmful_waste_positons,
-            otherWasteCollectors: domWeeklyInfo.other_waste_collectors,
-            otherWastePositions: domWeeklyInfo.other_waste_positons,
-            medicWasteCollectors: domWeeklyInfo.medic_waste_collectors,
-            medicWastePositions: domWeeklyInfo.medic_waste_positons,
-            bulkyWastePositions: domWeeklyInfo.bulky_waste_positons,
-            kitchenWaste: domWeeklyInfo.kitchen_waste,
-            recyclableWaste: domWeeklyInfo.recyclable_waste,
-            harmfulWaste: domWeeklyInfo.harmful_waste,
-            otherWaste: domWeeklyInfo.other_waste,
-            medicWaste: domWeeklyInfo.medic_waste,
-        })
+            kitchen_waste_collectors: domWeeklyInfo.kitchenWasteCollectors,
+            kitchen_waste_positons: domWeeklyInfo.kitchenWastePositions,
+            recyclable_waste_collectors: domWeeklyInfo.recyclableWasteCollectors,
+            recyclable_waste_positons: domWeeklyInfo.recyclableWastePositions,
+            harmful_waste_collectors: domWeeklyInfo.harmfulWasteCollectors,
+            harmful_waste_positons: domWeeklyInfo.harmfulWastePositions,
+            other_waste_collectors: domWeeklyInfo.otherWasteCollectors,
+            other_waste_positons: domWeeklyInfo.otherWastePositions,
+            medic_waste_collectors: domWeeklyInfo.medicWasteCollectors,
+            medic_waste_positons: domWeeklyInfo.medicWastePositions,
+            bulky_waste_positons: domWeeklyInfo.bulkyWastePositions,
+            kitchen_waste: domWeeklyInfo.kitchenWaste,
+            recyclable_waste: domWeeklyInfo.recyclableWaste,
+            harmful_waste: domWeeklyInfo.harmfulWaste,
+            other_waste: domWeeklyInfo.otherWaste,
+            medic_waste: domWeeklyInfo.medicWaste,
+        });
         await newDomesticWeekly.save();
         res.status(200).send({code: 0, msg: '提交成功'});
     } catch (e) {
@@ -145,6 +146,7 @@ exports.summitDomWeekly = async function (req, res) {
                 data += item.message;
             });
         }
+        console.log(e);
         res.status(400).send({code: 5, data, msg: '提交失败'});
     }
 };
@@ -187,6 +189,7 @@ exports.summitDomMonthly = async function (req, res) {
                 data += item.message;
             });
         }
+        console.log(e);
         res.status(400).send({code: 5, data, msg: '提交失败'});
     }
 };
@@ -219,7 +222,7 @@ exports.summitMedMonthly = async function (req, res) {
                 data += item.message;
             });
         }
-        console.log(e)
+        console.log(e);
         res.status(400).send({code: 5, data, msg: '提交失败'});
     }
 };
