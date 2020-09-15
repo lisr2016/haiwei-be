@@ -85,7 +85,6 @@ const summitDomWeeklySchema = {
     consignee: Joi.number().required(),
     guide: Joi.number().required(),
     inspector: Joi.number().required(),
-    meetingTimes: Joi.number().required(),
     kitchenWasteCollectors: Joi.number().required(),
     kitchenWastePositions: Joi.number().required(),
     recyclableWasteCollectors: Joi.number().required(),
