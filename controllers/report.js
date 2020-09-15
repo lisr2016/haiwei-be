@@ -219,6 +219,7 @@ exports.summitMedMonthly = async function (req, res) {
                 data += item.message;
             });
         }
+        console.log(e)
         res.status(400).send({code: 5, data, msg: '提交失败'});
     }
 };
