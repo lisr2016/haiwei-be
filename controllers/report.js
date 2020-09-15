@@ -208,7 +208,7 @@ exports.summitMedMonthly = async function (req, res) {
             time: medMonthlyInfo.time,
             user_id: user.id,
             organization_id: user.organizationId,
-            total_weight: medMonthlyInfo.totalWight,
+            total_weight: medMonthlyInfo.totalWeight,
         })
         await newMedicMonthly.save();
         res.status(200).send({code: 0, msg: '提交成功'});
