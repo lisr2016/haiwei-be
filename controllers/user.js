@@ -18,7 +18,7 @@ exports.fetchUserInfo = function (req, res) {
         return
     }
     Organization.findOne({
-        '_id': new ObjectID(user.organizationId)
+        '_id': new ObjectId(user.organizationId)
     }, function (err, org) {
         if (err) throw err;
         if (!org) {
