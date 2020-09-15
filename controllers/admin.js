@@ -75,8 +75,10 @@ exports.fetchUserList = async function (req, res) {
         list = _.map(list, e => {
             const orgInfo = orgInfoMap[e.organization_id];
             return {
+                id: e._id,
                 phone: e.phone,
                 orgInfo: {
+                    organizationId: orgInfo._id,
                     name: orgInfo.name,
                     initialized: orgInfo.initialized,
                     corporationPhone: orgInfo.corporation_phone,
@@ -101,25 +103,34 @@ exports.fetchUserList = async function (req, res) {
     }
 };
 
+
+const newUserSchema = {
+    phone: Joi.string().required(),
+    password: Joi.string().required(),
+    organizationName: Joi.string().required()
+}
+
 exports.newUser = async function (req, res) {
-    const user = req.user
     try {
-        const initOrgInfo = await Joi.validate(req.body, initOrgInfoSchema);
-        let orgInfo = await Organization.findById(user.organizationId)
+        const newUserInfo = await Joi.validate(req.body, newUserSchema);
+        let orgInfo = await Organization.findOne({name: newUserInfo.organizationName});
         if (!orgInfo) {
-            res.status(400).send({code: 5, msg: '用户所属机构信息错误,请联系管理员'});
-            return
+            let newOrganization = new Organization({
+                name: newUserInfo.organizationName,
+                manager_phone : '待完善',
+                address: '待完善',
+                level: '待完善',
+                street: '待完善'
+            });
+            orgInfo = await newOrganization.save();
         }
-        const updateInfo = {
-            corporation_phone: initOrgInfo.corporationPhone,
-            manager_phone: initOrgInfo.managerPhone,
-            bednum: initOrgInfo.bednum,
-            address: initOrgInfo.address,
-            level: initOrgInfo.level,
-            street: initOrgInfo.street,
-        }
-        await Organization.updateOne({_id: ObjectId(user.organizationId)}, updateInfo);
-        res.status(200).send({code: 0, msg: '更新成功'});
+        let newUser = new User({
+            phone: newUserInfo.phone,
+            password: newUserInfo.password,
+            organization_id: orgInfo._id
+        });
+        await newUser.save();
+        res.status(200).send({code: 0, msg: '添加成功'});
     } catch (e) {
         console.log(e)
         res.status(400).send({code: 5, msg: '修改失败'});
