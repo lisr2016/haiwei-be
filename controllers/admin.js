@@ -147,6 +147,7 @@ exports.resetPassword = async function (req, res) {
         //     res.status(200).send({code: 0, msg: '验证码已过期'});
         //     return
         // }
+        
         Admin.findOne({
             phone: req.admin.phone
         }, function (err, admin) {
@@ -189,7 +190,6 @@ exports.resetPassword = async function (req, res) {
 };
 
 exports.updateUserInfo = async function (req, res) {
-    const user = req.user
     try {
         const initOrgInfo = await Joi.validate(req.body, initOrgInfoSchema);
         let orgInfo = await Organization.findById(user.organizationId)
@@ -213,15 +213,21 @@ exports.updateUserInfo = async function (req, res) {
     }
 };
 
+
+
+const updateOrgInfoSchema = {
+    organizationId: Joi.string().required(),
+    corporationPhone: Joi.string(),
+    managerPhone: Joi.string(),
+    bednum:  Joi.number().integer(),
+    address: Joi.string(),
+    level: Joi.string(),
+    street: Joi.string()
+}
+
 exports.updateOrgInfo = async function (req, res) {
-    const user = req.user
     try {
-        const initOrgInfo = await Joi.validate(req.body, initOrgInfoSchema);
-        let orgInfo = await Organization.findById(user.organizationId)
-        if (!orgInfo) {
-            res.status(400).send({code: 5, msg: '用户所属机构信息错误,请联系管理员'});
-            return
-        }
+        const initOrgInfo = await Joi.validate(req.body, updateOrgInfoSchema);
         const updateInfo = {
             corporation_phone: initOrgInfo.corporationPhone,
             manager_phone: initOrgInfo.managerPhone,
@@ -230,7 +236,7 @@ exports.updateOrgInfo = async function (req, res) {
             level: initOrgInfo.level,
             street: initOrgInfo.street,
         }
-        await Organization.updateOne({_id: ObjectId(user.organizationId)}, updateInfo);
+        await Organization.updateOne({_id: ObjectId(initOrgInfo.organizationId)}, updateInfo);
         res.status(200).send({code: 0, msg: '更新成功'});
     } catch (e) {
         console.log(e)

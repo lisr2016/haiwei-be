@@ -19,6 +19,7 @@ router.post('/cms/new/user', ctrls.auth.verifyCmsToken, ctrls.admin.newUser);
 
 // 修改用户信息
 router.post('/cms/update/user/info', ctrls.auth.verifyCmsToken, ctrls.admin.updateUserInfo);
+
 // 修改机构信息
 router.post('/cms/update/org/info', ctrls.auth.verifyCmsToken, ctrls.admin.updateOrgInfo);
 

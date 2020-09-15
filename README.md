@@ -580,9 +580,7 @@
     body :{
       phone,    // 必填
       password, // 非必填
-      username, // 
-      isAdmin, // 是否是管理员
-      authority: XXX, //管理员级别
+      organizationName, // 机构名称
     }
 
 返回数据
@@ -602,7 +600,7 @@
  
     { 
       'code': 0, 
-      'msg': '提交成功'
+      'msg': '添加成功'
      }
 
 17.POST /cms/update/user/info
@@ -643,7 +641,7 @@
 提交参数：
 
       body{ 
-        'initialized': false,             // 是否进行过初始化信息填报
+        'organizationId': xxx // 机构id
         'corporationPhone': xxx   // 法人电话
         'managerPhone': xxx   // 负责人电话
         'bednum': xxx   // 床位数
