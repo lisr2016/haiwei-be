@@ -193,7 +193,7 @@ exports.summitDomMonthly = async function (req, res) {
 
 const summitMedMonthlySchema = {
     time: Joi.number().integer().required(),
-    totalWight: Joi.number().required(),
+    totalWeight: Joi.number().required(),
 }
 
 exports.summitMedMonthly = async function (req, res) {
