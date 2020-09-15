@@ -135,7 +135,7 @@ exports.genVerifyCode = async function (req, res) {
         if (result) {
             req.session[req.query.phone] = verifyCode;
             console.log(req.session)
-            res.status(200).send({code: 0, msg: '获取成功'});
+            res.status(200).send({code: 0, verifyCode, msg: '获取成功'});
             return;
         }
         res.status(400).send({code: 5, msg: '获取失败'});
