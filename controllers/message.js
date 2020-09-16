@@ -40,3 +40,28 @@ exports.userMessageRead = async function (req, res) {
     }
 };
 
+exports.fetchMessageContent = async function (req, res) {
+    let user = req.user;
+    let id = req.params.id;
+    try {
+        if (!_.isString(id)) {
+            res.status(400).send({code: 5, msg: '参数错误'});
+            return
+        }
+        let message = await Message.findOne({_id: id, user_id: user.id});
+        let data =  {
+            id: message._id,
+            content: message.content,
+            title: message.title,
+            type: message.type,
+            isRead: message.is_read,
+            createTime: message.createAt
+        }
+        res.status(200).send({code: 0,data, msg: '查询成功'});
+    } catch (e) {
+        console.log(e)
+        res.status(400).send({code: 5, msg: '更新失败'});
+    }
+};
+
+
