@@ -228,10 +228,11 @@
      'msg': '查询成功'
      'data': {
          list:[
-            {
-                content: XXX // 内容
-                type: XXX  // 消息类型，(根据type枚举值判断跳转)
-                isRead: false // 是否已读
+            {   
+                title: XXX // String 显示标题
+                content: XXX //  String 内容,type 为1时有这个字段
+                type: XXX  //  String  消息类型，(根据type枚举值判断跳转)1.公告信息 2.跳转生活日报 3跳转生活周报 4跳转生活月报 4调整医疗月报
+                isRead: false // Boolean 是否已读
                 createTime: XXX // 推送时间
             }, ...
          ]
