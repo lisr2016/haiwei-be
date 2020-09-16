@@ -14,7 +14,7 @@ exports.fetchUserMessageList = async function (req, res) {
                 title: e.title,
                 type: e.type,
                 isRead: e.is_read,
-                createTime: e.createAt
+                createTime: e.createdAt
             }
         }).value()
         res.status(200).send({code: 0, data, msg: '查询成功'});
@@ -55,7 +55,7 @@ exports.fetchMessageContent = async function (req, res) {
             title: message.title,
             type: message.type,
             isRead: message.is_read,
-            createTime: message.createAt
+            createTime: message.createdAt
         }
         res.status(200).send({code: 0,data, msg: '查询成功'});
     } catch (e) {
