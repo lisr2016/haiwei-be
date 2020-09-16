@@ -10,7 +10,6 @@ var AdminSchema = new Schema({
     },
     username: {
         type: String,
-        unique: true,
         required: false
     },
     password: {

@@ -270,15 +270,17 @@ exports.fetchReportSummay = async function (req, res) {
 };
 
 exports.signup = function(req, res) {
-    if (!req.body.phone || !req.body.password) {
-        res.json({success: false, msg: 'Please pass phone,password .'});
+    if (!req.body.phone || !req.body.password ||!req.body.username) {
+        res.json({success: false, msg: 'Please pass phone,password,username .'});
     } else {
         let newAdmin = new Admin({
+            username: req.body.username,
             phone: req.body.phone,
             password: req.body.password,
             authority: 3
         });
         newAdmin.save(function(err) {
+            console.log(err)
             if (err) {
                 return res.json({success: false, msg: 'phone already exists.'});
             }

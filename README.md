@@ -272,7 +272,7 @@
  
  
 
-8.1.POST /v1/message/:id
+8.1.GET /v1/message/:id
 
 功能: 消息事项已处理(已跳转)
 

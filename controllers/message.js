@@ -49,6 +49,7 @@ exports.fetchMessageContent = async function (req, res) {
             return
         }
         let message = await Message.findOne({_id: id, user_id: user.id});
+        console.log(message)
         let data =  {
             id: message._id,
             content: message.content,
