@@ -137,8 +137,8 @@ exports.genVerifyCode = async function (req, res) {
         for (let i = 0; i < 4; i++) {
             verifyCode += Math.floor(Math.random() * 10);
         }
-        let result = true;
-        // let result = await lib.sendSms(req.query.phone, verifyCode)
+        // let result = true;
+        let result = await lib.sendSms(req.query.phone, verifyCode)
         if (result) {
             req.session[req.query.phone] = verifyCode;
             console.log(req.session)
