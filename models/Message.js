@@ -13,6 +13,11 @@ var MessageSchema = new Schema({
     type: Boolean,
     required: true
   },
+  // 标题名称
+  title: {
+    type: String,
+    required: true
+  },
   // 消息内容
   content: {
     type: String,

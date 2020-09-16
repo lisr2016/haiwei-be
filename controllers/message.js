@@ -11,6 +11,7 @@ exports.fetchUserMessageList = async function (req, res) {
             return {
                 id: e._id,
                 content: e.content,
+                title: e.title,
                 type: e.type,
                 isRead: e.is_read,
                 createTime: e.createAt
