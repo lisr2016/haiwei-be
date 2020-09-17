@@ -19,6 +19,10 @@ var UserSchema = new Schema({
     organization_id: {
       type: String,
       required: true
+    },
+    is_deleted: {
+        type: Boolean,
+        default: false
     }
 }, {timestamps: {createAt: 'created', updateAt: 'updated'}});
 

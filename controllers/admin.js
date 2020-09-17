@@ -73,7 +73,7 @@ exports.fetchUserList = async function (req, res) {
         const orgs = await Organization.find({_id: {$in: orgIds}});
         const orgInfoMap = _.keyBy(orgs, '_id');
         list = _.map(list, e => {
-            const orgInfo = orgInfoMap[e.organization_id];
+            const orgInfo = orgInfoMap[e.organization_id] || {};
             return {
                 id: e._id,
                 phone: e.phone,
@@ -99,7 +99,7 @@ exports.fetchUserList = async function (req, res) {
             });
         }
         console.log(e)
-        res.status(400).send({code: 5, data, msg: '修改失败'});
+        res.status(400).send({code: 5, data, msg: '查询失败'});
     }
 };
 
