@@ -189,27 +189,43 @@ exports.resetPassword = async function (req, res) {
     }
 };
 
+
+const updateUserInfoSchema = {
+    userId: Joi.string().required(),
+    password: Joi.string().required()
+};
+
 exports.updateUserInfo = async function (req, res) {
     try {
-        const initOrgInfo = await Joi.validate(req.body, initOrgInfoSchema);
-        let orgInfo = await Organization.findById(user.organizationId)
-        if (!orgInfo) {
-            res.status(400).send({code: 5, msg: '用户所属机构信息错误,请联系管理员'});
-            return
-        }
-        const updateInfo = {
-            corporation_phone: initOrgInfo.corporationPhone,
-            manager_phone: initOrgInfo.managerPhone,
-            bednum: initOrgInfo.bednum,
-            address: initOrgInfo.address,
-            level: initOrgInfo.level,
-            street: initOrgInfo.street,
-        }
-        await Organization.updateOne({_id: ObjectId(user.organizationId)}, updateInfo);
-        res.status(200).send({code: 0, msg: '更新成功'});
+        const updateUserInfo = await Joi.validate(req.body, updateUserInfoSchema);
+        bcrypt.genSalt(10, function (err, salt) {
+            if (err) {
+                res.status(400).send({code: 5, msg: '更新失败'});
+                return
+            }
+            bcrypt.hash(updateUserInfo.password, salt, null, function (err, hash) {
+                if (err) {
+                    res.status(400).send({code: 5, msg: '更新失败'});
+                    return
+                }
+                User.updateOne({_id: ObjectId(updateUserInfo.userId)}, {password: hash}, function (err) {
+                    if (err) {
+                        res.status(400).send({code: 5, msg: '更新失败'});
+                        return
+                    }
+                    res.status(200).send({code: 5, msg: '更新成功'});
+                })
+            });
+        });
     } catch (e) {
+        let data = '';
+        if (_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
         console.log(e)
-        res.status(400).send({code: 5, msg: '修改失败'});
+        res.status(400).send({code: 5, data, msg: '更新失败'});
     }
 };
 
@@ -239,8 +255,14 @@ exports.updateOrgInfo = async function (req, res) {
         await Organization.updateOne({_id: ObjectId(initOrgInfo.organizationId)}, updateInfo);
         res.status(200).send({code: 0, msg: '更新成功'});
     } catch (e) {
+        let data = '';
+        if(_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
         console.log(e)
-        res.status(400).send({code: 5, msg: '修改失败'});
+        res.status(400).send({code: 5, data, msg: '修改失败'});
     }
 };
 
@@ -264,8 +286,14 @@ exports.fetchReportSummay = async function (req, res) {
         await Organization.updateOne({_id: ObjectId(user.organizationId)}, updateInfo);
         res.status(200).send({code: 0, msg: '更新成功'});
     } catch (e) {
+        let data = '';
+        if(_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
         console.log(e)
-        res.status(400).send({code: 5, msg: '修改失败'});
+        res.status(400).send({code: 5, data, msg: '修改失败'});
     }
 };
 

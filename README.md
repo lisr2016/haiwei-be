@@ -666,7 +666,7 @@
 提交参数：
 
     body :{
-      phone,    // 必填
+      userId, // 用户id，必填
       password, // 非必填
     }
 
@@ -915,10 +915,9 @@
     { 
     'code': 200,
     'msg': '查询成功',
-      'data': {
-        'list': [{
-        
-        },...
+      'data': {      
+        'userCount': // 用户总数
+         ...
         ]
       }
       } 
