@@ -508,21 +508,43 @@
       'code': 200,
       'msg': '查询成功',
       'data': 
-        'list': [
-           {
-             username: XXX,
-             password: XXX,
-             orgInfo: {
-                  // 同接口5 orgInfo
-                }
-             initialized: true,
-             
-             isAdmin: false,
-             authority: XXX, //管理员级别
-           },
-         ]
+        'token': 
      }
      
+ 13.1 GET /cms/user/info
+ 
+ 功能: 管理员用户信息。
+ 
+ 提交参数：
+ 
+ 返回数据
+ 
+ 失败
+ 状态码 400
+ 返回格式范例
+ 
+     {
+      'code': 5, 
+      'msg': 'XXX'
+     }
+     
+ 成功
+ 状态码 200
+ 返回格式
+  
+     { 
+       'code': 200,
+       'msg': '查询成功',
+       'data': 
+            'user': {
+                'idv: '5f5fc3ffed8da219bc89963b',
+                'phone': xx,
+                'username': '管理员1',
+                'authority': '1'
+            }
+      }
+      
+      
 14.POST /cms/reset/password
 
 功能: 管理端登陆。
