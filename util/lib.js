@@ -150,46 +150,27 @@ exports.summaryDomWeekly = async function(time){
         time,
         is_expired: false
     });
-    console.log(result)
     await DomesticGarbageWeeklySummary.updateOne({time}, updateInfo, {upsert: true});
     return result
 }
 
 exports.summaryDomMonthly = async function(time){
-    let data = await domesticMonthly.find({time});
-    let meeting_times = 0,
+    let data = await medicMonthly.find({time});
+    let total_weight = 0,
         report_count = 0;
     _.each(data,e =>{
-        meeting_times += e.meeting_times;
-        
+        total_weight += e.total_weight;
         report_count ++;
     });
-    
-    await (new DomesticGarbageDailySummary({
+    let result = {
+        total_weight
+    };
+    let updateInfo = Object.assign(result, {
         time,
-        meeting_times,
-        self_inspection_times,
-        self_inspection_problems,
-        advertise_times,
-        traning_times,
-        trainees,
-        gov_inspection_times,
-        gov_inspection_problems,
-        report_count,
         is_expired: false
-    })).save();
-    
-    return {
-        meeting_times,
-        self_inspection_times,
-        self_inspection_problems,
-        advertise_times,
-        traning_times,
-        trainees,
-        gov_inspection_times,
-        gov_inspection_problems,
-        report_count,
-    }
+    });
+    await MedicGarbageMonthlySummary.updateOne({time}, updateInfo, {upsert: true});
+    return result
 }
 
 exports.summaryMedMonthly = async function(time){

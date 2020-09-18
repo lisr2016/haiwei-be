@@ -358,17 +358,17 @@ exports.fetchDomMonthlySummary = async function (req, res) {
             res.status(400).send({code: 5, msg: '参数错误'});
             return
         }
-        // let a = require('../models/DomesticGarbageMonthly');
-        // let data2 = await a.find()
-        // let time = data2[0]['time']
-        // console.log(time)
         let data = await DomesticGarbageMonthlySummary.findOne({time: req.body.startTime});
         if(!data || data.is_expired){
             data = await lib.summaryDomMonthly(req.body.startTime);
         }
         res.status(200).send({
             code: 0, data: {
-                consignee: data.consignee,
+                kitchenWaste: data.kitchen_waste,
+                recyclableWaste: data.recyclable_waste,
+                harmfulWaste: data.harmful_waste,
+                bulkyWaste: data.bulky_waste,
+                otherWaste: data.other_waste,
             }, msg: '查询成功'
         });
     } catch (e) {
@@ -378,6 +378,24 @@ exports.fetchDomMonthlySummary = async function (req, res) {
 };
 
 exports.fetchMedMonthlySummary = async function (req, res) {
+    try {
+        if(!req.body.startTime){
+            res.status(400).send({code: 5, msg: '参数错误'});
+            return
+        }
+        let data = await DomesticGarbageMonthlySummary.findOne({time: req.body.startTime});
+        if(!data || data.is_expired){
+            data = await lib.summaryDomMonthly(req.body.startTime);
+        }
+        res.status(200).send({
+            code: 0, data: {
+                totalWeight: data.total_weight,
+            }, msg: '查询成功'
+        });
+    } catch (e) {
+        console.log(e);
+        res.status(400).send({code: 5, msg: '查询失败'});
+    }
 };
 
 exports.fetchScreenSummary = async function (req, res) {
