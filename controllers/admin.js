@@ -238,8 +238,6 @@ exports.updateUserInfo = async function (req, res) {
     }
 };
 
-
-
 const updateOrgInfoSchema = {
     organizationId: Joi.string().required(),
     corporationPhone: Joi.string(),
@@ -322,18 +320,29 @@ exports.fetchDomWeeklySummary = async function (req, res) {
         }
         let data = await DomesticGarbageWeeklySummary.findOne({time: req.body.startTime});
         if(!data || data.is_expired){
-            data = await lib.summaryDomDaily(req.body.startTime)
+            data = await lib.summaryDomWeekly(req.body.startTime);
         }
         res.status(200).send({
             code: 0, data: {
-                meetingTimes: data.meeting_times,
-                selfInspectionTimes: data.self_inspection_times,
-                selfInspectionProblems: data.self_inspection_problems,
-                advertiseTimes: data.advertise_times,
-                traningTimes: data.traning_times,
-                trainees: data.trainees,
-                govInspectionTimes: data.gov_inspection_times,
-                govInspectionProblems: data.gov_inspection_problems,
+                consignee: data.consignee,
+                guide: data.guide,
+                inspector: data.inspector,
+                kitchenWasteCollectors: data.kitchen_waste_collectors,
+                kitchenWastePositons: data.kitchen_waste_positons,
+                recyclableWasteCollectors: data.recyclable_waste_collectors,
+                recyclableWastePositons: data.recyclable_waste_positons,
+                harmfulWasteCollectors: data.harmful_waste_collectors,
+                harmfulWastePositons: data.harmful_waste_positons,
+                otherWasteCollectors: data.other_waste_collectors,
+                otherWastePositons: data.other_waste_positons,
+                medicWasteCollectors: data.medic_waste_collectors,
+                medicWastePositons: data.medic_waste_positons,
+                bulkyWastePositons: data.bulky_waste_positons,
+                kitchenWaste: data.kitchen_waste,
+                recyclableWaste: data.recyclable_waste,
+                harmfulWaste: data.harmful_waste,
+                otherWaste: data.other_waste,
+                medicWaste: data.medic_waste,
                 reportCount: data.report_count,
             }, msg: '查询成功'
         });
@@ -344,6 +353,24 @@ exports.fetchDomWeeklySummary = async function (req, res) {
 };
 
 exports.fetchDomMonthlySummary = async function (req, res) {
+    try {
+        if(!req.body.startTime){
+            res.status(400).send({code: 5, msg: '参数错误'});
+            return
+        }
+        let data = await DomesticGarbageMonthlySummary.findOne({time: req.body.startTime});
+        if(!data || data.is_expired){
+            data = await lib.summaryDomMonthly(req.body.startTime);
+        }
+        res.status(200).send({
+            code: 0, data: {
+                consignee: data.consignee,
+            }, msg: '查询成功'
+        });
+    } catch (e) {
+        console.log(e);
+        res.status(400).send({code: 5, msg: '查询失败'});
+    }
 };
 
 exports.fetchMedMonthlySummary = async function (req, res) {
