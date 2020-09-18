@@ -358,6 +358,10 @@ exports.fetchDomMonthlySummary = async function (req, res) {
             res.status(400).send({code: 5, msg: '参数错误'});
             return
         }
+        // let a = require('../models/DomesticGarbageMonthly');
+        // let data2 = await a.find()
+        // let time = data2[0]['time']
+        // console.log(time)
         let data = await DomesticGarbageMonthlySummary.findOne({time: req.body.startTime});
         if(!data || data.is_expired){
             data = await lib.summaryDomMonthly(req.body.startTime);

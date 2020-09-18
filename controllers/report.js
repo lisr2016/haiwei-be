@@ -152,7 +152,7 @@ exports.summitDomWeekly = async function (req, res) {
 };
 
 const summitDomMonthlySchema = {
-    time: Joi.number().integer().required(),
+    time: Joi.date().required(),
     
     kitchenWaste: Joi.number().required(),
     recyclableWaste: Joi.number().required(),
@@ -195,7 +195,7 @@ exports.summitDomMonthly = async function (req, res) {
 };
 
 const summitMedMonthlySchema = {
-    time: Joi.number().integer().required(),
+    time: Joi.date().required(),
     totalWeight: Joi.number().required(),
 }
 
