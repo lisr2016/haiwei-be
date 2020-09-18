@@ -133,11 +133,15 @@ exports.newUser = async function (req, res) {
             password: newUserInfo.password,
             organization_id: orgInfo._id
         });
-        await newUser.save();
+        let result = await newUser.save();
         res.status(200).send({code: 0, msg: '添加成功'});
     } catch (e) {
+        if(e.code === 11000) {
+            res.status(400).send({code: 1, msg: '该手机号已存在'});
+            return
+        }
         console.log(e)
-        res.status(400).send({code: 5, msg: '修改失败'});
+        res.status(400).send({code: 5, msg: '添加失败'});
     }
 };
 
