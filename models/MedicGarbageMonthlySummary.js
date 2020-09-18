@@ -1,21 +1,12 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-// 医疗垃圾月报
+// 医疗垃圾月报汇总
 var MedicGarbageMonthlySummarySchema = new Schema({
-    // 填报人id
-    user_id: {
-        type: String,
-        required: true
-    },
-    // 机构id
-    organization_id: {
-        type: String,
-        required: true
-    },
     // 填报日期
     time: {
         type: Date,
+        unique: true,
         required: true
     },
     // 月度医疗垃圾产量(公斤)

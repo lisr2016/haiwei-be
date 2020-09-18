@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-// 生活垃圾日报
+// 生活垃圾日报汇总
 var DomesticGarbageDailySummarySchema = new Schema({
     // 填报日期
     time: {

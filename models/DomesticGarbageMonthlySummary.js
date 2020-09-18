@@ -1,12 +1,12 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-// 生活垃圾月报
+// 生活垃圾月报汇总
 var DomesticGarbageMonthlySummarySchema = new Schema({
   // 填报日期
   time: {
     type: Number,
-    unique, true,
+    unique: true,
     required: true
   },
   // 垃圾收集情况

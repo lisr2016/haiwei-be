@@ -1,12 +1,12 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-// 生活垃圾周报
+// 生活垃圾周报汇总
 var DomesticGarbageWeeklySummarySchema = new Schema({
   // 填报日期
   time: {
     type: Date,
-    unique, true,
+    unique: true,
     required: true
   },
   // 专兼职人员
