@@ -139,7 +139,7 @@ exports.newUser = async function (req, res) {
         res.status(200).send({code: 0, msg: '添加成功'});
     } catch (e) {
         if(e.code === 11000) {
-            res.status(400).send({code: 1, msg: '该手机号已存在'});
+            res.status(200).send({code: 1, msg: '该手机号已存在'});
             return
         }
         console.log(e)
@@ -315,6 +315,32 @@ exports.fetchDomDailySummary = async function (req, res) {
 };
 
 exports.fetchDomWeeklySummary = async function (req, res) {
+    try {
+        if(!req.body.startTime){
+            res.status(400).send({code: 5, msg: '参数错误'});
+            return
+        }
+        let data = await DomesticGarbageWeeklySummary.findOne({time: req.body.startTime});
+        if(!data || data.is_expired){
+            data = await lib.summaryDomDaily(req.body.startTime)
+        }
+        res.status(200).send({
+            code: 0, data: {
+                meetingTimes: data.meeting_times,
+                selfInspectionTimes: data.self_inspection_times,
+                selfInspectionProblems: data.self_inspection_problems,
+                advertiseTimes: data.advertise_times,
+                traningTimes: data.traning_times,
+                trainees: data.trainees,
+                govInspectionTimes: data.gov_inspection_times,
+                govInspectionProblems: data.gov_inspection_problems,
+                reportCount: data.report_count,
+            }, msg: '查询成功'
+        });
+    } catch (e) {
+        console.log(e);
+        res.status(400).send({code: 5, msg: '查询失败'});
+    }
 };
 
 exports.fetchDomMonthlySummary = async function (req, res) {
