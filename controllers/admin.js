@@ -5,7 +5,11 @@ let jwt = require('jsonwebtoken');
 let Admin = require('../models/Admin');
 let User = require('../models/User');
 let Organization = require('../models/Organization');
-const ObjectId = require('mongodb').ObjectId;
+let DomesticGarbageDailySummary = require('../models/DomesticGarbageDailySummary');
+let DomesticGarbageWeeklySummary = require('../models/DomesticGarbageWeeklySummary');
+let DomesticGarbageMonthlySummary = require('../models/DomesticGarbageMonthlySummary');
+let MedicGarbageMonthlySummary = require('../models/MedicGarbageMonthlySummary');
+let ObjectId = require('mongodb').ObjectId;
 
 
 const Joi = require('joi')
@@ -266,35 +270,36 @@ exports.updateOrgInfo = async function (req, res) {
     }
 };
 
-exports.fetchReportSummay = async function (req, res) {
-    const user = req.user
+exports.fetchSummaryTotal = async function (req, res) {
     try {
-        const initOrgInfo = await Joi.validate(req.body, initOrgInfoSchema);
-        let orgInfo = await Organization.findById(user.organizationId)
-        if (!orgInfo) {
-            res.status(400).send({code: 5, msg: '用户所属机构信息错误,请联系管理员'});
-            return
-        }
-        const updateInfo = {
-            corporation_phone: initOrgInfo.corporationPhone,
-            manager_phone: initOrgInfo.managerPhone,
-            bednum: initOrgInfo.bednum,
-            address: initOrgInfo.address,
-            level: initOrgInfo.level,
-            street: initOrgInfo.street,
-        }
-        await Organization.updateOne({_id: ObjectId(user.organizationId)}, updateInfo);
-        res.status(200).send({code: 0, msg: '更新成功'});
+        const count = await Organization.countDocuments();
+        res.status(200).send({code: 0, data: {count}, msg: '查询成功'});
     } catch (e) {
-        let data = '';
-        if(_.size(e.details) > 0) {
-            _.each(e.details, item => {
-                data += item.message;
-            });
-        }
-        console.log(e)
-        res.status(400).send({code: 5, data, msg: '修改失败'});
+        console.log(e);
+        res.status(400).send({code: 5, data, msg: '查询失败'});
     }
+};
+
+exports.fetchDomDailySummary = async function (req, res) {
+    try {
+        const data = await Organization.countDocuments();
+        res.status(200).send({code: 0, data, msg: '查询成功'});
+    } catch (e) {
+        console.log(e);
+        res.status(400).send({code: 5, data, msg: '查询失败'});
+    }
+};
+
+exports.fetchDomWeeklySummary = async function (req, res) {
+};
+
+exports.fetchDomMonthlySummary = async function (req, res) {
+};
+
+exports.fetchMedMonthlySummary = async function (req, res) {
+};
+
+exports.fetchScreenSummary = async function (req, res) {
 };
 
 exports.signup = function(req, res) {

@@ -725,8 +725,40 @@
       'code': 0, 
       'msg': '提交成功'
      }
+
+19.GET /cms/summary/total
+
+功能: 查询报告总数。
+
+提交参数：
+
+   无
+
+返回数据
+
+失败
+状态码 400
+返回格式范例
+
+    {
+     'code': 5, 
+     'msg': 'XXX'
+    }
+    
+成功
+状态码 200
+返回格式
+ 
+    { 
+      'code': 0, 
+      'msg': '查询成功'
+      'data': {
+        count: XXX   // 所需报告总数(机构总数)
+      },
+     }
    
-19.POST /cms/summary/domestic/daily
+
+20.POST /cms/summary/domestic/daily
 
 功能: 生活垃圾日报汇总。
 
@@ -765,7 +797,7 @@
       }
       } 
 
-20.POST /cms/summary/domestic/weekly
+21.POST /cms/summary/domestic/weekly
 
 功能: 生活垃圾周报汇总。
 
@@ -804,7 +836,7 @@
       }
       } 
 
-21.POST /cms/summary/domestic/monthly
+22.POST /cms/summary/domestic/monthly
 
 功能: 生活垃圾月报汇总。
 
@@ -844,7 +876,7 @@
       } 
 
  
-22.POST /cms/summary/medic/monthly
+23.POST /cms/summary/medic/monthly
 
 功能: 医疗垃圾月报汇总。
 
@@ -884,7 +916,7 @@
       } 
       
       
-23.POST /cms/screen
+24.POST /cms/summary/screen
 
 功能: 数据大屏数据汇总。
 
@@ -916,7 +948,6 @@
     'code': 200,
     'msg': '查询成功',
       'data': {      
-        'userCount': // 用户总数
          ...
         ]
       }

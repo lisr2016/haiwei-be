@@ -23,7 +23,17 @@ router.post('/cms/update/user/info', ctrls.auth.verifyCmsToken, ctrls.admin.upda
 // 修改机构信息
 router.post('/cms/update/org/info', ctrls.auth.verifyCmsToken, ctrls.admin.updateOrgInfo);
 
-// 获取量化填报汇总数据
-router.post('/cms/report/summary', ctrls.auth.verifyCmsToken, ctrls.admin.fetchReportSummay);
+// 查询报告总数
+router.get('/cms/summary/total', ctrls.auth.verifyCmsToken, ctrls.admin.fetchSummaryTotal);
+// 生活垃圾日报汇总
+router.post('/cms/summary/domestic/daily', ctrls.auth.verifyCmsToken, ctrls.admin.fetchDomDailySummary);
+// 生活垃圾周报汇总
+router.post('/cms/summary/domestic/weekly', ctrls.auth.verifyCmsToken, ctrls.admin.fetchDomWeeklySummary);
+// 生活垃圾月报汇总
+router.post('/cms/summary/domestic/monthly', ctrls.auth.verifyCmsToken, ctrls.admin.fetchDomMonthlySummary);
+// 医疗垃圾月报汇总
+router.post('/cms/summary/medic/monthly', ctrls.auth.verifyCmsToken, ctrls.admin.fetchMedMonthlySummary);
+// 数据大屏数据汇总
+router.post('/cms/summary/screen', ctrls.auth.verifyCmsToken, ctrls.admin.fetchScreenSummary);
 
 module.exports = router;

@@ -6,7 +6,7 @@ var DomesticGarbageDailySummarySchema = new Schema({
     // 填报日期
     time: {
         type: Date,
-        unique, true,
+        unique: true,
         required: true
     },
     // 分类管理工作会议
@@ -60,8 +60,10 @@ var DomesticGarbageDailySummarySchema = new Schema({
         required: true,
         default: true,
     }
-    
-    
 }, {timestamps: {createAt: 'created', updateAt: 'updated'}});
+
+DomesticGarbageDailySummarySchema.methods.fetchSummary = function (timestamp) {
+
+};
 
 module.exports = mongoose.model('domestic_garbage_daily_summary', DomesticGarbageDailySummarySchema);
