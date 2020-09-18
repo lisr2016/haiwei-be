@@ -87,3 +87,153 @@ exports.summaryDomDaily = async function(time){
         report_count,
     }
 }
+
+exports.summaryDomWeekly = async function(time){
+    let data = await domesticDaily.find({time});
+    let meeting_times = 0,
+        self_inspection_times = 0,
+        self_inspection_problems = 0,
+        advertise_times = 0,
+        traning_times = 0,
+        trainees = 0,
+        gov_inspection_times = 0,
+        gov_inspection_problems = 0,
+        report_count = 0;
+    _.each(data,e =>{
+        meeting_times += e.meeting_times;
+        self_inspection_times += e.self_inspection_times;
+        self_inspection_problems += e.self_inspection_problems;
+        advertise_times += e.advertise_times;
+        traning_times += e.traning_times;
+        trainees += e.trainees;
+        gov_inspection_times += e.gov_inspection_times;
+        gov_inspection_problems += e.gov_inspection_problems;
+        report_count ++;
+    });
+    
+    await (new DomesticGarbageDailySummary({
+        time,
+        meeting_times,
+        self_inspection_times,
+        self_inspection_problems,
+        advertise_times,
+        traning_times,
+        trainees,
+        gov_inspection_times,
+        gov_inspection_problems,
+        report_count,
+        is_expired: false
+    })).save();
+    
+    return {
+        meeting_times,
+        self_inspection_times,
+        self_inspection_problems,
+        advertise_times,
+        traning_times,
+        trainees,
+        gov_inspection_times,
+        gov_inspection_problems,
+        report_count,
+    }
+}
+
+exports.summaryDomMonthly = async function(time){
+    let data = await domesticDaily.find({time});
+    let meeting_times = 0,
+        self_inspection_times = 0,
+        self_inspection_problems = 0,
+        advertise_times = 0,
+        traning_times = 0,
+        trainees = 0,
+        gov_inspection_times = 0,
+        gov_inspection_problems = 0,
+        report_count = 0;
+    _.each(data,e =>{
+        meeting_times += e.meeting_times;
+        self_inspection_times += e.self_inspection_times;
+        self_inspection_problems += e.self_inspection_problems;
+        advertise_times += e.advertise_times;
+        traning_times += e.traning_times;
+        trainees += e.trainees;
+        gov_inspection_times += e.gov_inspection_times;
+        gov_inspection_problems += e.gov_inspection_problems;
+        report_count ++;
+    });
+    
+    await (new DomesticGarbageDailySummary({
+        time,
+        meeting_times,
+        self_inspection_times,
+        self_inspection_problems,
+        advertise_times,
+        traning_times,
+        trainees,
+        gov_inspection_times,
+        gov_inspection_problems,
+        report_count,
+        is_expired: false
+    })).save();
+    
+    return {
+        meeting_times,
+        self_inspection_times,
+        self_inspection_problems,
+        advertise_times,
+        traning_times,
+        trainees,
+        gov_inspection_times,
+        gov_inspection_problems,
+        report_count,
+    }
+}
+
+exports.summaryMedMonthly = async function(time){
+    let data = await domesticDaily.find({time});
+    let meeting_times = 0,
+        self_inspection_times = 0,
+        self_inspection_problems = 0,
+        advertise_times = 0,
+        traning_times = 0,
+        trainees = 0,
+        gov_inspection_times = 0,
+        gov_inspection_problems = 0,
+        report_count = 0;
+    _.each(data,e =>{
+        meeting_times += e.meeting_times;
+        self_inspection_times += e.self_inspection_times;
+        self_inspection_problems += e.self_inspection_problems;
+        advertise_times += e.advertise_times;
+        traning_times += e.traning_times;
+        trainees += e.trainees;
+        gov_inspection_times += e.gov_inspection_times;
+        gov_inspection_problems += e.gov_inspection_problems;
+        report_count ++;
+    });
+    
+    await (new DomesticGarbageDailySummary({
+        time,
+        meeting_times,
+        self_inspection_times,
+        self_inspection_problems,
+        advertise_times,
+        traning_times,
+        trainees,
+        gov_inspection_times,
+        gov_inspection_problems,
+        report_count,
+        is_expired: false
+    })).save();
+    
+    return {
+        meeting_times,
+        self_inspection_times,
+        self_inspection_problems,
+        advertise_times,
+        traning_times,
+        trainees,
+        gov_inspection_times,
+        gov_inspection_problems,
+        report_count,
+    }
+}

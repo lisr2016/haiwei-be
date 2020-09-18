@@ -72,7 +72,8 @@ exports.fetchUserList = async function (req, res) {
             let stop = params.offset * params.limit;
             list = _.slice(list, start, stop)
         }else{
-            list = await User.find().skip(params.offset - 1).limit(params.limit)
+            let skip = (params.offset - 1) * params.limit;
+            list = await User.find().skip(skip).limit(params.limit);
         }
         const orgIds = _.uniq(_.map(list, e => e.organization_id));
         const orgs = await Organization.find({_id: {$in: orgIds}});
@@ -108,7 +109,6 @@ exports.fetchUserList = async function (req, res) {
         res.status(400).send({code: 5, data, msg: '查询失败'});
     }
 };
-
 
 const newUserSchema = {
     phone: Joi.string().required(),
@@ -198,7 +198,6 @@ exports.resetPassword = async function (req, res) {
         res.status(400).send({code: 5, msg: '修改失败'});
     }
 };
-
 
 const updateUserInfoSchema = {
     userId: Joi.string().required(),
