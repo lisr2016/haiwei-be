@@ -41,7 +41,7 @@ exports.summitDomDaily = async function (req, res) {
     try {
         const domDailyInfo = await Joi.validate(req.body, summitDomDailySchema);
         let newDomesticDaily = new domesticDaily({
-            time: domDailyInfo.time,
+            time: domDailyInfo.time || domDailyInfo.time.getTime(),
             user_id: user.id,
             organization_id: user.organizationId,
             
@@ -113,7 +113,7 @@ exports.summitDomWeekly = async function (req, res) {
     try {
         const domWeeklyInfo = await Joi.validate(req.body, summitDomWeeklySchema);
         let newDomesticWeekly = new domesticWeekly({
-            time: domWeeklyInfo.time,
+            time: domWeeklyInfo.time || domWeeklyInfo.time.getTime(),
             user_id: user.id,
             organization_id: user.organizationId,
     
@@ -170,7 +170,7 @@ exports.summitDomMonthly = async function (req, res) {
     try {
         const domMonthlyInfo = await Joi.validate(req.body, summitDomMonthlySchema);
         let newDomesticMonthly = new domesticMonthly({
-            time: domMonthlyInfo.time,
+            time: domMonthlyInfo.time || domMonthlyInfo.time.getTime(),
             user_id: user.id,
             organization_id: user.organizationId,
     
@@ -208,7 +208,7 @@ exports.summitMedMonthly = async function (req, res) {
     try {
         const medMonthlyInfo = await Joi.validate(req.body, summitMedMonthlySchema);
         let newMedicMonthly = new medicMonthly({
-            time: medMonthlyInfo.time,
+            time: medMonthlyInfo.time || medMonthlyInfo.time.getTime(),
             user_id: user.id,
             organization_id: user.organizationId,
             total_weight: medMonthlyInfo.totalWeight,

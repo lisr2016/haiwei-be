@@ -62,8 +62,4 @@ var DomesticGarbageDailySummarySchema = new Schema({
     }
 }, {timestamps: {createAt: 'created', updateAt: 'updated'}});
 
-DomesticGarbageDailySummarySchema.methods.fetchSummary = function (timestamp) {
-
-};
-
 module.exports = mongoose.model('domestic_garbage_daily_summary', DomesticGarbageDailySummarySchema);

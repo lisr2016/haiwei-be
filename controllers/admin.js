@@ -4,6 +4,7 @@ let jwt = require('jsonwebtoken');
 
 let Admin = require('../models/Admin');
 let User = require('../models/User');
+let lib = require('../util/lib')
 let Organization = require('../models/Organization');
 let DomesticGarbageDailySummary = require('../models/DomesticGarbageDailySummary');
 let DomesticGarbageWeeklySummary = require('../models/DomesticGarbageWeeklySummary');
@@ -94,7 +95,8 @@ exports.fetchUserList = async function (req, res) {
                 }
             }
         });
-        res.status(200).send({code: 0, data: { list }, msg: '查询成功'});
+        let count = await User.countDocuments({is_deleted: {$ne: true}});
+        res.status(200).send({code: 0, data: { list, count }, msg: '查询成功'});
     } catch (e) {
         let data = '';
         if(_.size(e.details) > 0) {
@@ -286,11 +288,30 @@ exports.fetchSummaryTotal = async function (req, res) {
 
 exports.fetchDomDailySummary = async function (req, res) {
     try {
-        const data = await Organization.countDocuments();
-        res.status(200).send({code: 0, data, msg: '查询成功'});
+        if(!req.body.startTime){
+            res.status(400).send({code: 5, msg: '参数错误'});
+            return
+        }
+        let data = await DomesticGarbageDailySummary.findOne({time: req.body.startTime});
+        if(!data || data.is_expired){
+            data = await lib.summaryDomDaily(req.body.startTime)
+        }
+        res.status(200).send({
+            code: 0, data: {
+                meetingTimes: data.meeting_times,
+                selfInspectionTimes: data.self_inspection_times,
+                selfInspectionProblems: data.self_inspection_problems,
+                advertiseTimes: data.advertise_times,
+                traningTimes: data.traning_times,
+                trainees: data.trainees,
+                govInspectionTimes: data.gov_inspection_times,
+                govInspectionProblems: data.gov_inspection_problems,
+                reportCount: data.report_count,
+            }, msg: '查询成功'
+        });
     } catch (e) {
         console.log(e);
-        res.status(400).send({code: 5, data, msg: '查询失败'});
+        res.status(400).send({code: 5, msg: '查询失败'});
     }
 };
 
@@ -325,4 +346,5 @@ exports.signup = function(req, res) {
         });
     }
 };
+
 
