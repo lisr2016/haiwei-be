@@ -475,7 +475,7 @@ exports.fetchOrgList = async function (req, res) {
             list = _.slice(list, start, stop)
         } else {
             let skip = (params.offset - 1) * params.limit;
-            list = await Organization.find().skip(skip).limit(params.limit);
+            list = await Organization.find().skip(skip).limit(params.limit).sort({is_delete: -1});
         }
         list = _.map(list, e => {
             return {
