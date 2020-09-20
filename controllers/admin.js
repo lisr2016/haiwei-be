@@ -283,14 +283,14 @@ exports.updateOrgInfo = async function (req, res) {
 
 const deleteOrgSchema = {
     organizationId: Joi.string().required(),
-    delete: Joi.boolean().required(),
+    isDelete: Joi.boolean().required(),
 };
 
 exports.deleteOrg = async function (req, res) {
     try {
         const deleteOrgInfo = await Joi.validate(req.body, deleteOrgSchema);
         const updateInfo = {
-            is_delete: deleteOrgInfo.delete,
+            is_delete: deleteOrgInfo.isDelete,
         }
         await Organization.updateOne({_id: ObjectId(deleteOrgInfo.organizationId)}, updateInfo);
         res.status(200).send({code: 0, msg: '更新成功'});
@@ -475,7 +475,7 @@ exports.fetchOrgList = async function (req, res) {
             list = _.slice(list, start, stop)
         } else {
             let skip = (params.offset - 1) * params.limit;
-            list = await Organization.find().skip(skip).limit(params.limit).sort({is_delete: -1});
+            list = await Organization.find().skip(skip).limit(params.limit).sort({is_deleted: 1});
         }
         list = _.map(list, e => {
             return {
