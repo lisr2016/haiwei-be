@@ -45,8 +45,6 @@ exports.fetchUserInfo = function (req, res) {
     res.status(200).send({code: 0, data: {user: req.admin}, msg: '查询成功'});
 };
 
-
-
 const fetchUserListSchema = {
     search: Joi.string(),
     offset: Joi.number().default(1),
@@ -55,7 +53,7 @@ const fetchUserListSchema = {
 
 exports.fetchUserList = async function (req, res) {
     try {
-        let list = []
+        let list = [];
         const params = await Joi.validate(req.body, fetchUserListSchema);
         if (params.search) {
             if (isPhoneNum(params.search)) {
@@ -113,37 +111,47 @@ exports.fetchUserList = async function (req, res) {
 const newUserSchema = {
     phone: Joi.string().required(),
     password: Joi.string().required(),
-    organizationName: Joi.string().required()
-}
+    organizationId: Joi.string().required()
+};
 
 exports.newUser = async function (req, res) {
     try {
         const newUserInfo = await Joi.validate(req.body, newUserSchema);
-        let orgInfo = await Organization.findOne({name: newUserInfo.organizationName});
-        if (!orgInfo) {
-            let newOrganization = new Organization({
-                name: newUserInfo.organizationName,
-                manager_phone : '待完善',
-                address: '待完善',
-                level: '待完善',
-                street: '待完善'
-            });
-            orgInfo = await newOrganization.save();
-        }
-        let newUser = new User({
+        let updateInfo = {
             phone: newUserInfo.phone,
             password: newUserInfo.password,
-            organization_id: orgInfo._id
-        });
-        let result = await newUser.save();
+            organization_id: newUserInfo.organizationId
+        };
+        await User.updateOne({phone: newUserInfo.phone}, updateInfo, {upsert: true});
         res.status(200).send({code: 0, msg: '添加成功'});
     } catch (e) {
-        if(e.code === 11000) {
-            res.status(200).send({code: 1, msg: '该手机号已存在'});
-            return
+        console.log(e);
+        res.status(400).send({code: 5, msg: '添加失败'});
+    }
+};
+
+const deleteUserSchema = {
+    userId: Joi.string().required(),
+    delete: Joi.boolean().required(),
+};
+
+exports.deleteUser = async function (req, res) {
+    try {
+        const deleteUserInfo = await Joi.validate(req.body, deleteUserSchema);
+        const updateInfo = {
+            is_delete: deleteUserInfo.delete,
+        };
+        await Organization.updateOne({_id: ObjectId(deleteUserInfo.userId)}, updateInfo);
+        res.status(200).send({code: 0, msg: '更新成功'});
+    } catch (e) {
+        let data = '';
+        if (_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
         }
         console.log(e)
-        res.status(400).send({code: 5, msg: '添加失败'});
+        res.status(400).send({code: 5, data, msg: '修改失败'});
     }
 };
 
@@ -246,7 +254,7 @@ const updateOrgInfoSchema = {
     address: Joi.string(),
     level: Joi.string(),
     street: Joi.string()
-}
+};
 
 exports.updateOrgInfo = async function (req, res) {
     try {
@@ -273,9 +281,34 @@ exports.updateOrgInfo = async function (req, res) {
     }
 };
 
+const deleteOrgSchema = {
+    organizationId: Joi.string().required(),
+    delete: Joi.boolean().required(),
+};
+
+exports.deleteOrg = async function (req, res) {
+    try {
+        const deleteOrgInfo = await Joi.validate(req.body, deleteOrgSchema);
+        const updateInfo = {
+            is_delete: deleteOrgInfo.delete,
+        }
+        await Organization.updateOne({_id: ObjectId(deleteOrgInfo.organizationId)}, updateInfo);
+        res.status(200).send({code: 0, msg: '更新成功'});
+    } catch (e) {
+        let data = '';
+        if (_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
+        console.log(e)
+        res.status(400).send({code: 5, data, msg: '修改失败'});
+    }
+};
+
 exports.fetchSummaryTotal = async function (req, res) {
     try {
-        const count = await Organization.countDocuments();
+        const count = await Organization.countDocuments({is_deleted: {$ne: true}});
         res.status(200).send({code: 0, data: {count}, msg: '查询成功'});
     } catch (e) {
         console.log(e);
@@ -289,23 +322,27 @@ exports.fetchDomDailySummary = async function (req, res) {
             res.status(400).send({code: 5, msg: '参数错误'});
             return
         }
-        let data = await DomesticGarbageDailySummary.findOne({time: req.body.startTime});
-        if(!data || data.is_expired){
-            data = await lib.summaryDomDaily(req.body.startTime)
+        if(req.body.startTime && !req.body.endTime) {
+            let data = await DomesticGarbageDailySummary.findOne({time: req.body.startTime});
+            if (!data || data.is_expired) {
+                data = await lib.summaryDomDaily(req.body.startTime)
+            }
+            res.status(200).send({
+                code: 0, data: {
+                    meetingTimes: data.meeting_times,
+                    selfInspectionTimes: data.self_inspection_times,
+                    selfInspectionProblems: data.self_inspection_problems,
+                    advertiseTimes: data.advertise_times,
+                    traningTimes: data.traning_times,
+                    trainees: data.trainees,
+                    govInspectionTimes: data.gov_inspection_times,
+                    govInspectionProblems: data.gov_inspection_problems,
+                    reportCount: data.report_count,
+                }, msg: '查询成功'
+            });
+        }else{
+        
         }
-        res.status(200).send({
-            code: 0, data: {
-                meetingTimes: data.meeting_times,
-                selfInspectionTimes: data.self_inspection_times,
-                selfInspectionProblems: data.self_inspection_problems,
-                advertiseTimes: data.advertise_times,
-                traningTimes: data.traning_times,
-                trainees: data.trainees,
-                govInspectionTimes: data.gov_inspection_times,
-                govInspectionProblems: data.gov_inspection_problems,
-                reportCount: data.report_count,
-            }, msg: '查询成功'
-        });
     } catch (e) {
         console.log(e);
         res.status(400).send({code: 5, msg: '查询失败'});
@@ -418,6 +455,89 @@ exports.signup = function(req, res) {
             }
             res.json({success: true, msg: 'Successful created new user.'});
         });
+    }
+};
+
+const fetchOrgListSchema = {
+    search: Joi.string(),
+    offset: Joi.number().default(1),
+    limit: Joi.number().default(50)
+}
+
+exports.fetchOrgList = async function (req, res) {
+    try {
+        let list = [];
+        const params = await Joi.validate(req.body, fetchOrgListSchema);
+        if (params.search) {
+            list = await Organization.find({name: new RegExp(params.search)});
+            let start = (params.offset - 1) * params.limit;
+            let stop = params.offset * params.limit;
+            list = _.slice(list, start, stop)
+        } else {
+            let skip = (params.offset - 1) * params.limit;
+            list = await Organization.find().skip(skip).limit(params.limit);
+        }
+        list = _.map(list, e => {
+            return {
+                organizationId: e._id,
+                name: e.name,
+                initialized: e.initialized,
+                corporationPhone: e.corporation_phone,
+                managerPhone: e.manager_phone,
+                bednum: e.bednum,
+                address: e.address,
+                level: e.level,
+                street: e.street,
+                isDeleted: e.is_deleted,
+            }
+        });
+        let count = await Organization.countDocuments();
+        res.status(200).send({code: 0, data: { list, count }, msg: '查询成功'});
+    } catch (e) {
+        let data = '';
+        if(_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
+        console.log(e)
+        res.status(400).send({code: 5, data, msg: '查询失败'});
+    }
+};
+
+const newOrgSchema = {
+    name: Joi.string().required(),
+    managerPhone: Joi.string().required(),
+    corporationPhone: Joi.string(),
+    bednum: Joi.string(),
+    address: Joi.string().required(),
+    level: Joi.string().required(),
+    street: Joi.string().required(),
+};
+
+exports.newOrg = async function (req, res) {
+    try {
+        const newOrgInfo = await Joi.validate(req.body, newOrgSchema);
+        let orgInfo = await Organization.findOne({name: newOrgSchema.name});
+        if (orgInfo) {
+            res.status(200).send({code: 1, msg: '该机构名称已存在'});
+            return
+        } else {
+            let newOrganization = new Organization({
+                name: newOrgInfo.name,
+                manager_phone: newOrgInfo.managerPhone,
+                corporation_phone: newOrgInfo.corporationPhone,
+                bednum: newOrgInfo.bednum,
+                address: newOrgInfo.address,
+                level: newOrgInfo.level,
+                street: newOrgInfo.street,
+            });
+            await newOrganization.save();
+        }
+        res.status(200).send({code: 0, msg: '添加成功'});
+    } catch (e) {
+        console.log(e);
+        res.status(400).send({code: 5, msg: '添加失败'});
     }
 };
 

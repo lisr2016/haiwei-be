@@ -43,6 +43,11 @@ var OrganizationSchema = new Schema({
   street: {
     type: String,
     required: true
+  },
+  // 是否已注销
+  is_deleted: {
+    type: Boolean,
+    default: false
   }
 }, {timestamps: {createAt: 'created', updateAt: 'updated'}});
 

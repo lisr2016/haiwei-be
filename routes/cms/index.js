@@ -16,12 +16,20 @@ router.post('/cms/reset/password', ctrls.auth.verifyCmsToken, ctrls.admin.resetP
 router.post('/cms/get/user/list', ctrls.auth.verifyCmsToken, ctrls.admin.fetchUserList);
 // 新增用户
 router.post('/cms/new/user', ctrls.auth.verifyCmsToken, ctrls.admin.newUser);
+// 删除用户
+router.post('/cms/delete/user', ctrls.auth.verifyCmsToken, ctrls.admin.deleteUser);
 
-// 修改用户信息
-router.post('/cms/update/user/info', ctrls.auth.verifyCmsToken, ctrls.admin.updateUserInfo);
-
+// 获取机构列表
+router.post('/cms/get/org/list', ctrls.auth.verifyCmsToken, ctrls.admin.fetchOrgList);
+// 新增机构
+router.post('/cms/new/org', ctrls.auth.verifyCmsToken, ctrls.admin.newOrg);
 // 修改机构信息
 router.post('/cms/update/org/info', ctrls.auth.verifyCmsToken, ctrls.admin.updateOrgInfo);
+// 注销机构
+router.post('/cms/delete/org', ctrls.auth.verifyCmsToken, ctrls.admin.deleteOrg);
+
+// 修改用户密码
+router.post('/cms/update/user/info', ctrls.auth.verifyCmsToken, ctrls.admin.updateUserInfo);
 
 // 查询报告总数
 router.get('/cms/summary/total', ctrls.auth.verifyCmsToken, ctrls.admin.fetchSummaryTotal);
