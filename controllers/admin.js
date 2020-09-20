@@ -290,7 +290,7 @@ exports.deleteOrg = async function (req, res) {
     try {
         const deleteOrgInfo = await Joi.validate(req.body, deleteOrgSchema);
         const updateInfo = {
-            is_delete: deleteOrgInfo.isDelete,
+            is_deleted: deleteOrgInfo.isDelete,
         }
         await Organization.updateOne({_id: ObjectId(deleteOrgInfo.organizationId)}, updateInfo);
         res.status(200).send({code: 0, msg: '更新成功'});

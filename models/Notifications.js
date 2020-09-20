@@ -12,15 +12,15 @@ var NotificationsSchema = new Schema({
     type: String,
     required: true
   },
-  // 发布机构
-  publisher: {
+  // 发布人id
+  admin_id: {
     type: String,
     required: true
   },
-  // 发布人id
-  userid: {
-    type: String,
-    required: true
+  // 是否取消发布
+  is_deleted: {
+    type: Boolean,
+    default: false
   }
 });
 
