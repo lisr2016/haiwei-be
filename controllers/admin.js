@@ -283,7 +283,7 @@ exports.updateOrgInfo = async function (req, res) {
 
 const deleteOrgSchema = {
     organizationId: Joi.string().required(),
-    isDelete: Joi.boolean().required(),
+    isDelete: Joi.boolean().default(false),
 };
 
 exports.deleteOrg = async function (req, res) {
