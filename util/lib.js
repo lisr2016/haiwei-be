@@ -155,6 +155,33 @@ exports.summaryDomWeekly = async function(time){
 }
 
 exports.summaryDomMonthly = async function(time){
+    let data = await domesticMonthly.find({time});
+    let kitchen_waste = 0,
+        recyclable_waste = 0,
+        harmful_waste = 0,
+        bulky_waste = 0,
+        other_waste = 0,
+        report_count = 0;
+    _.each(data,e =>{
+        kitchen_waste += e.kitchen_waste;
+        recyclable_waste += e.recyclable_waste;
+        harmful_waste += e.harmful_waste;
+        bulky_waste += e.bulky_waste;
+        other_waste += e.other_waste;
+        report_count ++;
+    });
+    let result = {
+        kitchen_waste, recyclable_waste, harmful_waste, bulky_waste, other_waste, report_count
+    };
+    let updateInfo = Object.assign(result, {
+        time,
+        is_expired: false
+    });
+    await DomesticGarbageMonthlySummary.updateOne({time}, updateInfo, {upsert: true});
+    return result;
+};
+
+exports.summaryMedMonthly = async function(time){
     let data = await medicMonthly.find({time});
     let total_weight = 0,
         report_count = 0;
@@ -171,54 +198,4 @@ exports.summaryDomMonthly = async function(time){
     });
     await MedicGarbageMonthlySummary.updateOne({time}, updateInfo, {upsert: true});
     return result
-}
-
-exports.summaryMedMonthly = async function(time){
-    let data = await domesticDaily.find({time});
-    let meeting_times = 0,
-        self_inspection_times = 0,
-        self_inspection_problems = 0,
-        advertise_times = 0,
-        traning_times = 0,
-        trainees = 0,
-        gov_inspection_times = 0,
-        gov_inspection_problems = 0,
-        report_count = 0;
-    _.each(data,e =>{
-        meeting_times += e.meeting_times;
-        self_inspection_times += e.self_inspection_times;
-        self_inspection_problems += e.self_inspection_problems;
-        advertise_times += e.advertise_times;
-        traning_times += e.traning_times;
-        trainees += e.trainees;
-        gov_inspection_times += e.gov_inspection_times;
-        gov_inspection_problems += e.gov_inspection_problems;
-        report_count ++;
-    });
-    
-    await (new DomesticGarbageDailySummary({
-        time,
-        meeting_times,
-        self_inspection_times,
-        self_inspection_problems,
-        advertise_times,
-        traning_times,
-        trainees,
-        gov_inspection_times,
-        gov_inspection_problems,
-        report_count,
-        is_expired: false
-    })).save();
-    
-    return {
-        meeting_times,
-        self_inspection_times,
-        self_inspection_problems,
-        advertise_times,
-        traning_times,
-        trainees,
-        gov_inspection_times,
-        gov_inspection_problems,
-        report_count,
-    }
-}
+};

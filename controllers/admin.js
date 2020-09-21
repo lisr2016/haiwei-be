@@ -421,9 +421,9 @@ exports.fetchMedMonthlySummary = async function (req, res) {
             res.status(400).send({code: 5, msg: '参数错误'});
             return
         }
-        let data = await DomesticGarbageMonthlySummary.findOne({time: req.body.startTime});
+        let data = await MedicGarbageMonthlySummary.findOne({time: req.body.startTime});
         if(!data || data.is_expired){
-            data = await lib.summaryDomMonthly(req.body.startTime);
+            data = await lib.summaryMedMonthly(req.body.startTime);
         }
         res.status(200).send({
             code: 0, data: {
