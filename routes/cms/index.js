@@ -18,6 +18,8 @@ router.post('/cms/get/user/list', ctrls.auth.verifyCmsToken, ctrls.admin.fetchUs
 router.post('/cms/new/user', ctrls.auth.verifyCmsToken, ctrls.admin.newUser);
 // 删除用户
 router.post('/cms/delete/user', ctrls.auth.verifyCmsToken, ctrls.admin.deleteUser);
+// 修改用户密码
+router.post('/cms/update/user/info', ctrls.auth.verifyCmsToken, ctrls.admin.updateUserInfo);
 
 // 获取机构列表
 router.post('/cms/get/org/list', ctrls.auth.verifyCmsToken, ctrls.admin.fetchOrgList);
@@ -28,8 +30,14 @@ router.post('/cms/update/org/info', ctrls.auth.verifyCmsToken, ctrls.admin.updat
 // 注销机构
 router.post('/cms/delete/org', ctrls.auth.verifyCmsToken, ctrls.admin.deleteOrg);
 
-// 修改用户密码
-router.post('/cms/update/user/info', ctrls.auth.verifyCmsToken, ctrls.admin.updateUserInfo);
+// 获取通知列表
+router.post('/cms/get/notification/list', ctrls.auth.verifyCmsToken, ctrls.admin.fetchOrgList);
+// 新增通知
+router.post('/cms/new/notification', ctrls.auth.verifyCmsToken, ctrls.admin.newOrg);
+// 修改通知信息
+router.post('/cms/update/notification/info', ctrls.auth.verifyCmsToken, ctrls.admin.updateOrgInfo);
+// 取消通知
+router.post('/cms/delete/notification', ctrls.auth.verifyCmsToken, ctrls.admin.deleteOrg);
 
 // 查询报告总数
 router.get('/cms/summary/total', ctrls.auth.verifyCmsToken, ctrls.admin.fetchSummaryTotal);

@@ -120,7 +120,8 @@ exports.newUser = async function (req, res) {
         let updateInfo = {
             phone: newUserInfo.phone,
             password: newUserInfo.password,
-            organization_id: newUserInfo.organizationId
+            organization_id: newUserInfo.organizationId,
+            is_deleted: false
         };
         await User.updateOne({phone: newUserInfo.phone}, updateInfo, {upsert: true});
         res.status(200).send({code: 0, msg: '添加成功'});
