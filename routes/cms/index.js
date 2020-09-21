@@ -31,13 +31,13 @@ router.post('/cms/update/org/info', ctrls.auth.verifyCmsToken, ctrls.admin.updat
 router.post('/cms/delete/org', ctrls.auth.verifyCmsToken, ctrls.admin.deleteOrg);
 
 // 获取通知列表
-router.post('/cms/get/notification/list', ctrls.auth.verifyCmsToken, ctrls.admin.fetchOrgList);
+router.post('/cms/get/notification/list', ctrls.auth.verifyCmsToken, ctrls.admin.fetchNotificationList);
 // 新增通知
-router.post('/cms/new/notification', ctrls.auth.verifyCmsToken, ctrls.admin.newOrg);
+router.post('/cms/new/notification', ctrls.auth.verifyCmsToken, ctrls.admin.newNotification);
 // 修改通知信息
-router.post('/cms/update/notification/info', ctrls.auth.verifyCmsToken, ctrls.admin.updateOrgInfo);
+router.post('/cms/update/notification/info', ctrls.auth.verifyCmsToken, ctrls.admin.updateNotificationInfo);
 // 取消通知
-router.post('/cms/delete/notification', ctrls.auth.verifyCmsToken, ctrls.admin.deleteOrg);
+router.post('/cms/delete/notification', ctrls.auth.verifyCmsToken, ctrls.admin.deleteNotification);
 
 // 查询报告总数
 router.get('/cms/summary/total', ctrls.auth.verifyCmsToken, ctrls.admin.fetchSummaryTotal);

@@ -17,11 +17,15 @@ var NotificationsSchema = new Schema({
     type: String,
     required: true
   },
+  // 发布人username
+  admin_name: {
+    type: String,
+  },
   // 是否取消发布
   is_deleted: {
     type: Boolean,
     default: false
   }
-});
+}, {timestamps: {createAt: 'created', updateAt: 'updated'}});
 
 module.exports = mongoose.model('notifications', NotificationsSchema);

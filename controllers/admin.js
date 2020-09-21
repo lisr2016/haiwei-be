@@ -4,18 +4,18 @@ let jwt = require('jsonwebtoken');
 
 let Admin = require('../models/Admin');
 let User = require('../models/User');
-let lib = require('../util/lib')
+let lib = require('../util/lib');
 let Organization = require('../models/Organization');
+let Notifications = require('../models/Notifications');
 let DomesticGarbageDailySummary = require('../models/DomesticGarbageDailySummary');
 let DomesticGarbageWeeklySummary = require('../models/DomesticGarbageWeeklySummary');
 let DomesticGarbageMonthlySummary = require('../models/DomesticGarbageMonthlySummary');
 let MedicGarbageMonthlySummary = require('../models/MedicGarbageMonthlySummary');
 let ObjectId = require('mongodb').ObjectId;
 
-
-const Joi = require('joi')
+const Joi = require('joi');
 const bcrypt = require('bcrypt-nodejs');
-const { isPhoneNum } =require('../util/lib')
+const { isPhoneNum } =require('../util/lib');
 
 exports.login = function(req, res) {
     if (!req.body.phone || !req.body.password) {
@@ -49,7 +49,7 @@ const fetchUserListSchema = {
     search: Joi.string(),
     offset: Joi.number().default(1),
     limit: Joi.number().default(50)
-}
+};
 
 exports.fetchUserList = async function (req, res) {
     try {
@@ -247,66 +247,6 @@ exports.updateUserInfo = async function (req, res) {
     }
 };
 
-const updateOrgInfoSchema = {
-    organizationId: Joi.string().required(),
-    corporationPhone: Joi.string(),
-    managerPhone: Joi.string(),
-    bednum:  Joi.number().integer(),
-    address: Joi.string(),
-    level: Joi.string(),
-    street: Joi.string()
-};
-
-exports.updateOrgInfo = async function (req, res) {
-    try {
-        const initOrgInfo = await Joi.validate(req.body, updateOrgInfoSchema);
-        const updateInfo = {
-            corporation_phone: initOrgInfo.corporationPhone,
-            manager_phone: initOrgInfo.managerPhone,
-            bednum: initOrgInfo.bednum,
-            address: initOrgInfo.address,
-            level: initOrgInfo.level,
-            street: initOrgInfo.street,
-        }
-        await Organization.updateOne({_id: ObjectId(initOrgInfo.organizationId)}, updateInfo);
-        res.status(200).send({code: 0, msg: '更新成功'});
-    } catch (e) {
-        let data = '';
-        if(_.size(e.details) > 0) {
-            _.each(e.details, item => {
-                data += item.message;
-            });
-        }
-        console.log(e)
-        res.status(400).send({code: 5, data, msg: '修改失败'});
-    }
-};
-
-const deleteOrgSchema = {
-    organizationId: Joi.string().required(),
-    isDelete: Joi.boolean().default(false),
-};
-
-exports.deleteOrg = async function (req, res) {
-    try {
-        const deleteOrgInfo = await Joi.validate(req.body, deleteOrgSchema);
-        const updateInfo = {
-            is_deleted: deleteOrgInfo.isDelete,
-        }
-        await Organization.updateOne({_id: ObjectId(deleteOrgInfo.organizationId)}, updateInfo);
-        res.status(200).send({code: 0, msg: '更新成功'});
-    } catch (e) {
-        let data = '';
-        if (_.size(e.details) > 0) {
-            _.each(e.details, item => {
-                data += item.message;
-            });
-        }
-        console.log(e)
-        res.status(400).send({code: 5, data, msg: '修改失败'});
-    }
-};
-
 exports.fetchSummaryTotal = async function (req, res) {
     try {
         const count = await Organization.countDocuments({is_deleted: {$ne: true}});
@@ -407,6 +347,7 @@ exports.fetchDomMonthlySummary = async function (req, res) {
                 harmfulWaste: data.harmful_waste,
                 bulkyWaste: data.bulky_waste,
                 otherWaste: data.other_waste,
+                reportCount: data.report_count
             }, msg: '查询成功'
         });
     } catch (e) {
@@ -428,6 +369,7 @@ exports.fetchMedMonthlySummary = async function (req, res) {
         res.status(200).send({
             code: 0, data: {
                 totalWeight: data.total_weight,
+                reportCount: data.report_count
             }, msg: '查询成功'
         });
     } catch (e) {
@@ -435,7 +377,6 @@ exports.fetchMedMonthlySummary = async function (req, res) {
         res.status(400).send({code: 5, msg: '查询失败'});
     }
 };
-
 
 const fetchScreenSchema = {
     type: Joi.string().valid(['1','2','3','4']).required(),
@@ -570,6 +511,181 @@ exports.newOrg = async function (req, res) {
     } catch (e) {
         console.log(e);
         res.status(400).send({code: 5, msg: '添加失败'});
+    }
+};
+
+const updateOrgInfoSchema = {
+    organizationId: Joi.string().required(),
+    corporationPhone: Joi.string(),
+    managerPhone: Joi.string(),
+    bednum:  Joi.number().integer(),
+    address: Joi.string(),
+    level: Joi.string(),
+    street: Joi.string()
+};
+
+exports.updateOrgInfo = async function (req, res) {
+    try {
+        const initOrgInfo = await Joi.validate(req.body, updateOrgInfoSchema);
+        const updateInfo = {
+            corporation_phone: initOrgInfo.corporationPhone,
+            manager_phone: initOrgInfo.managerPhone,
+            bednum: initOrgInfo.bednum,
+            address: initOrgInfo.address,
+            level: initOrgInfo.level,
+            street: initOrgInfo.street,
+        }
+        await Organization.updateOne({_id: ObjectId(initOrgInfo.organizationId)}, updateInfo);
+        res.status(200).send({code: 0, msg: '更新成功'});
+    } catch (e) {
+        let data = '';
+        if(_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
+        console.log(e)
+        res.status(400).send({code: 5, data, msg: '修改失败'});
+    }
+};
+
+const deleteOrgSchema = {
+    organizationId: Joi.string().required(),
+    isDelete: Joi.boolean().default(false),
+};
+
+exports.deleteOrg = async function (req, res) {
+    try {
+        const deleteOrgInfo = await Joi.validate(req.body, deleteOrgSchema);
+        const updateInfo = {
+            is_deleted: deleteOrgInfo.isDelete,
+        }
+        await Organization.updateOne({_id: ObjectId(deleteOrgInfo.organizationId)}, updateInfo);
+        res.status(200).send({code: 0, msg: '更新成功'});
+    } catch (e) {
+        let data = '';
+        if (_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
+        console.log(e)
+        res.status(400).send({code: 5, data, msg: '修改失败'});
+    }
+};
+
+
+
+const fetchNotificationListSchema = {
+    offset: Joi.number().default(1),
+    limit: Joi.number().default(50)
+}
+
+exports.fetchNotificationList = async function (req, res) {
+    try {
+        const params = await Joi.validate(req.body, fetchNotificationListSchema);
+        let skip = (params.offset - 1) * params.limit;
+        let list = await Notifications.find().skip(skip).limit(params.limit).sort({is_deleted: 1});
+        list = _.map(list, e => {
+            console.log(e)
+            return {
+                notificationId: e._id,
+                title: e._id,
+                content: e.content,
+                publisher: e.admin_name,
+                createTime: e.createdAt
+            }
+        });
+        let count = await Notifications.countDocuments();
+        res.status(200).send({code: 0, data: { list, count }, msg: '查询成功'});
+    } catch (e) {
+        let data = '';
+        if(_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
+        console.log(e);
+        res.status(400).send({code: 5, data, msg: '查询失败'});
+    }
+};
+
+const newNotificationSchema = {
+    title: Joi.string().required(),
+    content: Joi.string().required(),
+};
+
+exports.newNotification = async function (req, res) {
+    try {
+        const newNotifyInfo = await Joi.validate(req.body, newNotificationSchema);
+        const newNotify = new Notifications({
+            title: newNotifyInfo.title,
+            content: newNotifyInfo.content,
+            admin_id: req.admin.id,
+            admin_name: req.admin.username
+        });
+        await newNotify.save();
+        res.status(200).send({code: 0, msg: '添加成功'});
+    } catch (e) {
+        let data = '';
+        if(_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
+        console.log(e);
+        res.status(400).send({code: 5, data, msg: '添加失败'});
+    }
+};
+
+const updateNotificationInfoSchema = {
+    notificationId: Joi.string().required(),
+    title: Joi.string(),
+    content: Joi.string(),
+};
+
+exports.updateNotificationInfo = async function (req, res) {
+    try {
+        const updateNotificationInfo = await Joi.validate(req.body, updateNotificationInfoSchema);
+        const updateInfo = {};
+        if (updateNotificationInfo.title) updateInfo.title = updateNotificationInfo.title;
+        if (updateNotificationInfo.content) updateInfo.content = updateNotificationInfo.content;
+        await Notifications.updateOne({_id: ObjectId(updateNotificationInfo.notificationId)}, updateInfo);
+        res.status(200).send({code: 0, msg: '更新成功'});
+    } catch (e) {
+        let data = '';
+        if(_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
+        console.log(e);
+        res.status(400).send({code: 5, data, msg: '修改失败'});
+    }
+};
+
+const deleteNotificationSchema = {
+    organizationId: Joi.string().required(),
+    isDelete: Joi.boolean().default(false),
+};
+
+exports.deleteNotification = async function (req, res) {
+    try {
+        const deleteOrgInfo = await Joi.validate(req.body, deleteNotificationSchema);
+        const updateInfo = {
+            is_deleted: deleteOrgInfo.isDelete,
+        };
+        await Organization.updateOne({_id: ObjectId(deleteOrgInfo.organizationId)}, updateInfo);
+        res.status(200).send({code: 0, msg: '更新成功'});
+    } catch (e) {
+        let data = '';
+        if (_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
+        console.log(e)
+        res.status(400).send({code: 5, data, msg: '修改失败'});
     }
 };
 
