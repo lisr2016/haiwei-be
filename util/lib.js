@@ -1,6 +1,7 @@
 let axios = require('axios');
 let appendQuery = require('append-query');
 let _ = require('lodash');
+let dayjs = require('dayjs')
 
 let domesticDaily = require("../models/DomesticGarbageDaily");
 let domesticMonthly = require("../models/DomesticGarbageMonthly");
@@ -194,4 +195,30 @@ exports.summaryMedMonthly = async function(time){
     });
     await MedicGarbageMonthlySummary.updateOne({time}, updateInfo, {upsert: true});
     return result
+};
+
+exports.calWeeks = function(startTime, endTime){
+    while (dayjs(startTime).day() !== 4) {
+        startTime = dayjs(startTime).add(-1, 'day');
+    }
+    startTime = dayjs(startTime).startOf('day');
+    let timestamps = [],
+        weeks = [];
+    while(dayjs(endTime).isAfter(startTime)){
+        timestamps.push(startTime.toDate().getTime());
+        weeks.push(dayjs(startTime).add(6, 'day').format('YYYY-MM-DD'));
+        startTime = dayjs(startTime).add(7, 'day');
+    }
+    return {timestamps, weeks}
+};
+
+exports.calMonths = function(startTime, endTime){
+    let timestamps = [],
+        months = [];
+    while(dayjs(endTime).add(1, 'month').isAfter(startTime)){
+        timestamps.push(dayjs(startTime).startOf('month').toDate().getTime());
+        months.push(dayjs().year() === dayjs(startTime).year() ? `${dayjs(startTime).month() + 1}月`:`${dayjs(startTime).year()}年${dayjs(startTime).month() + 1}月`)
+        startTime = dayjs(startTime).add(1, 'month');
+    }
+    return {timestamps, months}
 };

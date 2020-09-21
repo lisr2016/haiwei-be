@@ -380,25 +380,56 @@ exports.fetchMedMonthlySummary = async function (req, res) {
 
 const fetchScreenSchema = {
     type: Joi.string().valid(['1','2','3','4']).required(),
-    timeArr: Joi.array().items(Joi.date().required()).required(),
+    startTime: Joi.date().required(),
+    endTime: Joi.date().required(),
 };
 
 exports.fetchScreenSummary = async function (req, res) {
     try {
         const fetchScreenInfo = await Joi.validate(req.body, fetchScreenSchema);
+        let result = {};
+        let list = [];
+        let midRst = null;
         switch (fetchScreenInfo.type) {
-            case '1':
-    
+            case '1': // 月报
+                midRst = lib.calWeeks(fetchScreenInfo.startTime, fetchScreenInfo.endTime);
+                for (let i = 0; i < midRst.timestamps.length; i++) {
+                    let data = await DomesticGarbageWeeklySummary.findOne({time: midRst.timestamps[i]});
+                    if(!data || data.is_expired){
+                        data = await lib.summaryDomWeekly(midRst.timestamps[i]);
+                    }
+                    list.push({
+                        kitchenWaste: data.kitchen_waste,
+                        recyclableWaste: data.recyclable_waste,
+                        harmfulWaste: data.harmful_waste,
+                        otherWaste: data.other_waste,
+                        medicWaste: data.medic_waste,
+                        reportCount: data.report_count,
+                    })
+                }
+                result = {list, weeks: midRst.weeks};
+                break;
+            case '2': // 年报
+                midRst = lib.calMonths(fetchScreenInfo.startTime, fetchScreenInfo.endTime);
+                for (let i = 0; i < midRst.timestamps.length; i++) {
+                    let data = await DomesticGarbageMonthlySummary.findOne({time: midRst.timestamps[i]});
+                    if(!data || data.is_expired){
+                        data = await lib.summaryDomMonthly(midRst.timestamps[i]);
+                    }
+                    list.push({
+                        kitchenWaste: data.kitchen_waste,
+                        recyclableWaste: data.recyclable_waste,
+                        harmfulWaste: data.harmful_waste,
+                        otherWaste: data.other_waste,
+                        bulkyWaste: data.bulky_waste,
+                        reportCount: data.report_count,
+                    });
+                    result = {list, months: midRst.months};
+                }
+                break;
+            default:
         }
-        let data = await DomesticGarbageMonthlySummary.findOne({time: req.body.startTime});
-        if(!data || data.is_expired){
-            data = await lib.summaryDomMonthly(req.body.startTime);
-        }
-        res.status(200).send({
-            code: 0, data: {
-                totalWeight: data.total_weight,
-            }, msg: '查询成功'
-        });
+        res.status(200).send({code: 0, data: result ,msg: '查询成功'});
     } catch (e) {
         let data = '';
         if(_.size(e.details) > 0) {
@@ -407,7 +438,7 @@ exports.fetchScreenSummary = async function (req, res) {
             });
         }
         console.log(e)
-        res.status(400).send({code: 5, msg: '查询失败'});
+        res.status(400).send({code: 5, data, msg: '查询失败'});
     }
 };
 
