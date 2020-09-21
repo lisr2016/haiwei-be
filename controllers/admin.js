@@ -587,11 +587,11 @@ exports.fetchNotificationList = async function (req, res) {
         let skip = (params.offset - 1) * params.limit;
         let list = await Notifications.find().skip(skip).limit(params.limit).sort({is_deleted: 1});
         list = _.map(list, e => {
-            console.log(e)
             return {
                 notificationId: e._id,
                 title: e._id,
                 content: e.content,
+                isDeleted: e.is_deleted,
                 publisher: e.admin_name,
                 createTime: e.createdAt
             }
@@ -665,17 +665,17 @@ exports.updateNotificationInfo = async function (req, res) {
 };
 
 const deleteNotificationSchema = {
-    organizationId: Joi.string().required(),
+    notificationId: Joi.string().required(),
     isDelete: Joi.boolean().default(false),
 };
 
 exports.deleteNotification = async function (req, res) {
     try {
-        const deleteOrgInfo = await Joi.validate(req.body, deleteNotificationSchema);
+        const deleteNotifyInfo = await Joi.validate(req.body, deleteNotificationSchema);
         const updateInfo = {
-            is_deleted: deleteOrgInfo.isDelete,
+            is_deleted: deleteNotifyInfo.isDelete,
         };
-        await Organization.updateOne({_id: ObjectId(deleteOrgInfo.organizationId)}, updateInfo);
+        await Notifications.updateOne({_id: ObjectId(deleteNotifyInfo.notificationId)}, updateInfo);
         res.status(200).send({code: 0, msg: '更新成功'});
     } catch (e) {
         let data = '';
@@ -684,7 +684,7 @@ exports.deleteNotification = async function (req, res) {
                 data += item.message;
             });
         }
-        console.log(e)
+        console.log(e);
         res.status(400).send({code: 5, data, msg: '修改失败'});
     }
 };
