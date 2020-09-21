@@ -37,7 +37,7 @@ router.post('/cms/new/notification', ctrls.auth.verifyCmsToken, ctrls.admin.newN
 // 修改通知信息
 router.post('/cms/update/notification/info', ctrls.auth.verifyCmsToken, ctrls.admin.updateNotificationInfo);
 // 取消通知
-router.post('/cms/delete/notification', ctrls.auth.verifyCmsToken, ctrls.admin.deleteNotification);
+router.post('/cms/cancel/notification', ctrls.auth.verifyCmsToken, ctrls.admin.cancelNotification);
 
 // 查询报告总数
 router.get('/cms/summary/total', ctrls.auth.verifyCmsToken, ctrls.admin.fetchSummaryTotal);

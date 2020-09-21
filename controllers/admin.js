@@ -615,7 +615,7 @@ exports.fetchNotificationList = async function (req, res) {
         list = _.map(list, e => {
             return {
                 notificationId: e._id,
-                title: e._id,
+                title: e.title,
                 content: e.content,
                 isDeleted: e.is_deleted,
                 publisher: e.admin_name,
@@ -639,6 +639,7 @@ exports.fetchNotificationList = async function (req, res) {
 const newNotificationSchema = {
     title: Joi.string().required(),
     content: Joi.string().required(),
+    isDeleted: Joi.boolean().required(),
 };
 
 exports.newNotification = async function (req, res) {
@@ -648,7 +649,8 @@ exports.newNotification = async function (req, res) {
             title: newNotifyInfo.title,
             content: newNotifyInfo.content,
             admin_id: req.admin.id,
-            admin_name: req.admin.username
+            admin_name: req.admin.username,
+            is_deleted: newNotifyInfo.isDeleted
         });
         await newNotify.save();
         res.status(200).send({code: 0, msg: '添加成功'});
@@ -690,18 +692,18 @@ exports.updateNotificationInfo = async function (req, res) {
     }
 };
 
-const deleteNotificationSchema = {
+const cancelNotificationSchema = {
     notificationId: Joi.string().required(),
     isDelete: Joi.boolean().default(false),
 };
 
-exports.deleteNotification = async function (req, res) {
+exports.cancelNotification = async function (req, res) {
     try {
-        const deleteNotifyInfo = await Joi.validate(req.body, deleteNotificationSchema);
+        const cancelNotifyInfo = await Joi.validate(req.body, cancelNotificationSchema);
         const updateInfo = {
-            is_deleted: deleteNotifyInfo.isDelete,
+            is_deleted: cancelNotifyInfo.isDelete,
         };
-        await Notifications.updateOne({_id: ObjectId(deleteNotifyInfo.notificationId)}, updateInfo);
+        await Notifications.updateOne({_id: ObjectId(cancelNotifyInfo.notificationId)}, updateInfo);
         res.status(200).send({code: 0, msg: '更新成功'});
     } catch (e) {
         let data = '';
