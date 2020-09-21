@@ -834,23 +834,14 @@
           "consignee":  // 专兼职收运人员数,
           "guide":  // 专兼职引导人员数,
           "inspector":  // 专兼职监督检查人员数,
-          "kitchenWasteCollectors":  // 厨余垃圾收集容器,
-          "kitchenWastePositons":  // 厨余垃圾收集存放处,
-          "recyclableWasteCollectors":  // 可回收垃圾收集容器,
-          "recyclableWastePositons":  // 可回收垃圾收集存放处,
-          "harmfulWasteCollectors":  // 有害垃圾收集容器,
-          "harmfulWastePositons":  // 有害垃圾收集存放处,
-          "otherWasteCollectors":  // 其它垃圾收集容器,
-          "otherWastePositons":  // 其它垃圾收集存放处,
-          "medicWasteCollectors":  // 医疗垃圾收集容器,
-          "medicWastePositons":  // 医疗垃圾存放处,
-          "bulkyWastePositons":  // 大件垃圾存放处,
-          "kitchenWaste":  // 厨余垃圾总计(公斤),
-          "recyclableWaste":  // 可回收垃圾总计(公斤),
-          "harmfulWaste":  // 有害垃圾总计(公斤),
-          "otherWaste":  // 其它垃圾总计(公斤),
-          "medicWaste":  // 医疗垃圾总计(公斤),
-          "reportCount":  // 上交报告总数,
+          
+          kitchenWaste:  // 厨余垃圾(公斤)
+          recyclableWaste:  // 可回收垃圾(公斤)
+          harmfulWaste:  // 有害垃圾(公斤)
+          otherWaste:  // 其他垃圾(公斤)
+          medicWaste:  // 医疗垃圾(公斤)
+          
+          reportCount:  // 总计报告数目
       } 
 
 22.POST /cms/summary/domestic/monthly

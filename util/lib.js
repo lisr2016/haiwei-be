@@ -14,29 +14,25 @@ let MedicGarbageMonthlySummary = require('../models/MedicGarbageMonthlySummary')
 
 exports.sendSms = async function (phone, code) {
     try {
-        let content = `#code#=${code}&#app#=海卫后勤`
+        let content = `#code#=${code}&#app#=海卫后勤`;
         let sendurl = appendQuery('http://v.juhe.cn/sms/send', {
             key: 'ccef2ee30337d1f97f06110cedfd232d',
             mobile: phone,
             tpl_id: 42378,
             tpl_value: content
         });
-        let result = await axios(sendurl)
+        let result = await axios(sendurl);
         return result.data && result.data.error_code === 0;
     } catch (e) {
         console.log(e);
         return false;
     }
-}
+};
 
 exports.isPhoneNum = function (content) {
     let myreg = /^[1][0-9]{10}$/;
-    if (!myreg.test(content)) {
-        return false;
-    } else {
-        return true;
-    }
-}
+    return myreg.test(content);
+};
 
 exports.summaryDomDaily = async function(time){
     let data = await domesticDaily.find({time});
@@ -77,7 +73,7 @@ exports.summaryDomDaily = async function(time){
     });
     await DomesticGarbageDailySummary.updateOne({time}, updateInfo, {upsert: true});
     return result;
-}
+};
 
 exports.summaryDomWeekly = async function(time){
     let data = await domesticWeekly.find({time});
@@ -152,7 +148,7 @@ exports.summaryDomWeekly = async function(time){
     });
     await DomesticGarbageWeeklySummary.updateOne({time}, updateInfo, {upsert: true});
     return result
-}
+};
 
 exports.summaryDomMonthly = async function(time){
     let data = await domesticMonthly.find({time});
