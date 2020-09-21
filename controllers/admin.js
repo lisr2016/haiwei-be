@@ -85,7 +85,7 @@ exports.fetchUserList = async function (req, res) {
                 orgInfo: {
                     organizationId: orgInfo._id,
                     name: orgInfo.name,
-                    initialized: orgInfo.initialized,
+                    initialized: orgInfo.is_initiated,
                 }
             }
         });
