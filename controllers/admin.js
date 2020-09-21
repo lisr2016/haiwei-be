@@ -81,20 +81,15 @@ exports.fetchUserList = async function (req, res) {
             return {
                 id: e._id,
                 phone: e.phone,
+                isDeleted: e.is_deleted,
                 orgInfo: {
                     organizationId: orgInfo._id,
                     name: orgInfo.name,
                     initialized: orgInfo.initialized,
-                    corporationPhone: orgInfo.corporation_phone,
-                    managerPhone: orgInfo.manager_phone,
-                    bednum: orgInfo.bednum,
-                    address: orgInfo.address,
-                    level: orgInfo.level,
-                    street: orgInfo.street,
                 }
             }
         });
-        let count = await User.countDocuments({is_deleted: {$ne: true}});
+        let count = await User.countDocuments();
         res.status(200).send({code: 0, data: { list, count }, msg: '查询成功'});
     } catch (e) {
         let data = '';
