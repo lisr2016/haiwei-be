@@ -1,12 +1,22 @@
 let _ = require('lodash');
-let config = require('../config');
 
 let Message = require("../models/Message");
+let Notifications = require("../models/Notifications");
 
 exports.fetchUserMessageList = async function (req, res) {
     let user = req.user
     try {
         let messageList = await Message.find({user_id: user.id})
+        let notifications = await Notifications.find({is_deleted: {$ne: true}});
+        messageList = _.concat(messageList, _.map(notifications, e => {
+            return {
+                id: e._id,
+                content: e.content,
+                title: e.title,
+                createdAt: e.createdAt,
+                type: '1'
+            };
+        }));
         let data = _.chain(messageList).filter(e => !e.is_read).map(e => {
             return {
                 id: e._id,
@@ -16,7 +26,7 @@ exports.fetchUserMessageList = async function (req, res) {
                 isRead: e.is_read,
                 createTime: e.createdAt
             }
-        }).value()
+        }).value();
         res.status(200).send({code: 0, data, msg: '查询成功'});
     }catch (e) {
         console.log(e)
@@ -49,7 +59,6 @@ exports.fetchMessageContent = async function (req, res) {
             return
         }
         let message = await Message.findOne({_id: id, user_id: user.id});
-        console.log(message)
         let data =  {
             id: message._id,
             content: message.content,
@@ -57,7 +66,7 @@ exports.fetchMessageContent = async function (req, res) {
             type: message.type,
             isRead: message.is_read,
             createTime: message.createdAt
-        }
+        };
         res.status(200).send({code: 0,data, msg: '查询成功'});
     } catch (e) {
         console.log(e)
