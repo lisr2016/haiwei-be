@@ -436,7 +436,38 @@ exports.fetchMedMonthlySummary = async function (req, res) {
     }
 };
 
+
+const fetchScreenSchema = {
+    type: Joi.string().valid(['1','2','3','4']).required(),
+    timeArr: Joi.array().items(Joi.date().required()).required(),
+};
+
 exports.fetchScreenSummary = async function (req, res) {
+    try {
+        const fetchScreenInfo = await Joi.validate(req.body, fetchScreenSchema);
+        switch (fetchScreenInfo.type) {
+            case '1':
+    
+        }
+        let data = await DomesticGarbageMonthlySummary.findOne({time: req.body.startTime});
+        if(!data || data.is_expired){
+            data = await lib.summaryDomMonthly(req.body.startTime);
+        }
+        res.status(200).send({
+            code: 0, data: {
+                totalWeight: data.total_weight,
+            }, msg: '查询成功'
+        });
+    } catch (e) {
+        let data = '';
+        if(_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
+        console.log(e)
+        res.status(400).send({code: 5, msg: '查询失败'});
+    }
 };
 
 exports.signup = function(req, res) {
