@@ -128,7 +128,7 @@ exports.newUser = async function (req, res) {
             });
         }
         console.log(e);
-        res.status(400).send({code: 5, msg: '添加失败'});
+        res.status(400).send({code: 5, data, msg: '添加失败'});
     }
 };
 
@@ -547,8 +547,8 @@ exports.newOrg = async function (req, res) {
                 data += item.message;
             });
         }
-        // console.log(e);
-        res.status(400).send({code: 5, msg: '添加失败'});
+        console.log(e);
+        res.status(400).send({code: 5, data, msg: '添加失败'});
     }
 };
 
