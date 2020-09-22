@@ -928,8 +928,7 @@
       body{ 
         startTime:  // 开始时间,
         endTime:  // 结束时间,
-        wasteType: // String 垃圾种类 1.厨余垃圾，2.可回收垃圾，3.有害垃圾，4.大件垃圾，1、5.医疗垃圾，6.其他垃圾
-        reportType: // String 报告类型 1.生活垃圾日报,2.生活垃圾月报,3.生活垃圾年报,4.医疗垃圾月报
+        type: // String  1.月报，2.年报
       }
 
 返回数据
@@ -947,11 +946,60 @@
 状态码 200
 返回格式
  
-    { 
-    'code': 200,
-    'msg': '查询成功',
-      'data': {      
-         ...
-        ]
-      }
-      } 
+        {
+            "code": 0,
+            "data": {
+                "list": [
+                    {
+                        "kitchenWaste": 10,
+                        "recyclableWaste": 1,
+                        "harmfulWaste": 2,
+                        "otherWaste": 2,
+                        "medicWaste": 3,
+                        "reportCount": 4
+                    },
+                    {
+                        "kitchenWaste": 0,
+                        "recyclableWaste": 0,
+                        "harmfulWaste": 0,
+                        "otherWaste": 0,
+                        "medicWaste": 0,
+                        "reportCount": 0
+                    }
+                ],
+                "weeks": [
+                    "2020-09-16",
+                    "2020-09-23"
+                ]
+            },
+            "msg": "查询成功"
+        }
+    
+       {
+           "code": 0,
+           "data": {
+               "list": [
+                   {
+                       "kitchenWaste": 0,
+                       "recyclableWaste": 0,
+                       "harmfulWaste": 0,
+                       "otherWaste": 0,
+                       "bulkyWaste": 0,
+                       "reportCount": 0
+                   },
+                   {
+                       "kitchenWaste": 0,
+                       "recyclableWaste": 0,
+                       "harmfulWaste": 0,
+                       "otherWaste": 0,
+                       "bulkyWaste": 0,
+                       "reportCount": 0
+                   }
+               ],
+               "months": [
+                   "9月",
+                   "10月"
+               ]
+           },
+           "msg": "查询成功"
+       }
