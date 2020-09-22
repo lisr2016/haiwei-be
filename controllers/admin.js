@@ -121,6 +121,12 @@ exports.newUser = async function (req, res) {
         await User.updateOne({phone: newUserInfo.phone}, updateInfo, {upsert: true});
         res.status(200).send({code: 0, msg: '添加成功'});
     } catch (e) {
+        let data = '';
+        if (_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
         console.log(e);
         res.status(400).send({code: 5, msg: '添加失败'});
     }
@@ -595,7 +601,7 @@ exports.deleteOrg = async function (req, res) {
                 data += item.message;
             });
         }
-        console.log(e)
+        console.log(e);
         res.status(400).send({code: 5, data, msg: '修改失败'});
     }
 };
