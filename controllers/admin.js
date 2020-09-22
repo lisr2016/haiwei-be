@@ -523,7 +523,7 @@ const newOrgSchema = {
 exports.newOrg = async function (req, res) {
     try {
         const newOrgInfo = await Joi.validate(req.body, newOrgSchema);
-        let orgInfo = await Organization.findOne({name: newOrgSchema.name});
+        let orgInfo = await Organization.findOne({name: newOrgInfo.name});
         if (orgInfo) {
             res.status(200).send({code: 1, msg: '该机构名称已存在'});
             return
@@ -547,7 +547,7 @@ exports.newOrg = async function (req, res) {
                 data += item.message;
             });
         }
-        console.log(e);
+        // console.log(e);
         res.status(400).send({code: 5, msg: '添加失败'});
     }
 };
