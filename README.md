@@ -662,13 +662,13 @@
 
 17.POST /cms/update/user/info
 
-功能: 修改用户信息。
+功能: 修改用户信息(修改密码)。
 
 提交参数：
 
     body :{
       userId, // 用户id，必填
-      password, // 非必填
+      password, // 密码, 必填
     }
 
 返回数据
