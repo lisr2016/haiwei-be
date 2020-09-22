@@ -232,7 +232,7 @@ exports.updateUserInfo = async function (req, res) {
                         res.status(400).send({code: 5, msg: '更新失败'});
                         return
                     }
-                    res.status(200).send({code: 5, msg: '更新成功'});
+                    res.status(200).send({code: 0, msg: '更新成功'});
                 })
             });
         });
