@@ -541,6 +541,12 @@ exports.newOrg = async function (req, res) {
         }
         res.status(200).send({code: 0, msg: '添加成功'});
     } catch (e) {
+        let data = '';
+        if (_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
         console.log(e);
         res.status(400).send({code: 5, msg: '添加失败'});
     }
