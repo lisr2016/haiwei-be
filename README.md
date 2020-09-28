@@ -17,16 +17,16 @@
 
 返回格式 
     
-      { 'code': 5, 'msg': '错误原因'}
+      { code: 5, msg: 错误原因 }
 成功
 状态码 200
 返回格式
 
     {
-      'code': 0, 
-      'msg': '登陆成功',
-      'data': {
-        'token': 1
+      code: 0, 
+      msg: 登陆成功,
+      data: {
+        token: 1
       }
     }
 
@@ -36,7 +36,7 @@
 
 提交参数: 
 
-    phone: 手机号, 必填
+   { phone: 手机号, 必填 }
 
 返回数据
 
@@ -45,17 +45,17 @@
 
 返回格式
 
-      {'code': 5, 'msg': '错误原因'}
+    { code: 5, msg: 错误原因 }
      
 成功
 状态码 200
 返回格式
 
     {
-      'code': 0, 
-      'msg': '成功',
-      'data': {
-        'verifyCode': XXX
+      code: 0, 
+      msg: 成功,
+      data: {
+        verifyCode: XXX
       }
     }
 
@@ -66,8 +66,10 @@
 
 提交参数: 
     
-    phone: 手机号, 必填
-    verifyCode: 验证码, 必填
+    {
+        phone: 手机号, 必填
+        verifyCode: 验证码, 必填
+    }
 
 返回数据:
 
@@ -76,7 +78,7 @@
 返回格式 
 
     { 
-      'code': 5, msg: '验证码错误'
+      code: 5, msg: 验证码错误
     }
     
 成功
@@ -84,8 +86,8 @@
 返回格式
  
     {
-      'code': 0, 
-       msg: '校验成功' 
+      code: 0, 
+       msg: 校验成功 
     }
 
 4.POST /reset/password
@@ -97,9 +99,9 @@
 参数字段
 
     body{
-        verifyCode: 验证码, 必填
-        password : 密码, 长度6到16个任意字符，必填
-        newPassword : 新密码, 长度6到16个任意字符，必填
+        verifyCode: ,//验证码, 必填
+        password : .//密码, 长度6到16个任意字符，必填
+        newPassword : //新密码, 长度6到16个任意字符，必填
     }
     
 返回数据
@@ -109,8 +111,8 @@
 返回格式 
 
     {
-      'code': 5, 
-      'msg': '用户不存在'
+      code: 5, 
+      msg: XXX
     } 
     
 成功
@@ -118,10 +120,10 @@
 返回格式
 
     {
-      'code': 0, 
-      'msg': '更改成功',
-      'data': {
-        'token': xxx
+      code: 0, 
+      msg: 更改成功,
+      data: {
+        token: XXX
       }
     }
     
@@ -139,8 +141,8 @@
 返回格式 
 
     {  
-      'code': 5, 
-       'msg': '未登录'
+      code: 5, 
+       msg: 未登录
     }
     
 成功
@@ -148,18 +150,18 @@
 返回格式
 
     {
-      'code': 0, 
-      'data': {
+      code: 0, 
+      data: {
         orgInfo:
         {
-          'name': 'xxx', // 机构名称
-          'initialized': false,             // 是否进行过初始化信息填报
-          'corporationPhone': xxx   // 法人电话
-          'managerPhone': xxx   // 负责人电话
-          'bednum': xxx   // 床位数
-          'address': xxx   // 地址
-          'level': xxx   // 级别
-          'street': xxx   // 街道
+          name: XXX, // 机构名称
+          initialized: false,    // 是否进行过初始化信息填报
+          corporationPhone: XXX   // 法人电话
+          managerPhone: XXX   // 负责人电话
+          bednum: XXX   // 床位数
+          address: XXX   // 地址
+          level: XXX   // 级别
+          street: XXX   // 街道
         }
     }
 
@@ -170,12 +172,12 @@
 参数字段
 
     body{ 
-              'corporationPhone': xxx   // String,非必填 法人电话
-              'managerPhone': xxx   // String,必填 负责人电话
-              'bednum': xxx   // Number,非必填, 床位数
-              'address': xxx   // String,必填 地址
-              'level': xxx   // String,必填 级别
-              'street': xxx   // String,必填 街道
+          corporationPhone: XXX   // String,非必填 法人电话
+          managerPhone: XXX   // String,必填 负责人电话
+          bednum: XXX   // Number,非必填, 床位数
+          address: XXX   // String,必填 地址
+          level: XXX   // String,必填 级别
+          street: XXX   // String,必填 街道
     }
     
 返回数据
@@ -184,8 +186,8 @@
 返回格式 
 
     {
-      'code': 5, 
-       'msg': 'XXX'
+      code: 5, 
+       msg: XXX
       }
     
 成功
@@ -193,8 +195,8 @@
 返回格式
 
     {
-      'code': 0, 
-      'msg': '更新成功'
+      code: 0, 
+      msg: 更新成功
     }
     
 7.GET /v1/message/list
@@ -214,8 +216,8 @@
 返回格式 
 
     {
-      'code': 5, 
-        'msg': 'XXX'
+      code: 5, 
+      msg: XXX
     }
     
 成功
@@ -224,9 +226,9 @@
 返回格式
  
     {       
-     'code': 0,  
-     'msg': '查询成功'
-     'data': {
+     code: 0,  
+     msg: 查询成功
+     data: {
          list:[
             {   
                 title: XXX // String 显示标题
@@ -256,8 +258,8 @@
 返回格式 
 
     {
-      'code': 5, 
-        'msg': 'XXX'
+      code: 5, 
+      msg: XXX
     }
     
 成功
@@ -266,8 +268,8 @@
 返回格式
  
     {       
-     'code': 0,  
-     'msg': '提交成功'
+     code: 0,  
+     msg: 提交成功
     }
  
  
@@ -289,8 +291,8 @@
 返回格式 
 
     {
-      'code': 5, 
-        'msg': 'XXX'
+      code: 5, 
+      msg: XXX
     }
     
 成功
@@ -299,8 +301,8 @@
 返回格式
  
     {       
-     'code': 0,  
-     'msg': '提交成功'
+     code: 0,  
+     msg: 提交成功
     }
  
  
@@ -312,23 +314,18 @@
 
     body :{
           time: 填报日期 本日零点时间戳
-            
           meetingTimes: XXX  // Number, 管理工作会议次数
           meetingHost: XXX // String,管理工作会议主持人
           meetingContent: XXX //  String,会议具体事项
-          
           selfTimes: XXX //  Number,  自测、巡查次数
           selfProblems: XXX // Number,  存在问题数目
           selfContent: XXX //  String,主要涉及问题
           selfCorrected: XXX //Boolean 是否改正到位
-          
           advertiseTimes: XXX  //  Number, 宣传次数
           advertiseContent: XXX //  String, 宣传方式
-          
           traningTimes: XXX //  Number,  培训次数
           trainees: XXX //  Number,  培训人数
           traningContent: XXX //  String, 培训内容
-          
           govTimes: XXX //  Number,  政府检查次数
           govProblems: XXX // Number,  存在问题数目
           govContent: XXX // String, 主要涉及问题
@@ -342,8 +339,8 @@
 返回格式范例
 
     {
-     'code': 5, 
-    'msg': 'XXX'
+     code: 5, 
+     msg: XXX
     }
     
 成功
@@ -351,9 +348,9 @@
 返回格式
  
     {     
-      'code': 0, 
-      'msg': '提交成功' 
-      }
+      code: 0, 
+      msg: 提交成功 
+     }
 
  
 10.POST /v1/domestic/weekly
@@ -363,8 +360,7 @@
 提交参数：
 
     body :{
-          time: 填报日期 填报周周四零点时间戳
-         
+          time: //填报日期 ，周周四零点时间戳
           consignee: XXX // Number, 收运人员人数
           guide: XXX // Number, 看守引导人员人数
           inspector: XXX // Number, 监督检查人员人数
@@ -393,8 +389,8 @@
 返回格式范例
 
     {
-     'code': 5, 
-     'msg': 'XXX'
+     code: 5, 
+     msg: XXX
     }
     
 成功
@@ -402,8 +398,8 @@
 返回格式
  
     { 
-      'code': 0, 
-      'msg': '提交成功'
+      code: 0, 
+      msg: 提交成功
      }
     
  
@@ -414,8 +410,7 @@
 提交参数：
 
     body :{
-          time: 1, // Number填报月份
-          
+          time: , // 填报日期 ，月初的时间戳
           kitchenWaste: XXX // Number, 厨余垃圾(公斤)
           recyclableWaste: XXX // Number, 可回收垃圾(公斤)
           harmfulWaste: XXX // Number, 有害垃圾(公斤)
@@ -432,8 +427,8 @@
     
 
     {
-     'code': 5, 
-     'msg': 'XXX'
+     code: 5, 
+     msg: XXX
     }
     
 成功
@@ -441,8 +436,8 @@
 返回格式
  
     { 
-      'code': 0, 
-      'msg': '提交成功'
+      code: 0, 
+      msg: 提交成功
      }
     
  
@@ -453,8 +448,7 @@
 提交参数：
 
     body :{
-          time: 1, // Number填报月份
-          
+          time: ，// 填报日期 ，月初的时间戳
           totalWeight:  XXX // Number, 月医疗垃圾产量(公斤)
     }
 
@@ -465,8 +459,8 @@
 返回格式范例
 
     {
-     'code': 5, 
-     'msg': 'XXX'
+     code: 5, 
+     msg: XXX
     }
     
 成功
@@ -474,8 +468,8 @@
 返回格式
  
     { 
-      'code': 0, 
-      'msg': '提交成功'
+      code: 0, 
+      msg: 提交成功
      }
 
 13.POST /cms/login
@@ -496,8 +490,8 @@
 返回格式范例
 
     {
-     'code': 5, 
-     'msg': 'XXX'
+     code: 5, 
+     msg: XXX
     }
     
 成功
@@ -505,10 +499,10 @@
 返回格式
  
     { 
-      'code': 200,
-      'msg': '查询成功',
-      'data': 
-        'token': 
+      code: 200,
+      msg: 查询成功,
+      data: 
+        token: 
      }
      
  13.1 GET /cms/user/info
@@ -524,8 +518,8 @@
  返回格式范例
  
      {
-      'code': 5, 
-      'msg': 'XXX'
+      code: 5, 
+      msg: XXX
      }
      
  成功
@@ -533,14 +527,14 @@
  返回格式
   
      { 
-       'code': 200,
-       'msg': '查询成功',
-       'data': 
-            'user': {
-                'idv: '5f5fc3ffed8da219bc89963b',
-                'phone': xx,
-                'username': '管理员1',
-                'authority': '1'
+       code: 200,
+       msg: 查询成功,
+       data: 
+            user: {
+                idv: 5f5fc3ffed8da219bc89963b,
+                phone: xx,
+                username: 管理员1,
+                authority: 1
             }
       }
       
@@ -564,8 +558,8 @@
 返回格式范例
 
     {
-     'code': 5, 
-     'msg': 'XXX'
+     code: 5, 
+     msg: XXX
     }
     
 成功
@@ -573,8 +567,8 @@
 返回格式
  
     { 
-      'code': 200,
-      'msg': '修改成功
+      code: 200,
+      msg: 修改成功
      }
 
 15.POST /cms/get/user/list
@@ -587,7 +581,6 @@
       search, // String, 查询 手机号、机构名称
       offset, // 页数, 默认1
       limit, // 每页大小, 默认50
-      
       rule // 正序/倒叙 暂不支持
       sort,  // String, 暂不支持
       isAdmin, // Boolean，是否是管理员，暂不支持
@@ -600,8 +593,8 @@
 返回格式范例
 
     {
-     'code': 5, 
-     'msg': 'XXX'
+     code: 5, 
+     msg: XXX
     }
     
 成功
@@ -609,18 +602,17 @@
 返回格式
  
     { 
-      'code': 200,
-      'msg': '查询成功',
-      'data': 
-        'count': XX // Number 总人数
-        'list': [
+      code: 200,
+      msg: 查询成功,
+      data: 
+        count: XX // Number 总人数
+        list: [
            {
              phone: XX,
              orgInfo: {
                   // 同接口5 orgInfo
                 }
              initialized: true,
-             
              isAdmin: false,
              authority: XXX, //管理员级别
            },
@@ -647,8 +639,8 @@
 返回格式范例
 
     {
-     'code': 5, 
-     'msg': 'XXX'
+     code: 5, 
+     msg: XXX
     }
     
 成功
@@ -656,8 +648,8 @@
 返回格式
  
     { 
-      'code': 0, 
-      'msg': '添加成功'
+      code: 0, 
+      msg: 添加成功
      }
 
 17.POST /cms/update/user/info
@@ -678,8 +670,8 @@
 返回格式范例
 
     {
-     'code': 5, 
-     'msg': 'XXX'
+     code: 5, 
+     msg: XXX
     }
     
 成功
@@ -687,8 +679,8 @@
 返回格式
  
     { 
-      'code': 0, 
-      'msg': '提交成功'
+      code: 0, 
+      msg: 提交成功
      }
 
 18.POST /cms/update/org/info
@@ -698,13 +690,13 @@
 提交参数：
 
       body{ 
-        'organizationId': xxx // 机构id
-        'corporationPhone': xxx   // 法人电话
-        'managerPhone': xxx   // 负责人电话
-        'bednum': xxx   // 床位数
-        'address': xxx   // 地址
-        'level': xxx   // 级别
-        'street': xxx   // 街道
+        organizationId: XXX // 机构id
+        corporationPhone: XXX   // 法人电话
+        managerPhone: XXX   // 负责人电话
+        bednum: XXX   // 床位数
+        address: XXX   // 地址
+        level: XXX   // 级别
+        street: XXX   // 街道
       }
 
 返回数据
@@ -714,8 +706,8 @@
 返回格式范例
 
     {
-     'code': 5, 
-     'msg': 'XXX'
+     code: 5, 
+     msg: XXX
     }
     
 成功
@@ -723,8 +715,8 @@
 返回格式
  
     { 
-      'code': 0, 
-      'msg': '提交成功'
+      code: 0, 
+      msg: 提交成功
      }
 
 19.GET /cms/summary/total
@@ -742,8 +734,8 @@
 返回格式范例
 
     {
-     'code': 5, 
-     'msg': 'XXX'
+     code: 5, 
+     msg: XXX
     }
     
 成功
@@ -751,11 +743,11 @@
 返回格式
  
     { 
-      'code': 0, 
-      'msg': '查询成功'
-      'data': {
+      code: 0, 
+      msg: 查询成功
+      data: {
         count: XXX   // 所需报告总数(机构总数)
-      },
+      }
      }
    
 
@@ -777,8 +769,8 @@
 返回格式范例
 
     {
-     'code': 5, 
-     'msg': 'XXX'
+     code: 5, 
+     msg: XXX
     }
     
 成功
@@ -786,18 +778,18 @@
 返回格式
  
     { 
-    'code': 200,
-    'msg': '查询成功',
-      'data':{
-         "meetingTimes": // 会议次数,
-         "selfInspectionTimes": // 自查次数,
-         "selfInspectionProblems": // 自查问题数目,
-         "advertiseTimes": // 推广次数,
-         "traningTimes": // 培训次数,
-         "trainees": // 参与培训人员,
-         "govInspectionTimes": // 政府检查次数,
-         "govInspectionProblems": // 政府检查出问题数目,
-         "reportCount": // 上交报告总数,
+    code: 200,
+    msg: 查询成功,
+      data:{
+         meetingTimes: // 会议次数,
+         selfInspectionTimes: // 自查次数,
+         selfInspectionProblems: // 自查问题数目,
+         advertiseTimes: // 推广次数,
+         traningTimes: // 培训次数,
+         trainees: // 参与培训人员,
+         govInspectionTimes: // 政府检查次数,
+         govInspectionProblems: // 政府检查出问题数目,
+         reportCount: // 上交报告总数,
          }
       } 
 
@@ -819,8 +811,8 @@
 返回格式范例
 
     {
-     'code': 5, 
-     'msg': 'XXX'
+     code: 5, 
+     msg: XXX
     }
     
 成功
@@ -828,21 +820,20 @@
 返回格式
  
     { 
-    'code': 200,
-    'msg': '查询成功',
-      'data':  {     
-          "consignee":  // 专兼职收运人员数,
-          "guide":  // 专兼职引导人员数,
-          "inspector":  // 专兼职监督检查人员数,
-          
+    code: 200,
+    msg: 查询成功,
+      data:  {     
+          consignee:  // 专兼职收运人员数,
+          guide:  // 专兼职引导人员数,
+          inspector:  // 专兼职监督检查人员数,      
           kitchenWaste:  // 厨余垃圾(公斤)
           recyclableWaste:  // 可回收垃圾(公斤)
           harmfulWaste:  // 有害垃圾(公斤)
           otherWaste:  // 其他垃圾(公斤)
           medicWaste:  // 医疗垃圾(公斤)
-          
           reportCount:  // 总计报告数目
       } 
+     }
 
 22.POST /cms/summary/domestic/monthly
 
@@ -862,26 +853,26 @@
 返回格式范例
 
     {
-     'code': 5, 
-     'msg': 'XXX'
+     code: 5, 
+     msg: XXX
     }
     
 成功
 状态码 200
 返回格式
  
-    { 
-    'code': 200,
-    'msg': '查询成功',
-      'data': {
-          kitchenWaste: { // 厨余垃圾(公斤)
-          recyclableWaste: { // 可回收垃圾(公斤)
-          harmfulWaste: { // 有害垃圾(公斤)
-          bulkyWaste: { // 大件垃圾(公斤)
-          otherWaste: { // 其他垃圾(公斤)
-          reportCount: { // 总计报告数目
+    {
+      code: 200,
+      msg: 查询成功,
+      data: {
+        kitchenWaste: '', // 厨余垃圾(公斤)
+        recyclableWaste: '', // 可回收垃圾(公斤)
+        harmfulWaste: '', // 有害垃圾(公斤)
+        bulkyWaste: '', // 大件垃圾(公斤)
+        otherWaste: '', // 其他垃圾(公斤)
+        reportCount: ''// 总计报告数目
       }
-      } 
+    } 
 
  
 23.POST /cms/summary/medic/monthly
@@ -902,8 +893,8 @@
 返回格式范例
 
     {
-     'code': 5, 
-     'msg': 'XXX'
+     code: 5, 
+     msg: XXX
     }
     
 成功
@@ -911,10 +902,10 @@
 返回格式
  
     { 
-    'code': 200,
-    'msg': '查询成功',
-      'data': {
-        'totalWeight': XXX, //
+    code: 200,
+    msg: 查询成功,
+      data: {
+        totalWeight: XXX, //
       }
       } 
       
@@ -938,8 +929,8 @@
 返回格式范例
 
     {
-     'code': 5, 
-     'msg': 'XXX'
+     code: 5, 
+     msg: XXX
     }
     
 成功
@@ -947,59 +938,59 @@
 返回格式
  
         {
-            "code": 0,
-            "data": {
-                "list": [
+            code: 0,
+            data: {
+                list: [
                     {
-                        "kitchenWaste": 10,
-                        "recyclableWaste": 1,
-                        "harmfulWaste": 2,
-                        "otherWaste": 2,
-                        "medicWaste": 3,
-                        "reportCount": 4
+                        kitchenWaste: 10,
+                        recyclableWaste: 1,
+                        harmfulWaste: 2,
+                        otherWaste: 2,
+                        medicWaste: 3,
+                        reportCount: 4
                     },
                     {
-                        "kitchenWaste": 0,
-                        "recyclableWaste": 0,
-                        "harmfulWaste": 0,
-                        "otherWaste": 0,
-                        "medicWaste": 0,
-                        "reportCount": 0
+                        kitchenWaste: 0,
+                        recyclableWaste: 0,
+                        harmfulWaste: 0,
+                        otherWaste: 0,
+                        medicWaste: 0,
+                        reportCount: 0
                     }
                 ],
-                "weeks": [
-                    "2020-09-16",
-                    "2020-09-23"
+                weeks: [
+                    2020-09-16,
+                    2020-09-23
                 ]
             },
-            "msg": "查询成功"
+            msg: 查询成功
         }
     
        {
-           "code": 0,
-           "data": {
-               "list": [
+           code: 0,
+           data: {
+               list: [
                    {
-                       "kitchenWaste": 0,
-                       "recyclableWaste": 0,
-                       "harmfulWaste": 0,
-                       "otherWaste": 0,
-                       "bulkyWaste": 0,
-                       "reportCount": 0
+                       kitchenWaste: 0,
+                       recyclableWaste: 0,
+                       harmfulWaste: 0,
+                       otherWaste: 0,
+                       bulkyWaste: 0,
+                       reportCount: 0
                    },
                    {
-                       "kitchenWaste": 0,
-                       "recyclableWaste": 0,
-                       "harmfulWaste": 0,
-                       "otherWaste": 0,
-                       "bulkyWaste": 0,
-                       "reportCount": 0
+                       kitchenWaste: 0,
+                       recyclableWaste: 0,
+                       harmfulWaste: 0,
+                       otherWaste: 0,
+                       bulkyWaste: 0,
+                       reportCount: 0
                    }
                ],
-               "months": [
-                   "9月",
-                   "10月"
+               months: [
+                   9月,
+                   10月
                ]
            },
-           "msg": "查询成功"
+           msg: 查询成功
        }
