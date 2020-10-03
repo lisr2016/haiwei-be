@@ -11,5 +11,7 @@ router.post('/login', ctrls.auth.login);
 router.get('/get/verifyCode', ctrls.user.genVerifyCode);
 // 校验验证码
 router.get('/check/verifyCode', ctrls.user.checkVerifyCode);
+// 获取机构列表
+router.post('/get/org/list', ctrls.admin.fetchOrgList);
 
 module.exports = router;
