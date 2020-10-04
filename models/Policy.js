@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var NotificationsSchema = new Schema({
+var PolicySchema = new Schema({
   // 标题
   title: {
     type: String,
@@ -25,7 +25,19 @@ var NotificationsSchema = new Schema({
   is_deleted: {
     type: Boolean,
     default: false
-  }
+  },
+  // 文件类型
+  type: {
+    type: String,
+    default: false
+  },
+  // 文件地址
+  url: {
+    type: String,
+    default: false
+  },
 }, {timestamps: {createAt: 'created', updateAt: 'updated'}});
 
-module.exports = mongoose.model('notifications', NotificationsSchema);
+
+
+module.exports = mongoose.model('policies', PolicySchema);

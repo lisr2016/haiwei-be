@@ -6,7 +6,7 @@ let Admin = require('../models/Admin');
 let User = require('../models/User');
 let lib = require('../util/lib');
 let Organization = require('../models/Organization');
-let Notifications = require('../models/Notifications');
+let Policy = require('../models/Policy');
 let DomesticGarbageDailySummary = require('../models/DomesticGarbageDailySummary');
 let DomesticGarbageWeeklySummary = require('../models/DomesticGarbageWeeklySummary');
 let DomesticGarbageMonthlySummary = require('../models/DomesticGarbageMonthlySummary');
@@ -119,6 +119,10 @@ exports.newUser = async function (req, res) {
             is_deleted: false
         };
         await User.updateOne({phone: newUserInfo.phone}, updateInfo, {upsert: true});
+        let user = {
+        
+        };
+        let token = jwt.sign(user.toJSON(), config.secret);
         res.status(200).send({code: 0, msg: '添加成功'});
     } catch (e) {
         let data = '';
@@ -143,7 +147,7 @@ exports.deleteUser = async function (req, res) {
         const updateInfo = {
             is_delete: deleteUserInfo.delete,
         };
-        await Organization.updateOne({_id: ObjectId(deleteUserInfo.userId)}, updateInfo);
+        await User.updateOne({_id: ObjectId(deleteUserInfo.userId)}, updateInfo);
         res.status(200).send({code: 0, msg: '更新成功'});
     } catch (e) {
         let data = '';
@@ -614,19 +618,19 @@ exports.deleteOrg = async function (req, res) {
 
 
 
-const fetchNotificationListSchema = {
+const fetchPolicyListSchema = {
     offset: Joi.number().default(1),
     limit: Joi.number().default(50)
 }
 
-exports.fetchNotificationList = async function (req, res) {
+exports.fetchPolicyList = async function (req, res) {
     try {
-        const params = await Joi.validate(req.body, fetchNotificationListSchema);
+        const params = await Joi.validate(req.body, fetchPolicyListSchema);
         let skip = (params.offset - 1) * params.limit;
-        let list = await Notifications.find().skip(skip).limit(params.limit).sort({is_deleted: 1});
+        let list = await Policy.find().skip(skip).limit(params.limit).sort({is_deleted: 1});
         list = _.map(list, e => {
             return {
-                notificationId: e._id,
+                policyId: e._id,
                 title: e.title,
                 content: e.content,
                 isDeleted: e.is_deleted,
@@ -634,7 +638,7 @@ exports.fetchNotificationList = async function (req, res) {
                 createTime: e.createdAt
             }
         });
-        let count = await Notifications.countDocuments();
+        let count = await Policy.countDocuments();
         res.status(200).send({code: 0, data: { list, count }, msg: '查询成功'});
     } catch (e) {
         let data = '';
@@ -648,16 +652,16 @@ exports.fetchNotificationList = async function (req, res) {
     }
 };
 
-const newNotificationSchema = {
+const newPolicySchema = {
     title: Joi.string().required(),
     content: Joi.string().required(),
     isDeleted: Joi.boolean().required(),
 };
 
-exports.newNotification = async function (req, res) {
+exports.newPolicy = async function (req, res) {
     try {
-        const newNotifyInfo = await Joi.validate(req.body, newNotificationSchema);
-        const newNotify = new Notifications({
+        const newNotifyInfo = await Joi.validate(req.body, newPolicySchema);
+        const newNotify = new Policy({
             title: newNotifyInfo.title,
             content: newNotifyInfo.content,
             admin_id: req.admin.id,
@@ -678,19 +682,19 @@ exports.newNotification = async function (req, res) {
     }
 };
 
-const updateNotificationInfoSchema = {
-    notificationId: Joi.string().required(),
+const updatePolicyInfoSchema = {
+    policyId: Joi.string().required(),
     title: Joi.string(),
     content: Joi.string(),
 };
 
-exports.updateNotificationInfo = async function (req, res) {
+exports.updatePolicyInfo = async function (req, res) {
     try {
-        const updateNotificationInfo = await Joi.validate(req.body, updateNotificationInfoSchema);
+        const updatePolicyInfo = await Joi.validate(req.body, updatePolicyInfoSchema);
         const updateInfo = {};
-        if (updateNotificationInfo.title) updateInfo.title = updateNotificationInfo.title;
-        if (updateNotificationInfo.content) updateInfo.content = updateNotificationInfo.content;
-        await Notifications.updateOne({_id: ObjectId(updateNotificationInfo.notificationId)}, updateInfo);
+        if (updatePolicyInfo.title) updateInfo.title = updatePolicyInfo.title;
+        if (updatePolicyInfo.content) updateInfo.content = updatePolicyInfo.content;
+        await Policy.updateOne({_id: ObjectId(updatePolicyInfo.policyId)}, updateInfo);
         res.status(200).send({code: 0, msg: '更新成功'});
     } catch (e) {
         let data = '';
@@ -704,18 +708,18 @@ exports.updateNotificationInfo = async function (req, res) {
     }
 };
 
-const cancelNotificationSchema = {
-    notificationId: Joi.string().required(),
+const cancelPolicySchema = {
+    policyId: Joi.string().required(),
     isDelete: Joi.boolean().default(false),
 };
 
-exports.cancelNotification = async function (req, res) {
+exports.cancelPolicy = async function (req, res) {
     try {
-        const cancelNotifyInfo = await Joi.validate(req.body, cancelNotificationSchema);
+        const cancelNotifyInfo = await Joi.validate(req.body, cancelPolicySchema);
         const updateInfo = {
             is_deleted: cancelNotifyInfo.isDelete,
         };
-        await Notifications.updateOne({_id: ObjectId(cancelNotifyInfo.notificationId)}, updateInfo);
+        await Policy.updateOne({_id: ObjectId(cancelNotifyInfo.policyId)}, updateInfo);
         res.status(200).send({code: 0, msg: '更新成功'});
     } catch (e) {
         let data = '';

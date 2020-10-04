@@ -105,4 +105,7 @@ var DomesticGarbageWeeklySchema = new Schema({
     required: true
   },
 }, {timestamps: {createAt: 'created', updateAt: 'updated'}});
+
+DomesticGarbageWeeklySchema.index({ time: 1,  organization_id: -1});
+
 module.exports = mongoose.model('domestic_garbage_weekly', DomesticGarbageWeeklySchema);

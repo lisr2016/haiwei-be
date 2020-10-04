@@ -30,14 +30,14 @@ router.post('/cms/update/org/info', ctrls.auth.verifyCmsToken, ctrls.admin.updat
 // 注销机构
 router.post('/cms/delete/org', ctrls.auth.verifyCmsToken, ctrls.admin.deleteOrg);
 
-// 获取通知列表
-router.post('/cms/get/notification/list', ctrls.auth.verifyCmsToken, ctrls.admin.fetchNotificationList);
-// 新增通知
-router.post('/cms/new/notification', ctrls.auth.verifyCmsToken, ctrls.admin.newNotification);
-// 修改通知信息
-router.post('/cms/update/notification/info', ctrls.auth.verifyCmsToken, ctrls.admin.updateNotificationInfo);
-// 取消通知
-router.post('/cms/cancel/notification', ctrls.auth.verifyCmsToken, ctrls.admin.cancelNotification);
+// 获取政策文件列表
+router.post('/cms/get/policy/list', ctrls.auth.verifyCmsToken, ctrls.admin.fetchPolicyList);
+// 新增政策文件
+router.post('/cms/new/policy', ctrls.auth.verifyCmsToken, ctrls.admin.newPolicy);
+// 修改政策文件信息
+router.post('/cms/update/policy/info', ctrls.auth.verifyCmsToken, ctrls.admin.updatePolicyInfo);
+// 取消政策文件发布
+router.post('/cms/cancel/policy', ctrls.auth.verifyCmsToken, ctrls.admin.cancelPolicy);
 
 // 查询报告总数
 router.get('/cms/summary/total', ctrls.auth.verifyCmsToken, ctrls.admin.fetchSummaryTotal);

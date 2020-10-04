@@ -94,4 +94,6 @@ var DomesticGarbageDailySchema = new Schema({
     
 }, {timestamps: {createAt: 'created', updateAt: 'updated'}});
 
+DomesticGarbageDailySchema.index({ time: 1,  organization_id: -1});
+
 module.exports = mongoose.model('domestic_garbage_daily', DomesticGarbageDailySchema);

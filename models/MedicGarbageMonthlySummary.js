@@ -26,4 +26,6 @@ var MedicGarbageMonthlySummarySchema = new Schema({
     }
 }, {timestamps: {createAt: 'created', updateAt: 'updated'}});
 
+MedicGarbageMonthlySummarySchema.index({ time: 1 });
+
 module.exports = mongoose.model('medic_garbage_monthly_summary', MedicGarbageMonthlySummarySchema);

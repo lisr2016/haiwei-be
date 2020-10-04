@@ -42,4 +42,6 @@ var DomesticGarbageMonthlySummarySchema = new Schema({
   }
 }, {timestamps: {createAt: 'created', updateAt: 'updated'}});
 
+DomesticGarbageMonthlySummarySchema.index({ time: 1 });
+
 module.exports = mongoose.model('domestic_garbage_monthly_summary', DomesticGarbageMonthlySummarySchema);

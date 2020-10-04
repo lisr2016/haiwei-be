@@ -41,4 +41,6 @@ var DomesticGarbageMonthlySchema = new Schema({
   }
 }, {timestamps: {createAt: 'created', updateAt: 'updated'}});
 
+DomesticGarbageMonthlySchema.index({ time: 1,  organization_id: -1});
+
 module.exports = mongoose.model('domestic_garbage_monthly', DomesticGarbageMonthlySchema);

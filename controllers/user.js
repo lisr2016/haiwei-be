@@ -33,7 +33,7 @@ exports.fetchUserInfo = function (req, res) {
                 address: org.address,
                 level: org.level,
                 street: org.street,
-            }
+            };
             res.status(200).send({code: 0, data: {orgInfo}, msg: '查询成功'});
         }
     });

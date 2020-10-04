@@ -3,23 +3,6 @@ let config = require('../config');
 let jwt = require('jsonwebtoken');
 
 let User = require('../models/User');
-let Organization = require('../models/Organization');
-
-exports.orgsignup = function (req, res) {
-    let newOrganization = new Organization({
-        name: req.body.name,
-        manager_phone: '18810698509',
-        address: 'test loc',
-        level: '1',
-        street: 'test s'
-    });
-    newOrganization.save(function (err, result) {
-        if (err) {
-            return res.json({success: false, msg: err.toString()});
-        }
-        res.json({data: {id:result && result._id}, msg: 'Successful created new org.'});
-    });
-};
 
 exports.signup = function(req, res) {
     if (!req.body.phone || !req.body.password || !req.body.orgId) {
@@ -48,7 +31,7 @@ exports.login = function(req, res) {
         phone: req.body.phone
     }, function(err, user) {
         if (err) throw err;
-        if (!user) {
+        if (!user || user.is_deleted) {
             res.status(400).send({code: 5, msg: '用户名不存在'});
         } else {
             user.comparePassword(req.body.password, function (err, isMatch) {

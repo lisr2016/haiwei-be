@@ -222,3 +222,15 @@ exports.calMonths = function(startTime, endTime){
     }
     return {timestamps, months}
 };
+
+exports.calMonths = function(startTime, endTime){
+    let timestamps = [],
+        months = [];
+    while(dayjs(endTime).add(1, 'month').isAfter(startTime)){
+        timestamps.push(dayjs(startTime).startOf('month').toDate().getTime());
+        months.push(dayjs().year() === dayjs(startTime).year() ? `${dayjs(startTime).month() + 1}月`:`${dayjs(startTime).year()}年${dayjs(startTime).month() + 1}月`)
+        startTime = dayjs(startTime).add(1, 'month');
+    }
+    return {timestamps, months}
+};
+

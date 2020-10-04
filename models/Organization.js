@@ -44,11 +44,18 @@ var OrganizationSchema = new Schema({
     type: String,
     required: true
   },
+  // 注册类型  1:预设联系方式  2:开放注册
+  type: {
+    type: String,
+    default: '2'
+  },
   // 是否已注销
   is_deleted: {
     type: Boolean,
     default: false
   }
 }, {timestamps: {createAt: 'created', updateAt: 'updated'}});
+
+// OrganizationSchema.index({ name: 1 });
 
 module.exports = mongoose.model('organization', OrganizationSchema);

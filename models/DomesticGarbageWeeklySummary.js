@@ -106,4 +106,7 @@ var DomesticGarbageWeeklySummarySchema = new Schema({
     default: true,
   }
 }, {timestamps: {createAt: 'created', updateAt: 'updated'}});
+
+DomesticGarbageWeeklySummarySchema.index({ time: 1 });
+
 module.exports = mongoose.model('domestic_garbage_weekly_summary', DomesticGarbageWeeklySummarySchema);

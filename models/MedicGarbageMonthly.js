@@ -25,4 +25,6 @@ var MedicGarbageMonthlySchema = new Schema({
     },
 }, {timestamps: {createAt: 'created', updateAt: 'updated'}});
 
+MedicGarbageMonthlySchema.index({ time: 1,  organization_id: -1});
+
 module.exports = mongoose.model('medic_garbage_monthly', MedicGarbageMonthlySchema);

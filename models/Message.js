@@ -30,4 +30,6 @@ var MessageSchema = new Schema({
   }
 }, {timestamps: {createAt: 'created', updateAt: 'updated'}});
 
+MessageSchema.index({ user_id: 1});
+
 module.exports = mongoose.model('message', MessageSchema);
