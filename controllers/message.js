@@ -23,7 +23,7 @@ exports.fetchUserMessageList = async function (req, res) {
                 content: e.content,
                 title: e.title,
                 type: e.type,
-                isRead: e.is_read,
+                isRead: e.is_read || false,
                 createTime: e.createdAt
             }
         }).value();

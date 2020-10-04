@@ -30,4 +30,4 @@ router.get('/user/info', ctrls.user.fetchUserInfo);
 
 module.exports = function vRouter (app) {
     app.use('/v1', router)
-}
+};
