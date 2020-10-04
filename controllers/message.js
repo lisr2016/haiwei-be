@@ -6,6 +6,7 @@ let Notifications = require("../models/Notifications");
 exports.fetchUserMessageList = async function (req, res) {
     let user = req.user
     try {
+        let a = ['1','2','3','4','5'];
         let messageList = await Message.find({user_id: user.id})
         let notifications = await Notifications.find({is_deleted: {$ne: true}});
         messageList = _.concat(messageList, _.map(notifications, e => {
@@ -14,7 +15,7 @@ exports.fetchUserMessageList = async function (req, res) {
                 content: e.content,
                 title: e.title,
                 createdAt: e.createdAt,
-                type: '1'
+                type: a[Math.floor(Math.random()*a.length)]
             };
         }));
         let data = _.chain(messageList).filter(e => !e.is_read).map(e => {
