@@ -7,23 +7,24 @@ exports.fetchUserMessageList = async function (req, res) {
     let user = req.user
     try {
         let a = ['1','2','3','4','5'];
-        let messageList = await Message.find({user_id: user.id})
-        let notifications = await Notifications.find({is_deleted: {$ne: true}});
-        messageList = _.concat(messageList, _.map(notifications, e => {
-            return {
-                id: e._id,
-                content: e.content,
-                title: e.title,
-                createdAt: e.createdAt,
-                type: a[Math.floor(Math.random()*a.length)]
-            };
-        }));
+        // let messageList = await Message.find({user_id: user.id})
+        let messageList = await Message.find()
+        // let notifications = await Notifications.find({is_deleted: {$ne: true}});
+        // messageList = _.concat(messageList, _.map(notifications, e => {
+        //     return {
+        //         id: e._id,
+        //         content: e.content,
+        //         title: e.title,
+        //         createdAt: e.createdAt,
+        //         type: a[Math.floor(Math.random()*a.length)]
+        //     };
+        // }));
         let data = _.chain(messageList).filter(e => !e.is_read).map(e => {
             return {
                 id: e._id,
                 content: e.content,
                 title: e.title,
-                type: e.type,
+                type: a[Math.floor(Math.random()*a.length)],
                 isRead: e.is_read || false,
                 createTime: e.createdAt
             }
