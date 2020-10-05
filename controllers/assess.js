@@ -12,6 +12,7 @@ exports.fetchUserAssessList = async function (req, res) {
                 name: e.name,
                 target: e.target,
                 content: e.template_content,
+                type: '2',
                 createTime: e.createdAt
             }
         });
@@ -27,7 +28,7 @@ exports.fetchUserAssessList = async function (req, res) {
         //         createTime: e.createdAt
         //     }
         // }).value();
-        res.status(200).send({code: 0, data:{assesseeList,assessorList}, msg: '查询成功'});
+        res.status(200).send({code: 0, data: assesseeList, msg: '查询成功'});
     }catch (e) {
         console.log(e)
         res.status(400).send({code: 5, msg: '查询失败'});
