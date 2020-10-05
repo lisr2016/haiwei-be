@@ -9,6 +9,10 @@ let Organization = require('../models/Organization');
 let Policy = require('../models/Policy');
 let AssessTemplate = require('../models/AssessTemplate');
 let AssessTask = require('../models/AssessTask');
+let DomesticGarbageDaily = require('../models/DomesticGarbageDaily');
+let DomesticGarbageWeekly = require('../models/DomesticGarbageWeekly');
+let DomesticGarbageMonthly = require('../models/DomesticGarbageMonthly');
+let MedicGarbageMonthly = require('../models/MedicGarbageMonthly');
 let DomesticGarbageDailySummary = require('../models/DomesticGarbageDailySummary');
 let DomesticGarbageWeeklySummary = require('../models/DomesticGarbageWeeklySummary');
 let DomesticGarbageMonthlySummary = require('../models/DomesticGarbageMonthlySummary');
@@ -17,16 +21,16 @@ let ObjectId = require('mongodb').ObjectId;
 
 const Joi = require('joi');
 const bcrypt = require('bcrypt-nodejs');
-const { isPhoneNum } =require('../util/lib');
+const {isPhoneNum} = require('../util/lib');
 
-exports.login = function(req, res) {
+exports.login = function (req, res) {
     if (!req.body.phone || !req.body.password) {
         res.status(400).send({code: 5, msg: '缺少手机号、密码'});
         return
     }
     Admin.findOne({
         phone: req.body.phone
-    }, function(err, user) {
+    }, function (err, user) {
         if (err) throw err;
         if (!user) {
             res.status(400).send({code: 5, msg: '用户名不存在'});
@@ -71,7 +75,7 @@ exports.fetchUserList = async function (req, res) {
             let start = (params.offset - 1) * params.limit;
             let stop = params.offset * params.limit;
             list = _.slice(list, start, stop)
-        }else{
+        } else {
             let skip = (params.offset - 1) * params.limit;
             list = await User.find().skip(skip).limit(params.limit);
         }
@@ -92,10 +96,10 @@ exports.fetchUserList = async function (req, res) {
             }
         });
         let count = await User.countDocuments();
-        res.status(200).send({code: 0, data: { list, count }, msg: '查询成功'});
+        res.status(200).send({code: 0, data: {list, count}, msg: '查询成功'});
     } catch (e) {
         let data = '';
-        if(_.size(e.details) > 0) {
+        if (_.size(e.details) > 0) {
             _.each(e.details, item => {
                 data += item.message;
             });
@@ -121,9 +125,7 @@ exports.newUser = async function (req, res) {
             is_deleted: false
         };
         await User.updateOne({phone: newUserInfo.phone}, updateInfo, {upsert: true});
-        let user = {
-        
-        };
+        let user = {};
         let token = jwt.sign(user.toJSON(), config.secret);
         res.status(200).send({code: 0, msg: '添加成功'});
     } catch (e) {
@@ -266,11 +268,11 @@ exports.fetchSummaryTotal = async function (req, res) {
 
 exports.fetchDomDailySummary = async function (req, res) {
     try {
-        if(!req.body.startTime){
+        if (!req.body.startTime) {
             res.status(400).send({code: 5, msg: '参数错误'});
             return
         }
-        if(req.body.startTime && !req.body.endTime) {
+        if (req.body.startTime && !req.body.endTime) {
             let data = await DomesticGarbageDailySummary.findOne({time: req.body.startTime});
             if (!data || data.is_expired) {
                 data = await lib.summaryDomDaily(req.body.startTime)
@@ -288,7 +290,7 @@ exports.fetchDomDailySummary = async function (req, res) {
                     reportCount: data.report_count,
                 }, msg: '查询成功'
             });
-        }else{
+        } else {
         
         }
     } catch (e) {
@@ -299,12 +301,12 @@ exports.fetchDomDailySummary = async function (req, res) {
 
 exports.fetchDomWeeklySummary = async function (req, res) {
     try {
-        if(!req.body.startTime){
+        if (!req.body.startTime) {
             res.status(400).send({code: 5, msg: '参数错误'});
             return
         }
         let data = await DomesticGarbageWeeklySummary.findOne({time: req.body.startTime});
-        if(!data || data.is_expired){
+        if (!data || data.is_expired) {
             data = await lib.summaryDomWeekly(req.body.startTime);
         }
         res.status(200).send({
@@ -339,12 +341,12 @@ exports.fetchDomWeeklySummary = async function (req, res) {
 
 exports.fetchDomMonthlySummary = async function (req, res) {
     try {
-        if(!req.body.startTime){
+        if (!req.body.startTime) {
             res.status(400).send({code: 5, msg: '参数错误'});
             return
         }
         let data = await DomesticGarbageMonthlySummary.findOne({time: req.body.startTime});
-        if(!data || data.is_expired){
+        if (!data || data.is_expired) {
             data = await lib.summaryDomMonthly(req.body.startTime);
         }
         res.status(200).send({
@@ -365,12 +367,12 @@ exports.fetchDomMonthlySummary = async function (req, res) {
 
 exports.fetchMedMonthlySummary = async function (req, res) {
     try {
-        if(!req.body.startTime){
+        if (!req.body.startTime) {
             res.status(400).send({code: 5, msg: '参数错误'});
             return
         }
         let data = await MedicGarbageMonthlySummary.findOne({time: req.body.startTime});
-        if(!data || data.is_expired){
+        if (!data || data.is_expired) {
             data = await lib.summaryMedMonthly(req.body.startTime);
         }
         res.status(200).send({
@@ -386,7 +388,7 @@ exports.fetchMedMonthlySummary = async function (req, res) {
 };
 
 const fetchScreenSchema = {
-    type: Joi.string().valid(['1','2','3','4']).required(),
+    type: Joi.string().valid(['1', '2', '3', '4']).required(),
     startTime: Joi.date().required(),
     endTime: Joi.date().required(),
 };
@@ -402,7 +404,7 @@ exports.fetchScreenSummary = async function (req, res) {
                 midRst = lib.calWeeks(fetchScreenInfo.startTime, fetchScreenInfo.endTime);
                 for (let i = 0; i < midRst.timestamps.length; i++) {
                     let data = await DomesticGarbageWeeklySummary.findOne({time: midRst.timestamps[i]});
-                    if(!data || data.is_expired){
+                    if (!data || data.is_expired) {
                         data = await lib.summaryDomWeekly(midRst.timestamps[i]);
                     }
                     list.push({
@@ -420,7 +422,7 @@ exports.fetchScreenSummary = async function (req, res) {
                 midRst = lib.calMonths(fetchScreenInfo.startTime, fetchScreenInfo.endTime);
                 for (let i = 0; i < midRst.timestamps.length; i++) {
                     let data = await DomesticGarbageMonthlySummary.findOne({time: midRst.timestamps[i]});
-                    if(!data || data.is_expired){
+                    if (!data || data.is_expired) {
                         data = await lib.summaryDomMonthly(midRst.timestamps[i]);
                     }
                     list.push({
@@ -436,10 +438,10 @@ exports.fetchScreenSummary = async function (req, res) {
                 break;
             default:
         }
-        res.status(200).send({code: 0, data: result ,msg: '查询成功'});
+        res.status(200).send({code: 0, data: result, msg: '查询成功'});
     } catch (e) {
         let data = '';
-        if(_.size(e.details) > 0) {
+        if (_.size(e.details) > 0) {
             _.each(e.details, item => {
                 data += item.message;
             });
@@ -449,8 +451,8 @@ exports.fetchScreenSummary = async function (req, res) {
     }
 };
 
-exports.signup = function(req, res) {
-    if (!req.body.phone || !req.body.password ||!req.body.username) {
+exports.signup = function (req, res) {
+    if (!req.body.phone || !req.body.password || !req.body.username) {
         res.json({success: false, msg: 'Please pass phone,password,username .'});
     } else {
         let newAdmin = new Admin({
@@ -459,7 +461,7 @@ exports.signup = function(req, res) {
             password: req.body.password,
             authority: 3
         });
-        newAdmin.save(function(err) {
+        newAdmin.save(function (err) {
             console.log(err)
             if (err) {
                 return res.json({success: false, msg: 'phone already exists.'});
@@ -503,10 +505,10 @@ exports.fetchOrgList = async function (req, res) {
             }
         });
         let count = await Organization.countDocuments();
-        res.status(200).send({code: 0, data: { list, count }, msg: '查询成功'});
+        res.status(200).send({code: 0, data: {list, count}, msg: '查询成功'});
     } catch (e) {
         let data = '';
-        if(_.size(e.details) > 0) {
+        if (_.size(e.details) > 0) {
             _.each(e.details, item => {
                 data += item.message;
             });
@@ -562,7 +564,7 @@ const updateOrgInfoSchema = {
     organizationId: Joi.string().required(),
     corporationPhone: Joi.string(),
     managerPhone: Joi.string(),
-    bednum:  Joi.number().integer(),
+    bednum: Joi.number().integer(),
     address: Joi.string(),
     level: Joi.string(),
     street: Joi.string()
@@ -583,7 +585,7 @@ exports.updateOrgInfo = async function (req, res) {
         res.status(200).send({code: 0, msg: '更新成功'});
     } catch (e) {
         let data = '';
-        if(_.size(e.details) > 0) {
+        if (_.size(e.details) > 0) {
             _.each(e.details, item => {
                 data += item.message;
             });
@@ -619,7 +621,6 @@ exports.deleteOrg = async function (req, res) {
 };
 
 
-
 const fetchPolicyListSchema = {
     offset: Joi.number().default(1),
     limit: Joi.number().default(50)
@@ -641,10 +642,10 @@ exports.fetchPolicyList = async function (req, res) {
             }
         });
         let count = await Policy.countDocuments();
-        res.status(200).send({code: 0, data: { list, count }, msg: '查询成功'});
+        res.status(200).send({code: 0, data: {list, count}, msg: '查询成功'});
     } catch (e) {
         let data = '';
-        if(_.size(e.details) > 0) {
+        if (_.size(e.details) > 0) {
             _.each(e.details, item => {
                 data += item.message;
             });
@@ -674,7 +675,7 @@ exports.newPolicy = async function (req, res) {
         res.status(200).send({code: 0, msg: '添加成功'});
     } catch (e) {
         let data = '';
-        if(_.size(e.details) > 0) {
+        if (_.size(e.details) > 0) {
             _.each(e.details, item => {
                 data += item.message;
             });
@@ -700,7 +701,7 @@ exports.updatePolicyInfo = async function (req, res) {
         res.status(200).send({code: 0, msg: '更新成功'});
     } catch (e) {
         let data = '';
-        if(_.size(e.details) > 0) {
+        if (_.size(e.details) > 0) {
             _.each(e.details, item => {
                 data += item.message;
             });
@@ -751,7 +752,7 @@ exports.newAssessTemplate = async function (req, res) {
         res.status(200).send({code: 0, msg: '添加成功'});
     } catch (e) {
         let data = '';
-        if(_.size(e.details) > 0) {
+        if (_.size(e.details) > 0) {
             _.each(e.details, item => {
                 data += item.message;
             });
@@ -779,10 +780,10 @@ exports.fetchAssessTemplateList = async function (req, res) {
             }
         });
         let count = await AssessTemplate.countDocuments();
-        res.status(200).send({code: 0, data: { list, count }, msg: '查询成功'});
+        res.status(200).send({code: 0, data: {list, count}, msg: '查询成功'});
     } catch (e) {
         let data = '';
-        if(_.size(e.details) > 0) {
+        if (_.size(e.details) > 0) {
             _.each(e.details, item => {
                 data += item.message;
             });
@@ -805,8 +806,8 @@ const newAssessTaskSchema = {
 exports.newAssessTask = async function (req, res) {
     try {
         const newAssessTaskInfo = await Joi.validate(req.body, newAssessTaskSchema);
-    
-        const template = await AssessTemplate.findOne({_id:newAssessTaskInfo.templateId});
+        
+        const template = await AssessTemplate.findOne({_id: newAssessTaskInfo.templateId});
         if (!template) {
             res.status(400).send({code: 5, msg: '模板id错误'});
             return
@@ -825,7 +826,7 @@ exports.newAssessTask = async function (req, res) {
         res.status(200).send({code: 0, msg: '添加成功'});
     } catch (e) {
         let data = '';
-        if(_.size(e.details) > 0) {
+        if (_.size(e.details) > 0) {
             _.each(e.details, item => {
                 data += item.message;
             });
@@ -835,3 +836,54 @@ exports.newAssessTask = async function (req, res) {
     }
 };
 
+const fetchReportListSchema = {
+    orgId: Joi.string().required(),
+    time: Joi.date().required(),
+    reportType: Joi.string().required(),
+};
+
+exports.fetchReportList = async function (req, res) {
+    try {
+        const fetchReportListInfo = await Joi.validate(req.body, fetchReportListSchema);
+        let data = null;
+        switch (fetchReportListInfo.reportType) {
+            case '1':
+                data = await DomesticGarbageDaily.findOne({
+                    organization_id: fetchReportListInfo.organizationId,
+                    time: fetchReportListInfo.time
+                });
+                break;
+            case '2':
+                data = await DomesticGarbageWeekly.findOne({
+                    organization_id: fetchReportListInfo.organizationId,
+                    time: fetchReportListInfo.time
+                });
+                break;
+            case '3':
+                data = await DomesticGarbageMonthly.findOne({
+                    organization_id: fetchReportListInfo.organizationId,
+                    time: fetchReportListInfo.time
+                });
+                break;
+            case '4':
+                data = await MedicGarbageMonthly.findOne({
+                    organization_id: fetchReportListInfo.organizationId,
+                    time: fetchReportListInfo.time
+                });
+                break;
+            default:
+                res.status(400).send({code: 5, msg: 'reportType类型错误'});
+                return
+        }
+        res.status(200).send({code: 0, data, msg: 'reportType类型错误'});
+    } catch (e) {
+        let data = '';
+        if (_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
+        console.log(e);
+        res.status(400).send({code: 5, data, msg: '查询失败'});
+    }
+};

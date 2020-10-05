@@ -30,6 +30,8 @@ router.post('/cms/update/org/info', ctrls.auth.verifyCmsToken, ctrls.admin.updat
 // 注销机构
 router.post('/cms/delete/org', ctrls.auth.verifyCmsToken, ctrls.admin.deleteOrg);
 
+// 获取报告列表
+router.post('/cms/report/list', ctrls.auth.verifyCmsToken, ctrls.admin.fetchReportList);
 // 查询报告总数
 router.get('/cms/summary/total', ctrls.auth.verifyCmsToken, ctrls.admin.fetchSummaryTotal);
 // 生活垃圾日报汇总
@@ -42,8 +44,6 @@ router.post('/cms/summary/domestic/monthly', ctrls.auth.verifyCmsToken, ctrls.ad
 router.post('/cms/summary/medic/monthly', ctrls.auth.verifyCmsToken, ctrls.admin.fetchMedMonthlySummary);
 // 数据大屏数据汇总
 router.post('/cms/summary/screen', ctrls.auth.verifyCmsToken, ctrls.admin.fetchScreenSummary);
-
-
 
 // 获取考核模板列表
 router.post('/cms/get/assess/template/list', ctrls.auth.verifyCmsToken, ctrls.admin.fetchAssessTemplateList);
