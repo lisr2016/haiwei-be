@@ -1,6 +1,7 @@
 let _ = require('lodash');
 let config = require('../config');
 let jwt = require('jsonwebtoken');
+let dayjs = require('dayjs');
 
 let User = require('../models/User');
 
@@ -36,7 +37,9 @@ exports.login = function(req, res) {
         } else {
             user.comparePassword(req.body.password, function (err, isMatch) {
                 if (isMatch && !err) {
-                    let token = jwt.sign(user.toJSON(), config.secret);
+                    user = user.toJSON();
+                    user.jwtime = new Date().getTime();
+                    let token = jwt.sign(user, config.secret);
                     res.json({code: 0, data: {token: token}, msg: '登陆成功'});
                 } else {
                     res.status(401).send({code: 5, msg: '密码错误'});
@@ -54,25 +57,33 @@ exports.verifyToken = function (req, res, next) {
     }
     try {
         let decode = jwt.verify(token, config.secret);
+        if (!decode.jwtime || dayjs(decode.jwtime).isBefore(dayjs().add(-1, 'month'))) {
+            res.status(500).json({msg: `登陆已过期`});
+            return;
+        }
         req.user = {
             id: decode._id,
             phone: decode.phone,
-            organizationId : decode.organization_id
+            organizationId: decode.organization_id
         };
         next()
     } catch (err) {
-        res.status(500).json({ msg: `未能识别权限标识` })
+        res.status(500).json({msg: `未能识别权限标识`})
     }
 };
 
 exports.verifyCmsToken = function (req, res, next) {
     let token = req.query.token || req.headers.token || req.cookies.token || req.body.token;
     if (_.isEmpty(token)) {
-        res.status(401).json({ msg: `没有访问权限` });
+        res.status(401).json({msg: `没有访问权限`});
         return
     }
     try {
         let decode = jwt.verify(token, config.cms_secret);
+        if (!decode.jwtime || dayjs(decode.jwtime).isBefore(dayjs().add(-1, 'month'))) {
+            res.status(500).json({msg: `登陆已过期`});
+            return;
+        }
         req.admin = {
             id: decode._id,
             phone: decode.phone,

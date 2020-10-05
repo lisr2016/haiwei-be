@@ -37,7 +37,9 @@ exports.login = function (req, res) {
         } else {
             user.comparePassword(req.body.password, function (err, isMatch) {
                 if (isMatch && !err) {
-                    let token = jwt.sign(user.toJSON(), config.cms_secret);
+                    user = user.toJSON();
+                    user.jwtime = new Date().getTime();
+                    let token = jwt.sign(user, config.cms_secret);
                     res.json({code: 0, data: {token: token}, msg: '登陆成功'});
                 } else {
                     res.status(401).send({code: 5, msg: '密码错误'});
@@ -130,6 +132,7 @@ exports.newUser = async function (req, res) {
             res.status(400).send({code: 5, data, msg: '注册失败'});
             return
         }
+        user.jwtime = new Date().getTime();
         let token = jwt.sign(user.toJSON(), config.secret);
         res.json({code: 0, data: {token: token}, msg: '注册成功'});
     } catch (e) {

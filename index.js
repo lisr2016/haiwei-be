@@ -35,10 +35,10 @@ app.use(session({
 
 app.use(morgan('dev'));
 
-app.use(require('./routes/cms'))
-app.use(require('./routes/unless'))
-app.use(auth.verifyToken)
-require('./routes/v1')(app)
+app.use(require('./routes/cms'));
+app.use(require('./routes/unless'));
+app.use(auth.verifyToken);
+require('./routes/v1')(app);
 
 app.use(function(req, res, next) {
   let err = new Error('Not Found');

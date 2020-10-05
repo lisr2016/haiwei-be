@@ -28,7 +28,7 @@ exports.fetchUserInfo = function (req, res) {
             const orgInfo = {
                 name: org.name,
                 initialized: org.is_initiated,
-                corporationPhone: org.is_initiated || '',
+                corporationPhone: org.corporation_phone || '',
                 managerPhone: org.manager_phone || '',
                 bednum: org.bednum,
                 address: org.address,
