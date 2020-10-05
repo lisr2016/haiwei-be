@@ -40,7 +40,7 @@ exports.summitDomDaily = async function (req, res) {
     }
     try {
         const domDailyInfo = await Joi.validate(req.body, summitDomDailySchema);
-        let newDomesticDaily = new domesticDaily({
+        let updateInfo = {
             time: domDailyInfo.time.getTime(),
             user_id: user.id,
             organization_id: user.organizationId,
@@ -65,12 +65,15 @@ exports.summitDomDaily = async function (req, res) {
             gov_inspection_problems: domDailyInfo.govProblems,
             gov_inspection_content: domDailyInfo.govContent,
             gov_inspection_corrected: domDailyInfo.govCorrected,
-        })
-        await newDomesticDaily.save();
+        };
+        await domesticDaily.updateOne({
+            time: domDailyInfo.time.getTime(),
+            organization_id: user.organizationId
+        }, updateInfo, {upsert: true});
         res.status(200).send({code: 0, msg: '提交成功'});
     } catch (e) {
         let data = '';
-        if(_.size(e.details) > 0) {
+        if (_.size(e.details) > 0) {
             _.each(e.details, item => {
                 data += item.message;
             });
@@ -112,11 +115,10 @@ exports.summitDomWeekly = async function (req, res) {
     }
     try {
         const domWeeklyInfo = await Joi.validate(req.body, summitDomWeeklySchema);
-        let newDomesticWeekly = new domesticWeekly({
+        let updateInfo = {
             time: domWeeklyInfo.time.getTime(),
             user_id: user.id,
             organization_id: user.organizationId,
-    
             consignee: domWeeklyInfo.consignee,
             guide: domWeeklyInfo.guide,
             inspector: domWeeklyInfo.inspector,
@@ -136,12 +138,15 @@ exports.summitDomWeekly = async function (req, res) {
             harmful_waste: domWeeklyInfo.harmfulWaste,
             other_waste: domWeeklyInfo.otherWaste,
             medic_waste: domWeeklyInfo.medicWaste,
-        });
-        await newDomesticWeekly.save();
+        };
+        await domesticWeekly.updateOne({
+            time: domWeeklyInfo.time.getTime(),
+            organization_id: user.organizationId
+        }, updateInfo, {upsert: true});
         res.status(200).send({code: 0, msg: '提交成功'});
     } catch (e) {
         let data = '';
-        if(_.size(e.details) > 0) {
+        if (_.size(e.details) > 0) {
             _.each(e.details, item => {
                 data += item.message;
             });
@@ -153,7 +158,6 @@ exports.summitDomWeekly = async function (req, res) {
 
 const summitDomMonthlySchema = {
     time: Joi.date().required(),
-    
     kitchenWaste: Joi.number().required(),
     recyclableWaste: Joi.number().required(),
     harmfulWaste: Joi.number().required(),
@@ -169,22 +173,24 @@ exports.summitDomMonthly = async function (req, res) {
     }
     try {
         const domMonthlyInfo = await Joi.validate(req.body, summitDomMonthlySchema);
-        let newDomesticMonthly = new domesticMonthly({
+        let updateInfo = new domesticMonthly({
             time: domMonthlyInfo.time.getTime(),
             user_id: user.id,
             organization_id: user.organizationId,
-    
             kitchen_waste: domMonthlyInfo.kitchenWaste,
             recyclable_waste: domMonthlyInfo.recyclableWaste,
             harmful_waste: domMonthlyInfo.harmfulWaste,
             bulky_waste: domMonthlyInfo.bulkyWaste,
             other_waste: domMonthlyInfo.otherWaste,
-        })
-        await newDomesticMonthly.save();
+        });
+        await domesticMonthly.updateOne({
+            time: domMonthlyInfo.time.getTime(),
+            organization_id: user.organizationId
+        }, updateInfo, {upsert: true});
         res.status(200).send({code: 0, msg: '提交成功'});
     } catch (e) {
         let data = '';
-        if(_.size(e.details) > 0) {
+        if (_.size(e.details) > 0) {
             _.each(e.details, item => {
                 data += item.message;
             });
@@ -197,27 +203,30 @@ exports.summitDomMonthly = async function (req, res) {
 const summitMedMonthlySchema = {
     time: Joi.date().required(),
     totalWeight: Joi.number().required(),
-}
+};
 
 exports.summitMedMonthly = async function (req, res) {
-    const user = req.user
+    const user = req.user;
     if (!user.organizationId) {
         res.status(400).send({code: 5, msg: '用户所属机构信息错误,请联系管理员'});
         return
     }
     try {
         const medMonthlyInfo = await Joi.validate(req.body, summitMedMonthlySchema);
-        let newMedicMonthly = new medicMonthly({
+        let updateInfo = {
             time: medMonthlyInfo.time.getTime(),
             user_id: user.id,
             organization_id: user.organizationId,
             total_weight: medMonthlyInfo.totalWeight,
-        })
-        await newMedicMonthly.save();
+        };
+        await medicMonthly.updateOne({
+            time: medMonthlyInfo.time.getTime(),
+            organization_id: user.organizationId
+        }, updateInfo, {upsert: true});
         res.status(200).send({code: 0, msg: '提交成功'});
     } catch (e) {
         let data = '';
-        if(_.size(e.details) > 0) {
+        if (_.size(e.details) > 0) {
             _.each(e.details, item => {
                 data += item.message;
             });
