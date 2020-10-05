@@ -8,7 +8,7 @@ exports.fetchUserAssessList = async function (req, res) {
     try {
         let assesseeList = await Assess.find({assessee_id: user.organizationId});
         let orgIds = _.chain(assesseeList).map(e => e.assessor_id).uniq().value();
-        orgIds.push(req.user.organizationId)
+        orgIds.push(req.user.organizationId);
         const orgs = await Organization.find({_id: {$in: orgIds}});
         const orgInfoMap = _.keyBy(orgs, '_id');
         assesseeList = _.chain(assesseeList).filter(e => !e.assessee_done).map(e => {

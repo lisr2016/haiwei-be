@@ -125,9 +125,13 @@ exports.newUser = async function (req, res) {
             is_deleted: false
         };
         await User.updateOne({phone: newUserInfo.phone}, updateInfo, {upsert: true});
-        let user = {};
+        let user = await User.findOne({phone: req.body.phone});
+        if(!user){
+            res.status(400).send({code: 5, data, msg: '注册失败'});
+            return
+        }
         let token = jwt.sign(user.toJSON(), config.secret);
-        res.status(200).send({code: 0, msg: '添加成功'});
+        res.json({code: 0, data: {token: token}, msg: '注册成功'});
     } catch (e) {
         let data = '';
         if (_.size(e.details) > 0) {
@@ -136,7 +140,7 @@ exports.newUser = async function (req, res) {
             });
         }
         console.log(e);
-        res.status(400).send({code: 5, data, msg: '添加失败'});
+        res.status(400).send({code: 5, data, msg: '注册失败'});
     }
 };
 
