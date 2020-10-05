@@ -132,8 +132,9 @@ exports.newUser = async function (req, res) {
             res.status(400).send({code: 5, data, msg: '注册失败'});
             return
         }
+        user = user.toJSON();
         user.jwtime = new Date().getTime();
-        let token = jwt.sign(user.toJSON(), config.secret);
+        let token = jwt.sign(user, config.secret);
         res.json({code: 0, data: {token: token}, msg: '注册成功'});
     } catch (e) {
         let data = '';
