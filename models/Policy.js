@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+// 政策文件
 var PolicySchema = new Schema({
   // 标题
   title: {

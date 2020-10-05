@@ -9,7 +9,7 @@ var AssessTemplateSchema = new Schema({
     required: true
   },
   // 考核内容
-  content: [{String}]
+  content: [String]
 }, {timestamps: {createAt: 'created', updateAt: 'updated'}});
 
 module.exports = mongoose.model('assess_templates', AssessTemplateSchema);

@@ -30,15 +30,6 @@ router.post('/cms/update/org/info', ctrls.auth.verifyCmsToken, ctrls.admin.updat
 // 注销机构
 router.post('/cms/delete/org', ctrls.auth.verifyCmsToken, ctrls.admin.deleteOrg);
 
-// 获取政策文件列表
-router.post('/cms/get/policy/list', ctrls.auth.verifyCmsToken, ctrls.admin.fetchPolicyList);
-// 新增政策文件
-router.post('/cms/new/policy', ctrls.auth.verifyCmsToken, ctrls.admin.newPolicy);
-// 修改政策文件信息
-router.post('/cms/update/policy/info', ctrls.auth.verifyCmsToken, ctrls.admin.updatePolicyInfo);
-// 取消政策文件发布
-router.post('/cms/cancel/policy', ctrls.auth.verifyCmsToken, ctrls.admin.cancelPolicy);
-
 // 查询报告总数
 router.get('/cms/summary/total', ctrls.auth.verifyCmsToken, ctrls.admin.fetchSummaryTotal);
 // 生活垃圾日报汇总
@@ -51,5 +42,30 @@ router.post('/cms/summary/domestic/monthly', ctrls.auth.verifyCmsToken, ctrls.ad
 router.post('/cms/summary/medic/monthly', ctrls.auth.verifyCmsToken, ctrls.admin.fetchMedMonthlySummary);
 // 数据大屏数据汇总
 router.post('/cms/summary/screen', ctrls.auth.verifyCmsToken, ctrls.admin.fetchScreenSummary);
+
+
+
+// 获取考核模板列表
+router.post('/cms/get/assess/template/list', ctrls.auth.verifyCmsToken, ctrls.admin.fetchAssessTemplateList);
+// 新增考核模板
+router.post('/cms/new/assess/template', ctrls.auth.verifyCmsToken, ctrls.admin.newAssessTemplate);
+// 删除考核模板
+router.post('/cms/delete/assess/template', ctrls.auth.verifyCmsToken, ctrls.admin.deleteUser);
+
+// 获取考核任务列表
+router.post('/cms/get/assess/task/list', ctrls.auth.verifyCmsToken, ctrls.admin.fetchUserList);
+// 新增考核任务
+router.post('/cms/new/assess/task', ctrls.auth.verifyCmsToken, ctrls.admin.newAssessTask);
+// 删除考核任务
+router.post('/cms/delete/assess/task', ctrls.auth.verifyCmsToken, ctrls.admin.deleteUser);
+
+// 获取政策文件列表
+router.post('/cms/get/policy/list', ctrls.auth.verifyCmsToken, ctrls.admin.fetchPolicyList);
+// 新增政策文件
+router.post('/cms/new/policy', ctrls.auth.verifyCmsToken, ctrls.admin.newPolicy);
+// 修改政策文件信息
+router.post('/cms/update/policy/info', ctrls.auth.verifyCmsToken, ctrls.admin.updatePolicyInfo);
+// 取消政策文件发布
+router.post('/cms/cancel/policy', ctrls.auth.verifyCmsToken, ctrls.admin.cancelPolicy);
 
 module.exports = router;

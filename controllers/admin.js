@@ -7,6 +7,8 @@ let User = require('../models/User');
 let lib = require('../util/lib');
 let Organization = require('../models/Organization');
 let Policy = require('../models/Policy');
+let AssessTemplate = require('../models/AssessTemplate');
+let AssessTask = require('../models/AssessTask');
 let DomesticGarbageDailySummary = require('../models/DomesticGarbageDailySummary');
 let DomesticGarbageWeeklySummary = require('../models/DomesticGarbageWeeklySummary');
 let DomesticGarbageMonthlySummary = require('../models/DomesticGarbageMonthlySummary');
@@ -733,4 +735,103 @@ exports.cancelPolicy = async function (req, res) {
     }
 };
 
+const newAssessTemplateSchema = {
+    name: Joi.string().required(),
+    content: Joi.array().required(),
+};
+
+exports.newAssessTemplate = async function (req, res) {
+    try {
+        const newAssessTemplateInfo = await Joi.validate(req.body, newAssessTemplateSchema);
+        const newAssessTemplate = new AssessTemplate({
+            name: newAssessTemplateInfo.name,
+            content: newAssessTemplateInfo.content,
+        });
+        await newAssessTemplate.save();
+        res.status(200).send({code: 0, msg: '添加成功'});
+    } catch (e) {
+        let data = '';
+        if(_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
+        console.log(e);
+        res.status(400).send({code: 5, data, msg: '添加失败'});
+    }
+};
+
+const fetchAssessTemplateListSchema = {
+    offset: Joi.number().default(1),
+    limit: Joi.number().default(50)
+};
+
+exports.fetchAssessTemplateList = async function (req, res) {
+    try {
+        const params = await Joi.validate(req.body, fetchAssessTemplateListSchema);
+        const skip = (params.offset - 1) * params.limit;
+        const data = await AssessTemplate.find().skip(skip).limit(params.limit);
+        let list = _.map(data, e => {
+            return {
+                id: e._id,
+                content: e.content,
+                createTime: e.createdAt
+            }
+        });
+        let count = await AssessTemplate.countDocuments();
+        res.status(200).send({code: 0, data: { list, count }, msg: '查询成功'});
+    } catch (e) {
+        let data = '';
+        if(_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
+        console.log(e)
+        res.status(400).send({code: 5, data, msg: '查询失败'});
+    }
+};
+
+const newAssessTaskSchema = {
+    templateId: Joi.string().required(),
+    startTime: Joi.date().required(),
+    endTime: Joi.date().required(),
+    name: Joi.string().required(),
+    target: Joi.string().required(),
+    assessorId: Joi.string().required(),
+    assesseeId: Joi.string().required(),
+};
+
+exports.newAssessTask = async function (req, res) {
+    try {
+        const newAssessTaskInfo = await Joi.validate(req.body, newAssessTaskSchema);
+    
+        const template = await AssessTemplate.findOne({_id:newAssessTaskInfo.templateId});
+        if (!template) {
+            res.status(400).send({code: 5, msg: '模板id错误'});
+            return
+        }
+        const newAssessTask = new AssessTask({
+            template_id: newAssessTaskInfo.templateId,
+            start_time: newAssessTaskInfo.startTime,
+            end_time: newAssessTaskInfo.endTime,
+            template_content: template.content,
+            name: newAssessTaskInfo.name,
+            target: newAssessTaskInfo.target,
+            assessor_id: newAssessTaskInfo.assessorId,
+            assessee_id: newAssessTaskInfo.assesseeId,
+        });
+        await newAssessTask.save();
+        res.status(200).send({code: 0, msg: '添加成功'});
+    } catch (e) {
+        let data = '';
+        if(_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
+        console.log(e);
+        res.status(400).send({code: 5, data, msg: '添加失败'});
+    }
+};
 

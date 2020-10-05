@@ -31,19 +31,35 @@ var AssessTaskSchema = new Schema({
     required: true
   },
   // 考核目标
-  content: {
+  target: {
     type: String,
     required: true
   },
+  // 模板考核内容
+  template_content:[String],
   // 考核单位,组织id
   assessor_id: {
     type: String,
     required: true
   },
+  // 考核单位考核项
+  assessor_content:[Object],
+  // 考核单位已填报
+  assessor_done: {
+    type: Boolean,
+    default: false
+  },
   // 考核对象,组织id
   assessee_id: {
     type: String,
     required: true
+  },
+  // 考核对象考核项
+  assessee_content:[Object],
+  // 考核对象已填报
+  assessee_done: {
+    type: Boolean,
+    default: false
   },
 }, {timestamps: {createAt: 'created', updateAt: 'updated'}});
 

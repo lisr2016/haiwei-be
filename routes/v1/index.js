@@ -9,6 +9,9 @@ router.post('/init/org/info', ctrls.user.initOrgInfo);
 // 重置密码
 router.post('/reset/password', ctrls.user.resetPassword);
 
+// 获取用户考核任务
+router.get('/assess/list', ctrls.assess.fetchUserAssessList);
+
 // 获取用户消息列表
 router.get('/message/list', ctrls.message.fetchUserMessageList);
 // 消息标记已读

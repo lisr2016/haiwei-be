@@ -1,36 +1,35 @@
-var exports = module.exports = {};
+let _ = require('lodash');
+let Assess = require("../models/AssessTask");
 
-let Report = require("../models/DomesticGarbageDaily");
-
-exports.newAssess = function (req, res) {
-    let newReport = new Report({
-        consignee: req.body.consignee || 0,
-        guide: req.body.guide || 0,
-        inspector: req.body.inspector || 0,
-        kitchen_waste_collector: req.body.kitchenWasteCollector || 0,
-        kitchen_waste_positon: req.body.kitchenWastePositon || 0,
-        recyclable_waste_collector: req.body.recyclableWasteCollector || 0,
-        recyclable_waste_positon: req.body.recyclableWastePositon || 0,
-        harmful_waste_collector: req.body.harmfulWasteCollector || 0,
-        harmful_waste_positon: req.body.harmfulWastePositon || 0,
-        kitchen_waste: req.body.kitchenWaste || 0,
-        recyclable_waste: req.body.recyclableWaste || 0,
-        harmful_waste: req.body.harmfulWaste || 0,
-        bulky_waste: req.body.bulkyWaste || 0,
-        other_waste: req.body.otherWaste || 0,
-    });
-    
-    newReport.save(function (err) {
-        if (err) {
-            return res.json({success: false, msg: 'Save book failed.'});
-        }
-        res.json({success: true, msg: 'Successful created new book.'});
-    });
-};
-
-exports.reportsList = function (req, res) {
-    Report.find(function (err, books) {
-        if (err) return next(err);
-        res.json(books);
-    });
+exports.fetchUserAssessList = async function (req, res) {
+    let user = req.user;
+    try {
+        let assesseeList = await Assess.find({assessee_id: user.organizationId});
+        assesseeList = _.chain(assesseeList).filter(e => !e.assessee_done).map(e => {
+            return {
+                startTime: e.start_time,
+                endTime: e.end_time,
+                name: e.name,
+                target: e.target,
+                content: e.template_content,
+                createTime: e.createdAt
+            }
+        });
+        let assessorList = await Assess.find({assesser_id: user.organizationId});
+        
+        // let data = _.chain(messageList).filter(e => !e.is_read).map(e => {
+        //     return {
+        //         id: e._id,
+        //         content: e.content,
+        //         title: e.title,
+        //         type: a[Math.floor(Math.random()*a.length)],
+        //         isRead: e.is_read || false,
+        //         createTime: e.createdAt
+        //     }
+        // }).value();
+        res.status(200).send({code: 0, data:{assesseeList,assessorList}, msg: '查询成功'});
+    }catch (e) {
+        console.log(e)
+        res.status(400).send({code: 5, msg: '查询失败'});
+    }
 };
