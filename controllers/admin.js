@@ -120,22 +120,41 @@ const newUserSchema = {
 exports.newUser = async function (req, res) {
     try {
         const newUserInfo = await Joi.validate(req.body, newUserSchema);
-        let updateInfo = {
-            phone: newUserInfo.phone,
-            password: newUserInfo.password,
-            organization_id: newUserInfo.organizationId,
-            is_deleted: false
-        };
-        await User.updateOne({phone: newUserInfo.phone}, updateInfo, {upsert: true});
-        let user = await User.findOne({phone: req.body.phone});
-        if(!user){
-            res.status(400).send({code: 5, data, msg: '注册失败'});
-            return
-        }
-        user = user.toJSON();
-        user.jwtime = new Date().getTime();
-        let token = jwt.sign(user, config.secret);
-        res.json({code: 0, data: {token: token}, msg: '注册成功'});
+        bcrypt.genSalt(10, function (err, salt) {
+            if (err) {
+                res.status(400).send({code: 5, msg: '更新失败'});
+                return
+            }
+            bcrypt.hash(newUserInfo.password, salt, null, function (err, hash) {
+                if (err) {
+                    res.status(400).send({code: 5, msg: '更新失败'});
+                    return
+                }
+                let updateInfo = {
+                    phone: newUserInfo.phone,
+                    password: hash,
+                    organization_id: newUserInfo.organizationId,
+                    is_deleted: false
+                };
+                User.updateOne({phone: newUserInfo.phone}, updateInfo, {upsert: true}, function (err) {
+                    if (err) {
+                        res.status(400).send({code: 5, msg: '更新失败'});
+                        return
+                    }
+                    User.findOne({phone: req.body.phone}, function (err, user) {
+                        if (err || !user) {
+                            res.status(400).send({code: 5, data, msg: '注册失败'});
+                            return
+                        }
+                        user = user.toJSON();
+                        user.jwtime = new Date().getTime();
+                        let token = jwt.sign(user, config.secret);
+                        res.json({code: 0, data: {token: token}, msg: '注册成功'});
+                        res.status(200).send({code: 0, msg: '更新成功'});
+                    });
+                });
+            });
+        });
     } catch (e) {
         let data = '';
         if (_.size(e.details) > 0) {
