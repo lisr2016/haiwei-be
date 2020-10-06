@@ -131,7 +131,6 @@ exports.signUp = async function (req, res) {
                         user.jwtime = new Date().getTime();
                         let token = jwt.sign(user, config.secret);
                         res.json({code: 0, data: {token: token}, msg: '注册成功'});
-                        res.status(200).send({code: 0, msg: '更新成功'});
                     });
                 });
             });
