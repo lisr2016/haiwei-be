@@ -238,20 +238,3 @@ exports.calMonths = function(startTime, endTime){
     }
     return {timestamps, months}
 };
-
-exports.slidingTimeWindow = function(slot, limit, timeUnit){
-
-};
-
-class Node {
-    constructor (time, counter, next, id) {
-        this.time = time;
-        this.counter = counter;
-        this.next = next;
-        this.id = id;
-    }
-    
-    Node(next){
-        this.next = next;
-    }
-}
