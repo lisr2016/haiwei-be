@@ -11,6 +11,6 @@ router.get('/check/verifyCode', ctrls.user.checkVerifyCode);
 // 获取机构列表
 router.post('/get/org/list', ctrls.admin.fetchOrgList);
 // 新增用户
-router.post('/signup', ctrls.admin.newUser);
+router.post('/signup', ctrls.auth.signUp);
 
 module.exports = router;

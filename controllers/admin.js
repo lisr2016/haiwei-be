@@ -21,7 +21,7 @@ let ObjectId = require('mongodb').ObjectId;
 
 const Joi = require('joi');
 const bcrypt = require('bcrypt-nodejs');
-const {isPhoneNum} = require('../util/lib');
+const { isPhoneNum, isTelePhoneNum } = require('../util/lib');
 
 exports.login = function (req, res) {
     if (!req.body.phone || !req.body.password) {
@@ -64,7 +64,7 @@ exports.fetchUserList = async function (req, res) {
         let list = [];
         const params = await Joi.validate(req.body, fetchUserListSchema);
         if (params.search) {
-            if (isPhoneNum(params.search)) {
+            if (isPhoneNum(params.search) || isTelePhoneNum(params.search)) {
                 // 查找@User.phone 精确匹配
                 list = await User.find({phone: params.search})
             } else {

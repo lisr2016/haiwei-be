@@ -5,37 +5,26 @@ let dayjs = require('dayjs');
 
 let User = require('../models/User');
 
-exports.signup = function(req, res) {
-    if (!req.body.phone || !req.body.password || !req.body.orgId) {
-        res.json({success: false, msg: 'Please pass phone,password,orgId .'});
-    } else {
-        let newUser = new User({
-            phone: req.body.phone,
-            password: req.body.password,
-            organization_id: req.body.orgId
-        });
-        newUser.save(function(err) {
-            if (err) {
-                return res.json({success: false, msg: 'phone already exists.'});
-            }
-            res.json({success: true, msg: 'Successful created new user.'});
-        });
+exports.login = function (req, res) {
+    const phone = req.body.phone;
+    const password = req.body.password;
+    const verifyCode = req.body.verifyCode;
+    if (!phone || !password || !verifyCode) {
+        res.status(400).send({code: 5, msg: '手机号、密码或验证码缺少'});
+        return
     }
-};
-
-exports.login = function(req, res) {
-    if (!req.body.phone || !req.body.password) {
-        res.status(400).send({code: 5, msg: '缺少手机号、密码'});
+    if (req.session[phone] !== verifyCode) {
+        res.status(200).send({code: 5, msg: '验证码错误'});
         return
     }
     User.findOne({
-        phone: req.body.phone
-    }, function(err, user) {
+        phone
+    }, function (err, user) {
         if (err) throw err;
         if (!user || user.is_deleted) {
             res.status(400).send({code: 5, msg: '用户名不存在'});
         } else {
-            user.comparePassword(req.body.password, function (err, isMatch) {
+            user.comparePassword(password, function (err, isMatch) {
                 if (isMatch && !err) {
                     user = user.toJSON();
                     user.jwtime = new Date().getTime();
@@ -52,7 +41,7 @@ exports.login = function(req, res) {
 exports.verifyToken = function (req, res, next) {
     let token = req.query.token || req.headers.token || req.cookies.token || req.body.token;
     if (_.isEmpty(token)) {
-        res.status(401).json({ msg: `没有访问权限` });
+        res.status(401).json({msg: `没有访问权限`});
         return
     }
     try {
@@ -92,6 +81,48 @@ exports.verifyCmsToken = function (req, res, next) {
         };
         next()
     } catch (err) {
-        res.status(500).json({ msg: `未能识别权限标识` })
+        res.status(500).json({msg: `未能识别权限标识`})
+    }
+};
+
+const signUpSchema = {
+    phone: Joi.string().required(),
+    password: Joi.string().required(),
+    organizationId: Joi.string().required(),
+    verifyCode: Joi.string().required(),
+};
+
+exports.signUp = async function (req, res) {
+    try {
+        const signUpInfo = await Joi.validate(req.body, signUpSchema);
+        if (req.session[signUpInfo.phone] !== signUpInfo.verifyCode) {
+            res.status(400).send({code: 5, msg: '验证码错误'});
+            return
+        }
+        let updateInfo = {
+            phone: signUpInfo.phone,
+            password: signUpInfo.password,
+            organization_id: signUpInfo.organizationId,
+            is_deleted: false
+        };
+        await User.updateOne({phone: signUpInfo.phone}, updateInfo, {upsert: true});
+        let user = await User.findOne({phone: signUpInfo.phone});
+        if (!user) {
+            res.status(400).send({code: 5, data, msg: '注册失败'});
+            return
+        }
+        user = user.toJSON();
+        user.jwtime = new Date().getTime();
+        let token = jwt.sign(user, config.secret);
+        res.json({code: 0, data: {token: token}, msg: '注册成功'});
+    } catch (e) {
+        let data = '';
+        if (_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
+        console.log(e);
+        res.status(400).send({code: 5, data, msg: '注册失败'});
     }
 };

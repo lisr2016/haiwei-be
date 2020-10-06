@@ -35,6 +35,11 @@ exports.isPhoneNum = function (content) {
     return myreg.test(content);
 };
 
+exports.isTelePhoneNum = function (content) {
+    let myreg = /0\d{2,3}-\d{7,8}/;
+    return myreg.test(content);
+};
+
 exports.summaryDomDaily = async function(time){
     let data = await domesticDaily.find({time});
     let meeting_times = 0,
