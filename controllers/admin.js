@@ -106,7 +106,7 @@ exports.fetchUserList = async function (req, res) {
                 data += item.message;
             });
         }
-        console.log(e)
+        console.log(e);
         res.status(400).send({code: 5, data, msg: '查询失败'});
     }
 };
@@ -187,7 +187,7 @@ exports.deleteUser = async function (req, res) {
                 data += item.message;
             });
         }
-        console.log(e)
+        console.log(e);
         res.status(400).send({code: 5, data, msg: '修改失败'});
     }
 };
@@ -239,7 +239,7 @@ exports.resetPassword = async function (req, res) {
             }
         });
     } catch (e) {
-        console.log(e)
+        console.log(e);
         res.status(400).send({code: 5, msg: '修改失败'});
     }
 };
@@ -278,7 +278,7 @@ exports.updateUserInfo = async function (req, res) {
                 data += item.message;
             });
         }
-        console.log(e)
+        console.log(e);
         res.status(400).send({code: 5, data, msg: '更新失败'});
     }
 };
@@ -473,7 +473,7 @@ exports.fetchScreenSummary = async function (req, res) {
                 data += item.message;
             });
         }
-        console.log(e)
+        console.log(e);
         res.status(400).send({code: 5, data, msg: '查询失败'});
     }
 };
@@ -489,7 +489,7 @@ exports.signup = function (req, res) {
             authority: 3
         });
         newAdmin.save(function (err) {
-            console.log(err)
+            console.log(err);
             if (err) {
                 return res.json({success: false, msg: 'phone already exists.'});
             }
@@ -540,7 +540,7 @@ exports.fetchOrgList = async function (req, res) {
                 data += item.message;
             });
         }
-        console.log(e)
+        console.log(e);
         res.status(400).send({code: 5, data, msg: '查询失败'});
     }
 };
@@ -617,7 +617,7 @@ exports.updateOrgInfo = async function (req, res) {
                 data += item.message;
             });
         }
-        console.log(e)
+        console.log(e);
         res.status(400).send({code: 5, data, msg: '修改失败'});
     }
 };
@@ -815,7 +815,7 @@ exports.fetchAssessTemplateList = async function (req, res) {
                 data += item.message;
             });
         }
-        console.log(e)
+        console.log(e);
         res.status(400).send({code: 5, data, msg: '查询失败'});
     }
 };
