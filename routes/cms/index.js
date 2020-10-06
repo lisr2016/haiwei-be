@@ -1,6 +1,15 @@
 const router = require('express').Router()
 const requireDir = require('require-dir')
 const ctrls = requireDir('../../controllers')
+const multer = require('multer');
+
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 52428800, // 50mb
+        files: 1
+    }
+});
 
 // 创建管理员
 router.post('/cms/signup', ctrls.admin.signup);
@@ -62,7 +71,7 @@ router.post('/cms/delete/assess/task', ctrls.auth.verifyCmsToken, ctrls.admin.de
 // 获取政策文件列表
 router.post('/cms/get/policy/list', ctrls.auth.verifyCmsToken, ctrls.admin.fetchPolicyList);
 // 新增政策文件
-router.post('/cms/new/policy', ctrls.auth.verifyCmsToken, ctrls.admin.newPolicy);
+router.post('/cms/new/policy',  upload.single('file'),  ctrls.auth.verifyCmsToken, ctrls.admin.newPolicy);
 // 修改政策文件信息
 router.post('/cms/update/policy/info', ctrls.auth.verifyCmsToken, ctrls.admin.updatePolicyInfo);
 // 取消政策文件发布

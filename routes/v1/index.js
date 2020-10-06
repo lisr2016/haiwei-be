@@ -1,6 +1,15 @@
-const router = require('express').Router()
-const requireDir = require('require-dir')
-const ctrls = requireDir('../../controllers')
+const router = require('express').Router();
+const requireDir = require('require-dir');
+const ctrls = requireDir('../../controllers');
+const multer = require('multer');
+
+const upload = multer({
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 52428800, // 50mb
+        files: 1
+    }
+});
 
 // 获取用户信息
 router.get('/user/info', ctrls.user.fetchUserInfo);
@@ -11,6 +20,8 @@ router.post('/reset/password', ctrls.user.resetPassword);
 
 // 获取用户考核任务
 router.get('/assess/list', ctrls.assess.fetchUserAssessList);
+// 用户上传图片
+router.post('/upload/pic', upload.single('file'),  ctrls.assess.uploadPics);
 // 获取用户提交考核
 router.post('/upload/assess', ctrls.assess.uploadAssess);
 

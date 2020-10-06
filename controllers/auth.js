@@ -2,6 +2,7 @@ let _ = require('lodash');
 let config = require('../config');
 let jwt = require('jsonwebtoken');
 let dayjs = require('dayjs');
+let Joi = require('joi');
 
 let User = require('../models/User');
 
