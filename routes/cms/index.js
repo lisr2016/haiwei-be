@@ -56,8 +56,10 @@ router.post('/cms/summary/screen', ctrls.auth.verifyCmsToken, ctrls.admin.fetchS
 
 // 获取考核模板列表
 router.post('/cms/get/assess/template/list', ctrls.auth.verifyCmsToken, ctrls.admin.fetchAssessTemplateList);
+// 更新考核模板
+router.post('/cms/update/assess/template', ctrls.auth.verifyCmsToken, ctrls.admin.newAssessTemplate);
 // 新增考核模板
-router.post('/cms/new/assess/template', ctrls.auth.verifyCmsToken, ctrls.admin.newAssessTemplate);
+router.post('/cms/new/assess/template', ctrls.auth.verifyCmsToken, ctrls.admin.updateAssessTemplate);
 // 删除考核模板
 router.post('/cms/delete/assess/template', ctrls.auth.verifyCmsToken, ctrls.admin.deleteUser);
 

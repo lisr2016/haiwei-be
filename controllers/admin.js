@@ -789,6 +789,36 @@ exports.newAssessTemplate = async function (req, res) {
     }
 };
 
+const updateAssessTemplateSchema = {
+    templateId: Joi.string().required(),
+    name: Joi.string(),
+    content: Joi.array(),
+};
+
+exports.updateAssessTemplate = async function (req, res) {
+    try {
+        const updateAssessTemplateInfo = await Joi.validate(req.body, updateAssessTemplateSchema);
+        const updateInfo = {};
+        if (_.size(updateAssessTemplateInfo.name) > 0) {
+            updateInfo.name = updateAssessTemplateInfo.name;
+        }
+        if (_.size(updateAssessTemplateInfo.content) > 0) {
+            updateInfo.content = updateAssessTemplateInfo.content;
+        }
+        await AssessTemplate.updateOne({_id: ObjectId(updateAssessTemplateInfo.templateId)}, updateInfo);
+        res.status(200).send({code: 0, msg: '更新成功'});
+    } catch (e) {
+        let data = '';
+        if (_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
+        console.log(e);
+        res.status(400).send({code: 5, data, msg: '修改失败'});
+    }
+};
+
 const fetchAssessTemplateListSchema = {
     offset: Joi.number().default(1),
     limit: Joi.number().default(50)
@@ -802,6 +832,7 @@ exports.fetchAssessTemplateList = async function (req, res) {
         let list = _.map(data, e => {
             return {
                 id: e._id,
+                name: e.name,
                 content: e.content,
                 createTime: e.createdAt
             }
