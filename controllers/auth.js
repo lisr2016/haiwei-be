@@ -3,6 +3,7 @@ let config = require('../config');
 let jwt = require('jsonwebtoken');
 let dayjs = require('dayjs');
 let Joi = require('joi');
+const bcrypt = require('bcrypt-nodejs');
 
 let User = require('../models/User');
 
@@ -96,6 +97,7 @@ const signUpSchema = {
 exports.signUp = async function (req, res) {
     try {
         const signUpInfo = await Joi.validate(req.body, signUpSchema);
+        console.log(req.session)
         if (req.session[signUpInfo.phone] !== signUpInfo.verifyCode) {
             res.status(400).send({code: 5, msg: '验证码错误'});
             return
