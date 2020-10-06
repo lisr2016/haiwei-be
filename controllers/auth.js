@@ -106,18 +106,18 @@ exports.signUp = async function (req, res) {
                 res.status(400).send({code: 5, msg: '更新失败'});
                 return
             }
-            bcrypt.hash(newUserInfo.password, salt, null, function (err, hash) {
+            bcrypt.hash(signUpInfo.password, salt, null, function (err, hash) {
                 if (err) {
                     res.status(400).send({code: 5, msg: '更新失败'});
                     return
                 }
                 let updateInfo = {
-                    phone: newUserInfo.phone,
+                    phone: signUpInfo.phone,
                     password: hash,
-                    organization_id: newUserInfo.organizationId,
+                    organization_id: signUpInfo.organizationId,
                     is_deleted: false
                 };
-                User.updateOne({phone: newUserInfo.phone}, updateInfo, {upsert: true}, function (err) {
+                User.updateOne({phone: signUpInfo.phone}, updateInfo, {upsert: true}, function (err) {
                     if (err) {
                         res.status(400).send({code: 5, msg: '更新失败'});
                         return
