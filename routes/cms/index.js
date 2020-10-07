@@ -64,7 +64,7 @@ router.post('/cms/new/assess/template', ctrls.auth.verifyCmsToken, ctrls.admin.u
 router.post('/cms/delete/assess/template', ctrls.auth.verifyCmsToken, ctrls.admin.deleteUser);
 
 // 获取考核任务列表
-router.post('/cms/get/assess/task/list', ctrls.auth.verifyCmsToken, ctrls.admin.fetchUserList);
+router.post('/cms/get/assess/task/list', ctrls.auth.verifyCmsToken, ctrls.admin.fetchAssessTaskList);
 // 新增考核任务
 router.post('/cms/new/assess/task', ctrls.auth.verifyCmsToken, ctrls.admin.newAssessTask);
 // 删除考核任务

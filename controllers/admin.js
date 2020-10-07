@@ -851,6 +851,54 @@ exports.fetchAssessTemplateList = async function (req, res) {
     }
 };
 
+const fetchAssessTaskListSchema = {
+    offset: Joi.number().default(1),
+    limit: Joi.number().default(50)
+};
+
+exports.fetchAssessTaskList = async function (req, res) {
+    try {
+        const params = await Joi.validate(req.body, fetchAssessTaskListSchema);
+        const skip = (params.offset - 1) * params.limit;
+        const data = await AssessTask.find().skip(skip).limit(params.limit);
+        let orgIds = _.chain(data).map(e => e.assessor_id).uniq().value();
+        orgIds.push(req.user.organizationId);
+        const orgs = await Organization.find({_id: {$in: orgIds}});
+        const orgInfoMap = _.keyBy(orgs, '_id');
+        let list = _.map(data, e => {
+            return {
+                id: e._id,
+                startTime: e.start_time,
+                endTime: e.end_time,
+                name: e.name,
+                target: e.target,
+                content: e.template_content,
+                assessorOrgName: orgInfoMap[e.assessor_id].name,
+                assessorId: e.assessor_id,
+                assessorDone: e.assessor_done,
+                assessorContent: e.assessor_content,
+                assesseeOrgName: orgInfoMap[e.assessee_id].name,
+                assesseeId: e.assessee_id,
+                assesseeDone: e.assessee_done,
+                assesseeContent: e.assessee_content,
+                type: '2',
+                createTime: e.createdAt
+            }
+        });
+        let count = await AssessTask.countDocuments();
+        res.status(200).send({code: 0, data: {list, count}, msg: '查询成功'});
+    } catch (e) {
+        let data = '';
+        if (_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
+        console.log(e);
+        res.status(400).send({code: 5, data, msg: '查询失败'});
+    }
+};
+
 const newAssessTaskSchema = {
     templateId: Joi.string().required(),
     startTime: Joi.date().required(),

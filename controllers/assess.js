@@ -13,6 +13,7 @@ exports.fetchUserAssessList = async function (req, res) {
         const orgInfoMap = _.keyBy(orgs, '_id');
         assesseeList = _.chain(assesseeList).filter(e => !e.assessee_done).map(e => {
             return {
+                id: e._id,
                 startTime: e.start_time,
                 endTime: e.end_time,
                 name: e.name,
