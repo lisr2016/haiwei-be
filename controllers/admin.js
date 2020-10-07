@@ -651,7 +651,7 @@ exports.deleteOrg = async function (req, res) {
 const fetchPolicyListSchema = {
     offset: Joi.number().default(1),
     limit: Joi.number().default(50)
-}
+};
 
 exports.fetchPolicyList = async function (req, res) {
     try {
@@ -664,9 +664,7 @@ exports.fetchPolicyList = async function (req, res) {
                 title: e.title,
                 content: e.content,
                 isDeleted: e.is_deleted,
-                publisher: e.admin_name,
                 url: e.url,
-                type: e.type,
                 createTime: e.createdAt
             }
         });
