@@ -702,7 +702,7 @@ const newPolicySchema = {
     title: Joi.string().required(),
     content: Joi.string().required(),
     url: Joi.string().required(),
-    isDeleted: Joi.boolean().required(),
+    isDeleted: Joi.boolean(),
 };
 
 exports.newPolicy = async function (req, res) {
