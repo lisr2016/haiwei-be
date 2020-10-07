@@ -701,7 +701,7 @@ exports.uploadFile = async function (req, res) {
 const newPolicySchema = {
     title: Joi.string().required(),
     content: Joi.string().required(),
-    url: Joi.string.required(),
+    url: Joi.string().required(),
     isDeleted: Joi.boolean().required(),
 };
 
