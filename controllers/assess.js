@@ -89,6 +89,10 @@ exports.uploadPics = async function (req, res) {
             res.status(400).json({ code: 5, msg: '未发现上传文件' });
             return;
         }
+        if (!(_.size(req.body.taskId) && _.size(req.body.contentIndex) && _.size(req.body.picIndex))) {
+            res.status(400).json({ code: 5, msg: '参数错误' });
+            return;
+        }
         const url = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1602002862040&di=05d3c266d466b513c275a8281c7ed651&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F14%2F75%2F01300000164186121366756803686.jpg'
         res.status(200).json({code: 0, data: url, msg: '上传成功'});
     } catch (e) {
