@@ -93,6 +93,6 @@ exports.uploadPics = async function (req, res) {
         res.status(200).json({code: 0, data: url, msg: '上传成功'});
     } catch (e) {
         console.log(e);
-        res.status(400).send({code: 5, msg: '查询失败'});
+        res.status(400).send({code: 5, msg: '上传失败'});
     }
 };
