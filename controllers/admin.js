@@ -664,6 +664,7 @@ exports.fetchPolicyList = async function (req, res) {
                 title: e.title,
                 content: e.content,
                 isDeleted: e.is_deleted,
+                publisher: e.admin_name,
                 url: e.url,
                 createTime: e.createdAt
             }
