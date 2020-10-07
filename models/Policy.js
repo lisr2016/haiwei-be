@@ -32,6 +32,11 @@ var PolicySchema = new Schema({
     type: String,
     default: false
   },
+  // 文件名
+  filename: {
+    type: String,
+    default: false
+  },
 }, {timestamps: {createAt: 'created', updateAt: 'updated'}});
 
 
