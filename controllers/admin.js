@@ -660,11 +660,13 @@ exports.fetchPolicyList = async function (req, res) {
         let list = await Policy.find().skip(skip).limit(params.limit).sort({is_deleted: 1});
         list = _.map(list, e => {
             return {
-                policyId: e._id,
+                id: e._id,
                 title: e.title,
                 content: e.content,
                 isDeleted: e.is_deleted,
                 publisher: e.admin_name,
+                url: e.url,
+                type: e.type,
                 createTime: e.createdAt
             }
         });
