@@ -27,11 +27,6 @@ var PolicySchema = new Schema({
     type: Boolean,
     default: false
   },
-  // 文件类型
-  type: {
-    type: String,
-    default: false
-  },
   // 文件地址
   url: {
     type: String,

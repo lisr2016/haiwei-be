@@ -702,18 +702,17 @@ const newPolicySchema = {
     title: Joi.string().required(),
     content: Joi.string().required(),
     url: Joi.string().required(),
-    isDeleted: Joi.boolean(),
 };
 
 exports.newPolicy = async function (req, res) {
     try {
-        const newNotifyInfo = await Joi.validate(req.body, newPolicySchema);
+        const params = await Joi.validate(req.body, newPolicySchema);
         const newNotify = new Policy({
-            title: newNotifyInfo.title,
-            content: newNotifyInfo.content,
+            title: params.title,
+            content: params.content,
             admin_id: req.admin.id,
+            url: params.url,
             admin_name: req.admin.username,
-            is_deleted: newNotifyInfo.isDeleted
         });
         await newNotify.save();
         res.status(200).send({code: 0, msg: '添加成功'});
