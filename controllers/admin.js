@@ -960,45 +960,45 @@ exports.newAssessTask = async function (req, res) {
 };
 
 const fetchReportListSchema = {
+    offset: Joi.number().default(1),
+    limit: Joi.number().default(50),
     orgId: Joi.string().required(),
-    time: Joi.date().required(),
+    time: Joi.date(),
     reportType: Joi.string().required(),
 };
 
 exports.fetchReportList = async function (req, res) {
     try {
-        const fetchReportListInfo = await Joi.validate(req.body, fetchReportListSchema);
-        let data = null;
-        switch (fetchReportListInfo.reportType) {
+        const params = await Joi.validate(req.body, fetchReportListSchema);
+        let list = [];
+        let options = {organization_id: params.organizationId};
+        if(params.time){
+            options.time = params.time;
+        }
+        let skip = (params.offset - 1) * params.limit;
+        let count = null;
+        switch (params.reportType) {
             case '1':
-                data = await DomesticGarbageDaily.findOne({
-                    organization_id: fetchReportListInfo.organizationId,
-                    time: fetchReportListInfo.time
-                });
+                list = await DomesticGarbageDaily.find(options).skip(skip).limit(params.limit);
+                count = await DomesticGarbageDaily.countDocuments(options);
                 break;
             case '2':
-                data = await DomesticGarbageWeekly.findOne({
-                    organization_id: fetchReportListInfo.organizationId,
-                    time: fetchReportListInfo.time
-                });
+                list = await DomesticGarbageWeekly.find(options).skip(skip).limit(params.limit);
+                count = await DomesticGarbageWeekly.countDocuments(options);
                 break;
             case '3':
-                data = await DomesticGarbageMonthly.findOne({
-                    organization_id: fetchReportListInfo.organizationId,
-                    time: fetchReportListInfo.time
-                });
+                list = await DomesticGarbageMonthly.find(options).skip(skip).limit(params.limit);
+                count = await DomesticGarbageMonthly.countDocuments(options);
                 break;
             case '4':
-                data = await MedicGarbageMonthly.findOne({
-                    organization_id: fetchReportListInfo.organizationId,
-                    time: fetchReportListInfo.time
-                });
+                list = await MedicGarbageMonthly.find(options).skip(skip).limit(params.limit);
+                count = await MedicGarbageMonthly.countDocuments(options);
                 break;
             default:
                 res.status(400).send({code: 5, msg: 'reportType类型错误'});
                 return
         }
-        res.status(200).send({code: 0, data, msg: 'reportType类型错误'});
+        res.status(200).send({code: 0, data: {list, count}, msg: 'reportType类型错误'});
     } catch (e) {
         let data = '';
         if (_.size(e.details) > 0) {
