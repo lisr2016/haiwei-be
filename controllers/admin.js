@@ -925,7 +925,7 @@ exports.fetchAssessTaskList = async function (req, res) {
 
 const newAssessTaskSchema = {
     templateId: Joi.string().required(),
-    type: Joi.string.required(),
+    type: Joi.string().required(),
     startTime: Joi.date().required(),
     endTime: Joi.date().required(),
     name: Joi.string().required(),
