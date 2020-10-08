@@ -52,7 +52,6 @@ var AssessTaskSchema = new Schema({
   // 考核对象,组织id
   assessee_id: {
     type: String,
-    required: true
   },
   // 考核对象考核项
   assessee_content:[Object],
