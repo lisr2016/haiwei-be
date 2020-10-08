@@ -884,8 +884,9 @@ exports.fetchAssessTaskList = async function (req, res) {
         const params = await Joi.validate(req.body, fetchAssessTaskListSchema);
         const skip = (params.offset - 1) * params.limit;
         const data = await AssessTask.find().skip(skip).limit(params.limit);
-        let orgIds = _.chain(data).map(e => e.assessor_id).uniq().value();
-        orgIds.push(req.user.organizationId);
+        let orgIds = _.chain(data).map(e => e.assessor_id).value();
+        let orgIds2 = _.chain(data).map(e => e.assessee_id).value();
+        orgIds = _.chain(orgIds).concat(orgIds2).uniq().value();
         const orgs = await Organization.find({_id: {$in: orgIds}});
         const orgInfoMap = _.keyBy(orgs, '_id');
         let list = _.map(data, e => {
