@@ -932,8 +932,6 @@ const newAssessTaskSchema = {
     target: Joi.string().required(),
     assessorId: Joi.string().required(),
     assesseeId: Joi.string(),
-    assessorContent: Joi.string().required,
-    assesseeContent: Joi.string(),
 };
 
 exports.newAssessTask = async function (req, res) {
