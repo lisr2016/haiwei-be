@@ -905,7 +905,7 @@ exports.fetchAssessTaskList = async function (req, res) {
                 assesseeId: e.assessee_id,
                 assesseeDone: e.assessee_done,
                 assesseeContent: e.assessee_content,
-                type: '2',
+                type: e.type,
                 createTime: e.createdAt
             }
         });
