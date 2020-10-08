@@ -968,6 +968,27 @@ exports.newAssessTask = async function (req, res) {
     }
 };
 
+const deleteTaskSchema = {
+    templateId: Joi.string().required(),
+};
+
+exports.deleteTask = async function (req, res) {
+    try {
+        const params = await Joi.validate(req.body, deleteTaskSchema);
+        await AssessTask.deleteOne({_id: params.templateId});
+        res.status(200).send({code: 0, msg: '删除成功'});
+    } catch (e) {
+        let data = '';
+        if (_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
+        console.log(e);
+        res.status(400).send({code: 5, data, msg: '删除失败'});
+    }
+};
+
 const fetchReportListSchema = {
     offset: Joi.number().default(1),
     limit: Joi.number().default(50),

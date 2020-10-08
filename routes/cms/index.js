@@ -68,7 +68,7 @@ router.post('/cms/get/assess/task/list', ctrls.auth.verifyCmsToken, ctrls.admin.
 // 新增考核任务
 router.post('/cms/new/assess/task', ctrls.auth.verifyCmsToken, ctrls.admin.newAssessTask);
 // 删除考核任务
-router.post('/cms/delete/assess/task', ctrls.auth.verifyCmsToken, ctrls.admin.deleteUser);
+router.post('/cms/delete/assess/task', ctrls.auth.verifyCmsToken, ctrls.admin.deleteTask);
 
 // 获取政策文件列表
 router.post('/cms/get/policy/list', ctrls.auth.verifyCmsToken, ctrls.admin.fetchPolicyList);
