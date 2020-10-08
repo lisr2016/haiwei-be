@@ -925,32 +925,36 @@ exports.fetchAssessTaskList = async function (req, res) {
 
 const newAssessTaskSchema = {
     templateId: Joi.string().required(),
-    type: Joi.string.default('2'),
+    type: Joi.string.required(),
     startTime: Joi.date().required(),
     endTime: Joi.date().required(),
     name: Joi.string().required(),
     target: Joi.string().required(),
     assessorId: Joi.string().required(),
-    assesseeId: Joi.string().required(),
+    assesseeId: Joi.string(),
+    assessorContent: Joi.string().required,
+    assesseeContent: Joi.string(),
 };
 
 exports.newAssessTask = async function (req, res) {
     try {
-        const newAssessTaskInfo = await Joi.validate(req.body, newAssessTaskSchema);
-        const template = await AssessTemplate.findOne({_id: newAssessTaskInfo.templateId});
+        const params = await Joi.validate(req.body, newAssessTaskSchema);
+        const template = await AssessTemplate.findOne({_id: params.templateId});
         if (!template) {
             res.status(400).send({code: 5, msg: '模板id错误'});
             return
         }
         const newAssessTask = new AssessTask({
-            template_id: newAssessTaskInfo.templateId,
-            start_time: newAssessTaskInfo.startTime,
-            end_time: newAssessTaskInfo.endTime,
+            template_id: params.templateId,
+            start_time: params.startTime,
+            end_time: params.endTime,
             template_content: template.content,
-            name: newAssessTaskInfo.name,
-            target: newAssessTaskInfo.target,
-            assessor_id: newAssessTaskInfo.assessorId,
-            assessee_id: newAssessTaskInfo.assesseeId,
+            name: params.name,
+            target: params.target,
+            assessor_id: params.assessorId,
+            assessee_id: params.assesseeId,
+            assessor_content: params.assessorContent,
+            assessee_content: params.assesseeContent || null,
         });
         await newAssessTask.save();
         res.status(200).send({code: 0, msg: '添加成功'});
