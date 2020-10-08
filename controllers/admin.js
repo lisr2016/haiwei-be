@@ -925,6 +925,7 @@ exports.fetchAssessTaskList = async function (req, res) {
 
 const newAssessTaskSchema = {
     templateId: Joi.string().required(),
+    type: Joi.string.default('2'),
     startTime: Joi.date().required(),
     endTime: Joi.date().required(),
     name: Joi.string().required(),
@@ -936,7 +937,6 @@ const newAssessTaskSchema = {
 exports.newAssessTask = async function (req, res) {
     try {
         const newAssessTaskInfo = await Joi.validate(req.body, newAssessTaskSchema);
-        
         const template = await AssessTemplate.findOne({_id: newAssessTaskInfo.templateId});
         if (!template) {
             res.status(400).send({code: 5, msg: '模板id错误'});
