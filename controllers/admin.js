@@ -86,6 +86,7 @@ exports.fetchUserList = async function (req, res) {
             count = await User.countDocuments();
         }
         const orgIds = _.uniq(_.map(list, e => e.organization_id));
+        console.log(orgIds)
         const orgs = await Organization.find({_id: {$in: orgIds}});
         const orgInfoMap = _.keyBy(orgs, '_id');
         list = _.map(list, e => {
@@ -149,10 +150,6 @@ exports.newUser = async function (req, res) {
                             res.status(400).send({code: 5, data, msg: '注册失败'});
                             return
                         }
-                        user = user.toJSON();
-                        user.jwtime = new Date().getTime();
-                        let token = jwt.sign(user, config.secret);
-                        res.json({code: 0, data: {token: token}, msg: '注册成功'});
                         res.status(200).send({code: 0, msg: '更新成功'});
                     });
                 });

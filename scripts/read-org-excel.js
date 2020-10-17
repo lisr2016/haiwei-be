@@ -35,7 +35,8 @@ async function main () {
         let orgInfo = {
             name: name,
             level: level,
-            address: address
+            address: address,
+            manager_phone: ws.getCell(`C${i}`).value
         };
         orgs.push(orgInfo)
     }
