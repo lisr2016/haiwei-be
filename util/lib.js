@@ -1,7 +1,9 @@
 let axios = require('axios');
 let appendQuery = require('append-query');
 let _ = require('lodash');
-let dayjs = require('dayjs')
+let dayjs = require('dayjs');
+let config = require('../config');
+let COS = require('cos-nodejs-sdk-v5');
 
 let domesticDaily = require("../models/DomesticGarbageDaily");
 let domesticMonthly = require("../models/DomesticGarbageMonthly");
@@ -237,4 +239,41 @@ exports.calMonths = function(startTime, endTime){
         startTime = dayjs(startTime).add(1, 'month');
     }
     return {timestamps, months}
+};
+
+const cos = new COS({
+    // 必选参数
+    SecretId: config.CosSecretId,
+    SecretKey: config.CosSecretKey,
+});
+
+exports.cosPutObject = async function (Key, Body) {
+    return new Promise((resolve, reject) => {
+        cos.putObject({
+            Bucket: config.Bucket, /* 必须 */ // Bucket 格式：test-1250000000
+            Key: Key, /* 必须 */
+            Body: Body
+        }, function (err, data) {
+            if (err) return reject(err);
+            return resolve(data);
+        });
+    })
+};
+
+exports.cosGetObjectUrl = async function (phone, code) {
+    try {
+        return new Promise((resolve, reject) => {
+            const url = cos.getObjectUrl({
+                Bucket: config.CosBucket,
+                Key: '1mb.zip',
+                Sign: true,
+            }, function (err, data) {
+                console.log(err || data);
+            });
+        })
+        
+    } catch (e) {
+        console.log(e);
+        return false;
+    }
 };
