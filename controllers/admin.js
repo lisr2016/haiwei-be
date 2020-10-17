@@ -21,7 +21,7 @@ let ObjectId = require('mongodb').ObjectId;
 
 const Joi = require('joi');
 const bcrypt = require('bcrypt-nodejs');
-const { isPhoneNum, isTelePhoneNum } = require('../util/lib');
+const { isPhoneNum } = require('../util/lib');
 
 exports.login = function (req, res) {
     if (!req.body.phone || !req.body.password) {
@@ -63,15 +63,18 @@ exports.fetchUserList = async function (req, res) {
     try {
         let list = [];
         const params = await Joi.validate(req.body, fetchUserListSchema);
+        let count = 0;
         if (params.search) {
-            if (isPhoneNum(params.search) || isTelePhoneNum(params.search)) {
+            if (isPhoneNum(params.search)) {
                 // 查找@User.phone 精确匹配
-                list = await User.find({phone: params.search})
+                list = await User.find({phone: params.search});
+                count = await User.countDocuments({phone: params.search});
             } else {
                 // 查找@Organization.name 模糊匹配
                 let orgList = await Organization.find({name: new RegExp(params.search)}, '_id');
                 if (_.size(orgList) > 0) {
                     list = await User.find({organization_id: {$in: _.map(orgList, i => i._id)}});
+                    count = await User.countDocuments({organization_id: {$in: _.map(orgList, i => i._id)}});
                 }
             }
             let start = (params.offset - 1) * params.limit;
@@ -80,6 +83,7 @@ exports.fetchUserList = async function (req, res) {
         } else {
             let skip = (params.offset - 1) * params.limit;
             list = await User.find().skip(skip).limit(params.limit);
+            count = await User.countDocuments();
         }
         const orgIds = _.uniq(_.map(list, e => e.organization_id));
         const orgs = await Organization.find({_id: {$in: orgIds}});
@@ -97,7 +101,6 @@ exports.fetchUserList = async function (req, res) {
                 }
             }
         });
-        let count = await User.countDocuments();
         res.status(200).send({code: 0, data: {list, count}, msg: '查询成功'});
     } catch (e) {
         let data = '';
@@ -508,14 +511,17 @@ exports.fetchOrgList = async function (req, res) {
     try {
         let list = [];
         const params = await Joi.validate(req.body, fetchOrgListSchema);
+        let count = 0;
         if (params.search) {
             list = await Organization.find({name: new RegExp(params.search)});
+            count = await Organization.countDocuments({name: new RegExp(params.search)});
             let start = (params.offset - 1) * params.limit;
             let stop = params.offset * params.limit;
             list = _.slice(list, start, stop)
         } else {
             let skip = (params.offset - 1) * params.limit;
             list = await Organization.find().skip(skip).limit(params.limit).sort({is_deleted: 1});
+            count = await Organization.countDocuments();
         }
         list = _.map(list, e => {
             return {
@@ -531,7 +537,6 @@ exports.fetchOrgList = async function (req, res) {
                 isDeleted: e.is_deleted,
             }
         });
-        let count = await Organization.countDocuments();
         res.status(200).send({code: 0, data: {list, count}, msg: '查询成功'});
     } catch (e) {
         let data = '';

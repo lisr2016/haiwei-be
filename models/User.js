@@ -20,6 +20,12 @@ var UserSchema = new Schema({
       type: String,
       required: true
     },
+    // 1.正常, 2.生活垃圾负责人,3.医疗垃圾负责人
+    type: {
+        type: String,
+        required: false,
+        default: '1'
+    },
     is_deleted: {
         type: Boolean,
         default: false

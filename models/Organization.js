@@ -21,7 +21,7 @@ var OrganizationSchema = new Schema({
   // 负责人电话
   manager_phone: {
     type: String,
-    required: true
+    required: false
   },
   // 床位数
   bednum: {
@@ -34,15 +34,15 @@ var OrganizationSchema = new Schema({
     required: true
   },
   // 级别
-  // 1.三级医院、2.二级、3.一级、4.门诊部、5.诊所、6.未定级、7.医务室、8.卫生室、9.社区卫生服务中心、10.社区卫生服务站
+  // 1.三级医院、2.二级医院、3.一级医院、4.门诊部、5.诊所、6.未定级、7.医务室、8.卫生室、9.社区卫生服务中心、10.社区卫生服务站
   level: {
     type: String,
-    required: true
+    required: true,
   },
   // 街道
   street: {
     type: String,
-    required: true
+    required: false
   },
   // 注册类型  1:预设联系方式  2:开放注册
   type: {
@@ -56,6 +56,6 @@ var OrganizationSchema = new Schema({
   }
 }, {timestamps: {createAt: 'created', updateAt: 'updated'}});
 
-// OrganizationSchema.index({ name: 1 });
+OrganizationSchema.index({ name: 1 });
 
 module.exports = mongoose.model('organization', OrganizationSchema);
