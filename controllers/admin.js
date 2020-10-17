@@ -971,13 +971,13 @@ exports.newAssessTask = async function (req, res) {
 };
 
 const deleteTaskSchema = {
-    templateId: Joi.string().required(),
+    taskId: Joi.string().required(),
 };
 
 exports.deleteTask = async function (req, res) {
     try {
         const params = await Joi.validate(req.body, deleteTaskSchema);
-        await AssessTask.deleteOne({_id: params.templateId});
+        await AssessTask.deleteOne({_id: params.taskId});
         res.status(200).send({code: 0, msg: '删除成功'});
     } catch (e) {
         let data = '';
