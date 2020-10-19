@@ -104,12 +104,12 @@ exports.signUp = async function (req, res) {
         }
         bcrypt.genSalt(10, function (err, salt) {
             if (err) {
-                res.status(400).send({code: 5, msg: '更新失败'});
+                res.status(400).send({code: 5, msg: '注册失败'});
                 return
             }
             bcrypt.hash(signUpInfo.password, salt, null, function (err, hash) {
                 if (err) {
-                    res.status(400).send({code: 5, msg: '更新失败'});
+                    res.status(400).send({code: 5, msg: '注册失败'});
                     return
                 }
                 let updateInfo = {
@@ -120,24 +120,24 @@ exports.signUp = async function (req, res) {
                 };
                 User.updateOne({phone: signUpInfo.phone}, updateInfo, {upsert: true}, function (err) {
                     if (err) {
-                        res.status(400).send({code: 5, msg: '更新失败'});
+                        res.status(400).send({code: 5, msg: '注册失败'});
                         return
                     }
                     User.findOne({phone: req.body.phone}, function (err, user) {
                         if (err || !user) {
-                            res.status(400).send({code: 5, data, msg: '注册失败'});
+                            res.status(400).send({code: 5, msg: '注册失败'});
                             return
                         }
                         Organization.findOne({_id: signUpInfo.organizationId}, function (err, org) {
                             if (err || !org) {
-                                res.status(400).send({code: 5, data, msg: '注册失败'});
+                                res.status(400).send({code: 5, msg: '注册失败'});
                                 return
                             }
                             const updateInfo = {registed_users: org.registed_users || {}};
                             updateInfo.registed_users[`${user._id}`] = true;
                             Organization.updateOne({_id: signUpInfo.organizationId}, function (err, result) {
                                 if (err || !result) {
-                                    res.status(400).send({code: 5, data, msg: '注册失败'});
+                                    res.status(400).send({code: 5, msg: '注册失败'});
                                     return
                                 }
                                 user = user.toJSON();
