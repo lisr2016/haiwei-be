@@ -6,6 +6,7 @@ let Joi = require('joi');
 const bcrypt = require('bcrypt-nodejs');
 
 let User = require('../models/User');
+let Organization = require('../models/Organization');
 
 exports.login = function (req, res) {
     const phone = req.body.phone;
@@ -127,10 +128,24 @@ exports.signUp = async function (req, res) {
                             res.status(400).send({code: 5, data, msg: '注册失败'});
                             return
                         }
-                        user = user.toJSON();
-                        user.jwtime = new Date().getTime();
-                        let token = jwt.sign(user, config.secret);
-                        res.json({code: 0, data: {token: token}, msg: '注册成功'});
+                        Organization.findOne({_id: signUpInfo.organizationId}, function (err, org) {
+                            if (err || !org) {
+                                res.status(400).send({code: 5, data, msg: '注册失败'});
+                                return
+                            }
+                            const updateInfo = {registed_users: org.registed_users};
+                            updateInfo.registed_users[`${user._id}`] = true;
+                            Organization.updateOne({_id: signUpInfo.organizationId}, function (err, result) {
+                                if (err || !result) {
+                                    res.status(400).send({code: 5, data, msg: '注册失败'});
+                                    return
+                                }
+                                user = user.toJSON();
+                                user.jwtime = new Date().getTime();
+                                let token = jwt.sign(user, config.secret);
+                                res.json({code: 0, data: {token: token}, msg: '注册成功'});
+                            });
+                        });
                     });
                 });
             });

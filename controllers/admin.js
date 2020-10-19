@@ -90,7 +90,6 @@ exports.fetchUserList = async function (req, res) {
             count = await User.countDocuments();
         }
         const orgIds = _.uniq(_.map(list, e => e.organization_id));
-        console.log(orgIds)
         const orgs = await Organization.find({_id: {$in: orgIds}});
         const orgInfoMap = _.keyBy(orgs, '_id');
         list = _.map(list, e => {
@@ -997,6 +996,10 @@ exports.newAssessTask = async function (req, res) {
             assessee_content: params.assesseeContent || null,
         });
         await newAssessTask.save();
+        
+        if(params.assesseeId){
+        
+        }
         res.status(200).send({code: 0, msg: '添加成功'});
     } catch (e) {
         let data = '';

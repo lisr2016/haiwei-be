@@ -13,6 +13,11 @@ var OrganizationSchema = new Schema({
     type: Boolean,
     default: false
   },
+  // 注册在组织下的userId
+  // { 'userId' : true }
+  registed_users: {
+    type: Object,
+  },
   // 法人电话
   corporation_phone: {
     type: String,
