@@ -143,29 +143,39 @@ exports.newUser = async function (req, res) {
                     organization_id: newUserInfo.organizationId,
                     is_deleted: false
                 };
-                User.updateOne({phone: newUserInfo.phone}, updateInfo, {upsert: true}, function (err) {
+                User.findOne({phone: req.body.phone}, function (err, user) {
                     if (err) {
                         res.status(400).send({code: 5, msg: '新增失败'});
                         return
                     }
-                    User.findOne({phone: req.body.phone}, function (err, user) {
-                        if (err || !user) {
+                    if (user) {
+                        res.status(400).send({code: 5, msg: '手机号已存在'});
+                        return
+                    }
+                    User.updateOne({phone: newUserInfo.phone}, updateInfo, {upsert: true}, function (err) {
+                        if (err) {
                             res.status(400).send({code: 5, msg: '新增失败'});
                             return
                         }
-                        Organization.findOne({_id: newUserInfo.organizationId}, function (err, org) {
-                            if (err || !org) {
+                        User.findOne({phone: req.body.phone}, function (err, user) {
+                            if (err || !user) {
                                 res.status(400).send({code: 5, msg: '新增失败'});
                                 return
                             }
-                            const updateInfo = {registed_users: org.registed_users || {}};
-                            updateInfo.registed_users[`${user._id}`] = true;
-                            Organization.updateOne({_id: newUserInfo.organizationId}, updateInfo, function (err, result) {
-                                if (err || !result) {
+                            Organization.findOne({_id: newUserInfo.organizationId}, function (err, org) {
+                                if (err || !org) {
                                     res.status(400).send({code: 5, msg: '新增失败'});
                                     return
                                 }
-                                res.status(200).send({code: 0, msg: '新增成功'});
+                                const updateInfo = {registed_users: org.registed_users || {}};
+                                updateInfo.registed_users[`${user._id}`] = true;
+                                Organization.updateOne({_id: newUserInfo.organizationId}, updateInfo, function (err, result) {
+                                    if (err || !result) {
+                                        res.status(400).send({code: 5, msg: '新增失败'});
+                                        return
+                                    }
+                                    res.status(200).send({code: 0, msg: '新增成功'});
+                                });
                             });
                         });
                     });
@@ -186,16 +196,26 @@ exports.newUser = async function (req, res) {
 
 const deleteUserSchema = {
     userId: Joi.string().required(),
-    delete: Joi.boolean().required(),
+    isDelete: Joi.boolean().required(),
 };
 
 exports.deleteUser = async function (req, res) {
     try {
         const deleteUserInfo = await Joi.validate(req.body, deleteUserSchema);
         const updateInfo = {
-            is_delete: deleteUserInfo.delete,
+            is_delete: deleteUserInfo.isDelete,
         };
         await User.updateOne({_id: ObjectId(deleteUserInfo.userId)}, updateInfo);
+        let userInfo = await User.findOne({_id: deleteUserInfo.userId});
+        let orgInfo = await Organization.findOne({_id: userInfo.organization_id});
+        let registedUsers = orgInfo.registed_users || {};
+        if (deleteUserInfo.isDelete) {
+            delete registedUsers[`${deleteUserInfo.userId}`]
+        } else {
+            registedUsers[`${deleteUserInfo.userId}`] = true;
+        }
+        let result = await Organization.updateOne({_id: userInfo.organization_id}, { registed_users: registedUsers });
+        console.log(result);
         res.status(200).send({code: 0, msg: '更新成功'});
     } catch (e) {
         let data = '';
