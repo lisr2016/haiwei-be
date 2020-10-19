@@ -18,6 +18,7 @@ let DomesticGarbageDailySummary = require('../models/DomesticGarbageDailySummary
 let DomesticGarbageWeeklySummary = require('../models/DomesticGarbageWeeklySummary');
 let DomesticGarbageMonthlySummary = require('../models/DomesticGarbageMonthlySummary');
 let MedicGarbageMonthlySummary = require('../models/MedicGarbageMonthlySummary');
+let Message = require("../models/Message");
 let ObjectId = require('mongodb').ObjectId;
 
 
@@ -1030,9 +1031,31 @@ exports.newAssessTask = async function (req, res) {
             assessee_content: params.assesseeContent || null,
         });
         await newAssessTask.save();
-        
-        if(params.assesseeId){
-        
+        if (params.assesseeId && params.type === '2') { // 互查情况下给机构assesseeId下的用户发送提醒信息
+            let orgInfo = await Organization.findOne({_id: params.assesseeId});
+            let registed_users = orgInfo.registed_users || {};
+            let userIds = Object.keys(registed_users);
+            for(let userId of userIds){
+                const newMessage = new Message({
+                    user_id:userId,
+                    title: '您有一件互查巡检任务需要处理',
+                    content: `${params.startTime}, ${params.endTime}, `,
+                    type: '1'
+                });
+                await newMessage.save();
+            }
+        }
+        let orgInfo = await Organization.findOne({_id: params.assessorId});
+        let registed_users = orgInfo.registed_users || {};
+        let userIds = Object.keys(registed_users);
+        for(let userId of userIds){
+            const newMessage = new Message({
+                user_id:userId,
+                title: `您有一件${params.type === '2' ? '互查' : '自查'}巡检任务需要处理`,
+                content: `${params.startTime}, ${params.endTime}, `,
+                type: '1'
+            });
+            await newMessage.save();
         }
         res.status(200).send({code: 0, msg: '添加成功'});
     } catch (e) {

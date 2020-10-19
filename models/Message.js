@@ -11,7 +11,7 @@ var MessageSchema = new Schema({
   // 消息是否已读
   is_read: {
     type: Boolean,
-    required: true
+    default: false
   },
   // 标题名称
   title: {
@@ -23,7 +23,7 @@ var MessageSchema = new Schema({
     type: String,
     required: true
   },
-  // 类型
+  // 类型 1.普通消息,2.生活垃圾日报,3.生活垃圾周报,4.生活垃圾月报,5.医疗垃圾日报
   type: {
     type: String,
     required: true
