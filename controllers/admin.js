@@ -129,12 +129,12 @@ exports.newUser = async function (req, res) {
         const newUserInfo = await Joi.validate(req.body, newUserSchema);
         bcrypt.genSalt(10, function (err, salt) {
             if (err) {
-                res.status(400).send({code: 5, msg: '更新失败'});
+                res.status(400).send({code: 5, msg: '新增失败'});
                 return
             }
             bcrypt.hash(newUserInfo.password, salt, null, function (err, hash) {
                 if (err) {
-                    res.status(400).send({code: 5, msg: '更新失败'});
+                    res.status(400).send({code: 5, msg: '新增失败'});
                     return
                 }
                 let updateInfo = {
@@ -145,15 +145,29 @@ exports.newUser = async function (req, res) {
                 };
                 User.updateOne({phone: newUserInfo.phone}, updateInfo, {upsert: true}, function (err) {
                     if (err) {
-                        res.status(400).send({code: 5, msg: '更新失败'});
+                        res.status(400).send({code: 5, msg: '新增失败'});
                         return
                     }
                     User.findOne({phone: req.body.phone}, function (err, user) {
                         if (err || !user) {
-                            res.status(400).send({code: 5, data, msg: '注册失败'});
+                            res.status(400).send({code: 5, msg: '新增失败'});
                             return
                         }
-                        res.status(200).send({code: 0, msg: '更新成功'});
+                        Organization.findOne({_id: newUserInfo.organizationId}, function (err, org) {
+                            if (err || !org) {
+                                res.status(400).send({code: 5, msg: '新增失败'});
+                                return
+                            }
+                            const updateInfo = {registed_users: org.registed_users || {}};
+                            updateInfo.registed_users[`${user._id}`] = true;
+                            Organization.updateOne({_id: newUserInfo.organizationId}, updateInfo, function (err, result) {
+                                if (err || !result) {
+                                    res.status(400).send({code: 5, msg: '新增失败'});
+                                    return
+                                }
+                                res.status(200).send({code: 0, msg: '新增成功'});
+                            });
+                        });
                     });
                 });
             });

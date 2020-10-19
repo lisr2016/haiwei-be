@@ -135,7 +135,7 @@ exports.signUp = async function (req, res) {
                             }
                             const updateInfo = {registed_users: org.registed_users || {}};
                             updateInfo.registed_users[`${user._id}`] = true;
-                            Organization.updateOne({_id: signUpInfo.organizationId}, function (err, result) {
+                            Organization.updateOne({_id: signUpInfo.organizationId}, updateInfo, function (err, result) {
                                 if (err || !result) {
                                     res.status(400).send({code: 5, msg: '注册失败'});
                                     return
