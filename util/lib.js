@@ -250,9 +250,10 @@ const cos = new COS({
 exports.cosPutObject = async function (Key, Body) {
     return new Promise((resolve, reject) => {
         cos.putObject({
-            Bucket: config.Bucket, /* 必须 */ // Bucket 格式：test-1250000000
-            Key: Key, /* 必须 */
-            Body: Body
+            Bucket: config.CosBucket,
+            Key: Key,
+            Body: Body,
+            Region: config.CosRegion
         }, function (err, data) {
             if (err) return reject(err);
             return resolve(data);
@@ -260,20 +261,16 @@ exports.cosPutObject = async function (Key, Body) {
     })
 };
 
-exports.cosGetObjectUrl = async function (phone, code) {
-    try {
+exports.cosGetObjectUrl = async function (Key) {
         return new Promise((resolve, reject) => {
-            const url = cos.getObjectUrl({
+            cos.getObjectUrl({
                 Bucket: config.CosBucket,
-                Key: '1mb.zip',
+                Key: Key,
+                Region: config.CosRegion,
                 Sign: true,
             }, function (err, data) {
-                console.log(err || data);
+                if (err) return reject(err);
+                return resolve(data);
             });
         })
-        
-    } catch (e) {
-        console.log(e);
-        return false;
-    }
 };

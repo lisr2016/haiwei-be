@@ -6,6 +6,7 @@ let Admin = require('../models/Admin');
 let User = require('../models/User');
 let lib = require('../util/lib');
 let Organization = require('../models/Organization');
+let UploadFileLog = require('../models/UploadFileLog');
 let Policy = require('../models/Policy');
 let AssessTemplate = require('../models/AssessTemplate');
 let AssessTask = require('../models/AssessTask');
@@ -18,6 +19,9 @@ let DomesticGarbageWeeklySummary = require('../models/DomesticGarbageWeeklySumma
 let DomesticGarbageMonthlySummary = require('../models/DomesticGarbageMonthlySummary');
 let MedicGarbageMonthlySummary = require('../models/MedicGarbageMonthlySummary');
 let ObjectId = require('mongodb').ObjectId;
+
+
+let { v4: uuidv4 } = require('uuid');
 
 const Joi = require('joi');
 const bcrypt = require('bcrypt-nodejs');
@@ -692,11 +696,47 @@ exports.uploadFile = async function (req, res) {
             res.status(400).json({code: 5, msg: '未发现上传文件'});
             return;
         }
-        const url = 'https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1602002862040&di=05d3c266d466b513c275a8281c7ed651&imgtype=0&src=http%3A%2F%2Fa3.att.hudong.com%2F14%2F75%2F01300000164186121366756803686.jpg'
-        res.status(200).json({code: 0, data: url, msg: '上传成功'});
+        if (!req.body.filename) {
+            res.status(400).json({code: 5, msg: '缺少filename参数'});
+            return;
+        }
+        let size = req.file.size;
+        if (_.last(req.file.originalname.split('.')) !== _.last(req.body.filename.split('.'))) {
+            res.status(200).json({code: 5, msg: 'filename 文件类型和上传文件不匹配'});
+            return;
+        }
+        const suffixFilter = ['doc', 'docx', 'xls', 'xlsx', 'pdf'];
+        if (!_.includes(suffixFilter, _.last(req.file.originalname.split('.')))) {
+            res.status(200).json({ code: 5, msg: '文件类型错误，请上传 word、excel 或者 pdf 文件' });
+            return;
+        }
+        let key = `policy/${uuidv4()}/${req.body.filename}`;
+        let buffer = req.file.buffer;
+        let result = await lib.cosPutObject(key, buffer);
+        if(result.statusCode === 200) {
+            const newUploadFileLog = new UploadFileLog({
+                uploader: 'admin',
+                is_success: true,
+                size: size,
+                key: key,
+            });
+            await newUploadFileLog.save();
+            let result = await lib.cosGetObjectUrl(key);
+            res.status(200).json({code: 0, data: result.Url, msg: '上传成功'});
+            return
+        }
+        const newUploadFileLog = new UploadFileLog({
+            uploader: 'admin',
+            is_success: false,
+            size: size,
+            key: key,
+        });
+        await newUploadFileLog.save();
+        console.log(result);
+        res.status(500).json({code: 0, msg: '上传失败'});
     } catch (e) {
         console.log(e);
-        res.status(400).send({code: 5, msg: '查询失败'});
+        res.status(400).send({code: 5, msg: '上传失败'});
     }
 };
 
