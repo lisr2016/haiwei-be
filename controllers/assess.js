@@ -23,7 +23,7 @@ exports.fetchUserAssessList = async function (req, res) {
                 assesseeOrgName: orgInfoMap[e.assessee_id].name,
                 assessorOrgName: orgInfoMap[e.assessor_id].name,
                 type: '2',
-                createTime: e.createdAt
+                createTime: e.createdAt && e.createdAt.getTime()
             }
         }).value();
         let assessorList = await Assess.find({assesser_id: user.organizationId});
