@@ -3,17 +3,15 @@ let _ = require('lodash');
 let Message = require("../models/Message");
 
 exports.fetchUserMessageList = async function (req, res) {
-    let user = req.user
+    let user = req.user;
     try {
-        let a = ['1','2','3','4','5'];
-        // let messageList = await Message.find({user_id: user.id})
-        let messageList = await Message.find()
+        let messageList = await Message.find({user_id: user.id});
         let data = _.chain(messageList).filter(e => !e.is_read).map(e => {
             return {
                 id: e._id,
                 content: e.content,
                 title: e.title,
-                type: a[Math.floor(Math.random()*a.length)],
+                type: e.type,
                 isRead: e.is_read || false,
                 createTime: e.createdAt
             }
