@@ -6,7 +6,7 @@ exports.fetchUserMessageList = async function (req, res) {
     let user = req.user;
     try {
         let messageList = await Message.find({user_id: user.id});
-        let data = _.chain(messageList).filter(e => !e.is_read).map(e => {
+        let data = _.chain(messageList).map(e => {
             return {
                 id: e._id,
                 content: e.content,
