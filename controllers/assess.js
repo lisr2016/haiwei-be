@@ -100,12 +100,12 @@ exports.uploadPics = async function (req, res) {
         }
         let size = req.file.size;
         if (_.last(req.file.originalname.split('.')) !== _.last(req.body.filename.split('.'))) {
-            res.status(200).json({code: 5, msg: 'filename 文件类型和上传文件不匹配'});
+            res.status(400).json({code: 5, msg: 'filename 文件类型和上传文件不匹配'});
             return;
         }
         const suffixFilter = ['jpeg', 'jpg', 'gif', 'bmp', 'png'];
         if (!_.includes(suffixFilter, _.last(req.file.originalname.split('.')))) {
-            res.status(200).json({code: 5, msg: '文件类型错误，请上传 jpeg, jpg, gif, bmp, png 文件'});
+            res.status(400).json({code: 5, msg: '文件类型错误，请上传 jpeg, jpg, gif, bmp, png 文件'});
             return;
         }
         let key = `policy/${uuidv4()}/${req.body.filename}`;
@@ -130,7 +130,7 @@ exports.uploadPics = async function (req, res) {
             key: key,
         });
         await newUploadFileLog.save();
-        res.status(500).json({code: 0, msg: '上传失败'});
+        res.status(400).json({code: 0, msg: '上传失败'});
     } catch (e) {
         console.log(e);
         res.status(400).send({code: 5, msg: '上传失败'});
