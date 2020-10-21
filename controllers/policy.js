@@ -1,5 +1,5 @@
 let _ = require('lodash');
-let Joi = require('Joi');
+let Joi = require('joi');
 
 let Policy = require("../models/Policy");
 
