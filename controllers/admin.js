@@ -1024,6 +1024,7 @@ exports.newAssessTask = async function (req, res) {
             end_time: params.endTime,
             template_content: template.content,
             name: params.name,
+            type: params.type,
             target: params.target,
             assessor_id: params.assessorId,
             assessee_id: params.assesseeId,
