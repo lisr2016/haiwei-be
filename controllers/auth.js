@@ -61,6 +61,7 @@ exports.verifyToken = function (req, res, next) {
         }
         req.user = {
             id: decode._id,
+            type: decode.type,
             phone: decode.phone,
             organizationId: decode.organization_id
         };

@@ -35,7 +35,7 @@ exports.fetchUserInfo = function (req, res) {
                 level: org.level,
                 street: org.street,
             };
-            res.status(200).send({code: 0, data: {orgInfo}, msg: '查询成功'});
+            res.status(200).send({code: 0, data: {type: user.type || '1', orgInfo}, msg: '查询成功'});
         }
     });
 };
