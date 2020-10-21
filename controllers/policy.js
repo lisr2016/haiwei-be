@@ -3,16 +3,12 @@ let Joi = require('Joi');
 
 let Policy = require("../models/Policy");
 
-const fetchPolicyListSchema = {
-    offset: Joi.number().default(1),
-    limit: Joi.number().default(50)
-};
+
 
 exports.fetchPolicyList = async function (req, res) {
     try {
-        const params = await Joi.validate(req.body, fetchPolicyListSchema);
-        let skip = (params.offset - 1) * params.limit;
-        let list = await Policy.find().skip(skip).limit(params.limit).sort({is_deleted: 1});
+
+        let list = await Policy.find();
         list = _.map(list, e => {
             return {
                 id: e._id,

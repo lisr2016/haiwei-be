@@ -42,7 +42,7 @@ router.post('/domestic/monthly', ctrls.report.summitDomMonthly);
 router.post('/medic/monthly', ctrls.report.summitMedMonthly);
 
 // 获取政策文件列表
-router.post('/get/policy/list', ctrls.policy.fetchPolicyList);
+router.get('/get/policy/list', ctrls.policy.fetchPolicyList);
 
 // 获取用户信息
 router.get('/user/info', ctrls.user.fetchUserInfo);
