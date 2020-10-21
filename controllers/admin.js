@@ -968,8 +968,8 @@ exports.fetchAssessTaskList = async function (req, res) {
         let list = _.map(data, e => {
             return {
                 id: e._id,
-                startTime: e.start_time,
-                endTime: e.end_time,
+                startTime: e.start_time && e.start_time.getTime(),
+                endTime: e.end_time && e.end_time.getTime(),
                 name: e.name,
                 target: e.target,
                 content: e.template_content,
