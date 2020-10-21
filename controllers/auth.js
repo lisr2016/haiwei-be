@@ -66,6 +66,7 @@ exports.verifyToken = function (req, res, next) {
         };
         next()
     } catch (err) {
+        console.log(err)
         res.status(500).json({msg: `未能识别权限标识`})
     }
 };
@@ -90,6 +91,7 @@ exports.verifyCmsToken = function (req, res, next) {
         };
         next()
     } catch (err) {
+        console.log(err)
         res.status(500).json({msg: `未能识别权限标识`})
     }
 };
