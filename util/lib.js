@@ -267,7 +267,7 @@ exports.cosGetObjectUrl = async function (Key) {
                 Bucket: config.CosBucket,
                 Key: Key,
                 Region: config.CosRegion,
-                Sign: true,
+                Sign: false,
             }, function (err, data) {
                 if (err) return reject(err);
                 return resolve(data);
