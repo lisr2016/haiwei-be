@@ -338,27 +338,27 @@ exports.fetchDomDailySummary = async function (req, res) {
             res.status(400).send({code: 5, msg: '参数错误'});
             return
         }
-        if (req.body.startTime && !req.body.endTime) {
-            let data = await DomesticGarbageDailySummary.findOne({time: req.body.startTime});
-            if (!data || data.is_expired) {
-                data = await lib.summaryDomDaily(req.body.startTime)
-            }
-            res.status(200).send({
-                code: 0, data: {
-                    meetingTimes: data.meeting_times,
-                    selfInspectionTimes: data.self_inspection_times,
-                    selfInspectionProblems: data.self_inspection_problems,
-                    advertiseTimes: data.advertise_times,
-                    traningTimes: data.traning_times,
-                    trainees: data.trainees,
-                    govInspectionTimes: data.gov_inspection_times,
-                    govInspectionProblems: data.gov_inspection_problems,
-                    reportCount: data.report_count,
-                }, msg: '查询成功'
-            });
-        } else {
-        
+        let level = 'all';
+        if(req.body.level){
+            level = req.body.level;
         }
+        let data = await DomesticGarbageDailySummary.findOne({time: req.body.startTime});
+        if (!data || data.is_expired) {
+            data = await lib.summaryDomDaily(req.body.startTime)
+        }
+        res.status(200).send({
+            code: 0, data: {
+                meetingTimes: level === 'all' ? _.sum(_.values(data.meeting_times)) :  data.meeting_times[level] || 0,
+                selfInspectionTimes: level === 'all' ? _.sum(_.values(data.self_inspection_times)) :  data.self_inspection_times[level] || 0,
+                selfInspectionProblems: level === 'all' ? _.sum(_.values(data.self_inspection_problems)) :  data.self_inspection_problems[level] || 0,
+                advertiseTimes: level === 'all' ? _.sum(_.values(data.advertise_times)) :  data.advertise_times[level] || 0,
+                traningTimes: level === 'all' ? _.sum(_.values(data.traning_times)) :  data.traning_times[level] || 0,
+                trainees: level === 'all' ? _.sum(_.values(data.trainees)) :  data.trainees[level] || 0,
+                govInspectionTimes: level === 'all' ? _.sum(_.values(data.gov_inspection_times)) :  data.gov_inspection_times[level] || 0,
+                govInspectionProblems: level === 'all' ? _.sum(_.values(data.gov_inspection_problems)) :  data.gov_inspection_problems[level] || 0,
+                reportCount: level === 'all' ? _.sum(_.values(data.report_count)) :  data.report_count[level] || 0,
+            }, msg: '查询成功'
+        });
     } catch (e) {
         console.log(e);
         res.status(400).send({code: 5, msg: '查询失败'});
@@ -371,32 +371,36 @@ exports.fetchDomWeeklySummary = async function (req, res) {
             res.status(400).send({code: 5, msg: '参数错误'});
             return
         }
+        let level = 'all';
+        if(req.body.level){
+            level = req.body.level;
+        }
         let data = await DomesticGarbageWeeklySummary.findOne({time: req.body.startTime});
         if (!data || data.is_expired) {
             data = await lib.summaryDomWeekly(req.body.startTime);
         }
         res.status(200).send({
             code: 0, data: {
-                consignee: data.consignee,
-                guide: data.guide,
-                inspector: data.inspector,
-                kitchenWasteCollectors: data.kitchen_waste_collectors,
-                kitchenWastePositons: data.kitchen_waste_positons,
-                recyclableWasteCollectors: data.recyclable_waste_collectors,
-                recyclableWastePositons: data.recyclable_waste_positons,
-                harmfulWasteCollectors: data.harmful_waste_collectors,
-                harmfulWastePositons: data.harmful_waste_positons,
-                otherWasteCollectors: data.other_waste_collectors,
-                otherWastePositons: data.other_waste_positons,
-                medicWasteCollectors: data.medic_waste_collectors,
-                medicWastePositons: data.medic_waste_positons,
-                bulkyWastePositons: data.bulky_waste_positons,
-                kitchenWaste: data.kitchen_waste,
-                recyclableWaste: data.recyclable_waste,
-                harmfulWaste: data.harmful_waste,
-                otherWaste: data.other_waste,
-                medicWaste: data.medic_waste,
-                reportCount: data.report_count,
+                consignee: level === 'all' ? _.sum(_.values(data.consignee)) : data.consignee[level] || 0,
+                guide:  level === 'all' ? _.sum(_.values(data.guide)) : data.guide[level] || 0,
+                inspector: level === 'all' ? _.sum(_.values(data.inspector)) : data.inspector[level] || 0,
+                kitchenWasteCollectors:  level === 'all' ? _.sum(_.values(data.kitchen_waste_collectors)) : data.kitchen_waste_collectors[level] || 0,
+                kitchenWastePositons: level === 'all' ? _.sum(_.values(data.kitchen_waste_positons)) :  data.kitchen_waste_positons[level] || 0,
+                recyclableWasteCollectors: level === 'all' ? _.sum(_.values(data.recyclable_waste_collectors)) : data.recyclable_waste_collectors[level] || 0,
+                recyclableWastePositons: level === 'all' ? _.sum(_.values(data.recyclable_waste_positons)) : data.recyclable_waste_positons[level] || 0,
+                harmfulWasteCollectors: level === 'all' ? _.sum(_.values(data.harmful_waste_collectors)) : data.harmful_waste_collectors[level] || 0,
+                harmfulWastePositons: level === 'all' ? _.sum(_.values(data.harmful_waste_positons)) :  data.harmful_waste_positons[level] || 0,
+                otherWasteCollectors: level === 'all' ? _.sum(_.values(data.other_waste_collectors)) : data.other_waste_collectors[level] || 0,
+                otherWastePositons: level === 'all' ? _.sum(_.values(data.other_waste_positons)) : data.other_waste_positons[level] || 0,
+                medicWasteCollectors: level === 'all' ? _.sum(_.values(data.medic_waste_collectors)) : data.medic_waste_collectors[level] || 0,
+                medicWastePositons: level === 'all' ? _.sum(_.values(data.medic_waste_positons)) : data.medic_waste_positons[level] || 0,
+                bulkyWastePositons: level === 'all' ? _.sum(_.values(data.bulky_waste_positons)) : data.bulky_waste_positons[level] || 0,
+                kitchenWaste: level === 'all' ? _.sum(_.values(data.kitchen_waste)) : data.kitchen_waste[level] || 0,
+                recyclableWaste: level === 'all' ? _.sum(_.values(data.recyclable_waste)) : data.recyclable_waste[level] || 0,
+                harmfulWaste: level === 'all' ? _.sum(_.values(data.harmful_waste)) : data.harmful_waste[level] || 0,
+                otherWaste: level === 'all' ? _.sum(_.values(data.other_waste)) : data.other_waste[level] || 0,
+                medicWaste: level === 'all' ? _.sum(_.values(data.medic_waste)) : data.medic_waste[level] || 0,
+                reportCount: level === 'all' ? _.sum(_.values(data.report_count)) : data.report_count[level] || 0,
             }, msg: '查询成功'
         });
     } catch (e) {
@@ -411,19 +415,24 @@ exports.fetchDomMonthlySummary = async function (req, res) {
             res.status(400).send({code: 5, msg: '参数错误'});
             return
         }
+        let level = 'all';
+        if(req.body.level){
+            level = req.body.level;
+        }
         let data = await DomesticGarbageMonthlySummary.findOne({time: req.body.startTime});
         if (!data || data.is_expired) {
             data = await lib.summaryDomMonthly(req.body.startTime);
         }
+        let result = {
+            kitchenWaste: level === 'all' ? _.sum(_.values(data.kitchen_waste)) : data.kitchen_waste[level] || 0,
+            recyclableWaste: level === 'all' ? _.sum(_.values(data.recyclable_waste)) : data.recyclable_waste[level] || 0,
+            harmfulWaste: level === 'all' ? _.sum(_.values(data.harmful_waste)) : data.harmful_waste[level] || 0,
+            bulkyWaste: level === 'all' ? _.sum(_.values(data.bulky_waste)) : data.bulky_waste[level] || 0,
+            otherWaste: level === 'all' ? _.sum(_.values(data.other_waste)) : data.other_waste[level] || 0,
+            reportCount: level === 'all' ? _.sum(_.values(data.report_count)) : data.report_count[level]
+        }
         res.status(200).send({
-            code: 0, data: {
-                kitchenWaste: data.kitchen_waste,
-                recyclableWaste: data.recyclable_waste,
-                harmfulWaste: data.harmful_waste,
-                bulkyWaste: data.bulky_waste,
-                otherWaste: data.other_waste,
-                reportCount: data.report_count
-            }, msg: '查询成功'
+            code: 0, data: result, msg: '查询成功'
         });
     } catch (e) {
         console.log(e);
@@ -437,14 +446,18 @@ exports.fetchMedMonthlySummary = async function (req, res) {
             res.status(400).send({code: 5, msg: '参数错误'});
             return
         }
+        let level = 'all';
+        if(req.body.level){
+            level = req.body.level;
+        }
         let data = await MedicGarbageMonthlySummary.findOne({time: req.body.startTime});
         if (!data || data.is_expired) {
             data = await lib.summaryMedMonthly(req.body.startTime);
         }
         res.status(200).send({
             code: 0, data: {
-                totalWeight: data.total_weight,
-                reportCount: data.report_count
+                totalWeight: level === 'all' ? _.sum(_.values(data.kitchen_waste)) : data.total_weight || 0,
+                reportCount: level === 'all' ? _.sum(_.values(data.report_count)) : data.report_count || 0
             }, msg: '查询成功'
         });
     } catch (e) {
@@ -474,12 +487,12 @@ exports.fetchScreenSummary = async function (req, res) {
                         data = await lib.summaryDomWeekly(midRst.timestamps[i]);
                     }
                     list.push({
-                        kitchenWaste: data.kitchen_waste,
-                        recyclableWaste: data.recyclable_waste,
-                        harmfulWaste: data.harmful_waste,
-                        otherWaste: data.other_waste,
-                        medicWaste: data.medic_waste,
-                        reportCount: data.report_count,
+                        kitchenWaste: data.kitchen_waste['all'] || 0,
+                        recyclableWaste: data.recyclable_waste['all'] || 0,
+                        harmfulWaste: data.harmful_waste['all'] || 0,
+                        otherWaste: data.other_waste['all'] || 0,
+                        medicWaste: data.medic_waste['all'] || 0,
+                        reportCount: data.report_count['all'] || 0,
                     })
                 }
                 result = {list, segments: midRst.weeks};
@@ -492,12 +505,12 @@ exports.fetchScreenSummary = async function (req, res) {
                         data = await lib.summaryDomMonthly(midRst.timestamps[i]);
                     }
                     list.push({
-                        kitchenWaste: data.kitchen_waste,
-                        recyclableWaste: data.recyclable_waste,
-                        harmfulWaste: data.harmful_waste,
-                        otherWaste: data.other_waste,
-                        bulkyWaste: data.bulky_waste,
-                        reportCount: data.report_count,
+                        kitchenWaste: data.kitchen_waste['all'] || 0,
+                        recyclableWaste: data.recyclable_waste['all'] || 0,
+                        harmfulWaste: data.harmful_waste['all'] || 0,
+                        otherWaste: data.other_waste['all'] || 0,
+                        bulkyWaste: data.bulky_waste['all'] || 0,
+                        reportCount: data.report_count['all'] || 0,
                     });
                     result = {list, segments: midRst.months};
                 }

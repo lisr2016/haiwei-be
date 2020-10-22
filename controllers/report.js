@@ -5,6 +5,11 @@ let domesticMonthly = require("../models/DomesticGarbageMonthly");
 let domesticWeekly = require("../models/DomesticGarbageWeekly");
 let medicMonthly = require("../models/MedicGarbageMonthly");
 
+let DomesticGarbageDailySummary = require('../models/DomesticGarbageDailySummary');
+let DomesticGarbageWeeklySummary = require('../models/DomesticGarbageWeeklySummary');
+let DomesticGarbageMonthlySummary = require('../models/DomesticGarbageMonthlySummary');
+let MedicGarbageMonthlySummary = require('../models/MedicGarbageMonthlySummary');
+
 const Joi = require('joi')
 
 const summitDomDailySchema = {
@@ -70,6 +75,13 @@ exports.summitDomDaily = async function (req, res) {
             time: domDailyInfo.time.getTime(),
             organization_id: user.organizationId
         }, updateInfo, {upsert: true});
+        
+        let result = await DomesticGarbageDailySummary.findOne({time: domDailyInfo.time.getTime()});
+        if (result) {
+            await DomesticGarbageDailySummary.updateOne({
+                time: domDailyInfo.time.getTime()
+            }, {is_expired: true});
+        }
         res.status(200).send({code: 0, msg: '提交成功'});
     } catch (e) {
         let data = '';
@@ -143,6 +155,12 @@ exports.summitDomWeekly = async function (req, res) {
             time: domWeeklyInfo.time.getTime(),
             organization_id: user.organizationId
         }, updateInfo, {upsert: true});
+        let result = await DomesticGarbageWeeklySummary.findOne({time: domWeeklyInfo.time.getTime()});
+        if (result) {
+            await DomesticGarbageWeeklySummary.updateOne({
+                time: domWeeklyInfo.time.getTime()
+            }, {is_expired: true});
+        }
         res.status(200).send({code: 0, msg: '提交成功'});
     } catch (e) {
         let data = '';
@@ -187,6 +205,12 @@ exports.summitDomMonthly = async function (req, res) {
             time: domMonthlyInfo.time.getTime(),
             organization_id: user.organizationId
         }, updateInfo, {upsert: true});
+        let result = await DomesticGarbageMonthlySummary.findOne({time: domMonthlyInfo.time.getTime()});
+        if (result) {
+            await DomesticGarbageMonthlySummary.updateOne({
+                time: domMonthlyInfo.time.getTime()
+            }, {is_expired: true});
+        }
         res.status(200).send({code: 0, msg: '提交成功'});
     } catch (e) {
         let data = '';
@@ -223,6 +247,12 @@ exports.summitMedMonthly = async function (req, res) {
             time: medMonthlyInfo.time.getTime(),
             organization_id: user.organizationId
         }, updateInfo, {upsert: true});
+        let result = await MedicGarbageMonthlySummary.findOne({time: medMonthlyInfo.time.getTime()});
+        if (result) {
+            await MedicGarbageMonthlySummary.updateOne({
+                time: medMonthlyInfo.time.getTime()
+            }, {is_expired: true});
+        }
         res.status(200).send({code: 0, msg: '提交成功'});
     } catch (e) {
         let data = '';

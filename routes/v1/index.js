@@ -29,8 +29,6 @@ router.post('/upload/assess', ctrls.assess.uploadAssess);
 router.get('/message/list', ctrls.message.fetchUserMessageList);
 // 消息标记已读
 router.get('/message/:id', ctrls.message.userMessageRead);
-// 阅读消息
-// router.post('/message/:id', ctrls.message.fetchMessageContent);
 
 // 提交生活垃圾日报
 router.post('/domestic/daily', ctrls.report.summitDomDaily);

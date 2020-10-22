@@ -11,13 +11,10 @@ var MedicGarbageMonthlySummarySchema = new Schema({
     },
     // 月度医疗垃圾产量(公斤)
     total_weight: {
-        type: Number,
-        required: true
+        type: Object
     },
     report_count: { // 总计报告数目
-        type: Number,
-        required: true,
-        default: 0
+        type: Object,
     },
     is_expired: {  // 数据是否过期,
         type: Boolean,

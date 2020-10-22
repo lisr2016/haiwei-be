@@ -11,29 +11,22 @@ var DomesticGarbageMonthlySummarySchema = new Schema({
   },
   // 垃圾收集情况
   kitchen_waste: { // 厨余垃圾(公斤)
-    type: Number,
-    required: true
+    type: Object,
   },
   recyclable_waste: { // 可回收垃圾(公斤)
-    type: Number,
-    required: true
+    type: Object,
   },
   harmful_waste: { // 有害垃圾(公斤)
-    type: Number,
-    required: true
+    type: Object,
   },
   bulky_waste: { // 大件垃圾(公斤)
-    type: Number,
-    required: true
+    type: Object,
   },
   other_waste: { // 其他垃圾(公斤)
-    type: Number,
-    required: true
+    type: Object,
   },
   report_count: { // 总计报告数目
-    type: Number,
-    required: true,
-    default: 0
+    type: Object,
   },
   is_expired: {  // 数据是否过期,
     type: Boolean,

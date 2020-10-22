@@ -29,7 +29,7 @@ exports.sendSms = async function (phone, code) {
             tpl_value: content
         });
         let result = await axios(sendurl);
-        return result.data && result.data.error_code === 0;
+        return result.data && result.data.error_code === {};
     } catch (e) {
         console.log(e);
         return false;
@@ -48,25 +48,26 @@ exports.isTelePhoneNum = function (content) {
 
 exports.summaryDomDaily = async function(time){
     let data = await domesticDaily.find({time});
-    let meeting_times = 0,
-        self_inspection_times = 0,
-        self_inspection_problems = 0,
-        advertise_times = 0,
-        traning_times = 0,
-        trainees = 0,
-        gov_inspection_times = 0,
-        gov_inspection_problems = 0,
-        report_count = 0;
+    let meeting_times = {},
+        self_inspection_times = {},
+        self_inspection_problems = {},
+        advertise_times = {},
+        traning_times = {},
+        trainees = {},
+        gov_inspection_times = {},
+        gov_inspection_problems = {},
+        report_count = {};
     _.each(data,e =>{
-        meeting_times += e.meeting_times;
-        self_inspection_times += e.self_inspection_times;
-        self_inspection_problems += e.self_inspection_problems;
-        advertise_times += e.advertise_times;
-        traning_times += e.traning_times;
-        trainees += e.trainees;
-        gov_inspection_times += e.gov_inspection_times;
-        gov_inspection_problems += e.gov_inspection_problems;
-        report_count ++;
+        let level = e.level;
+        meeting_times[level] += e.meeting_times;
+        self_inspection_times [level] += e.self_inspection_times;
+        self_inspection_problems [level] += e.self_inspection_problems;
+        advertise_times [level] += e.advertise_times;
+        traning_times [level] += e.traning_times;
+        trainees [level] += e.trainees;
+        gov_inspection_times [level] += e.gov_inspection_times;
+        gov_inspection_problems [level] += e.gov_inspection_problems;
+        report_count[level] ++;
     });
     const result = {
         meeting_times,
@@ -90,47 +91,48 @@ exports.summaryDomDaily = async function(time){
 exports.summaryDomWeekly = async function(time){
     let data = await domesticWeekly.find({time});
    
-    let consignee = 0,
-        guide = 0,
-        inspector = 0,
-        kitchen_waste_collectors = 0,
-        kitchen_waste_positons = 0,
-        recyclable_waste_collectors = 0,
-        recyclable_waste_positons = 0,
-        harmful_waste_collectors = 0,
-        harmful_waste_positons = 0,
-        other_waste_collectors = 0,
-        other_waste_positons = 0,
-        medic_waste_collectors = 0,
-        medic_waste_positons = 0,
-        bulky_waste_positons = 0,
-        kitchen_waste = 0,
-        recyclable_waste = 0,
-        harmful_waste = 0,
-        other_waste = 0,
-        medic_waste = 0,
-        report_count = 0;
+    let consignee = {},
+        guide = {},
+        inspector = {},
+        kitchen_waste_collectors = {},
+        kitchen_waste_positons = {},
+        recyclable_waste_collectors = {},
+        recyclable_waste_positons = {},
+        harmful_waste_collectors = {},
+        harmful_waste_positons = {},
+        other_waste_collectors = {},
+        other_waste_positons = {},
+        medic_waste_collectors = {},
+        medic_waste_positons = {},
+        bulky_waste_positons = {},
+        kitchen_waste = {},
+        recyclable_waste = {},
+        harmful_waste = {},
+        other_waste = {},
+        medic_waste = {},
+        report_count = {};
     _.each(data,e =>{
-        consignee += e.consignee;
-        guide += e.guide;
-        inspector += e.inspector;
-        kitchen_waste_collectors += e.kitchen_waste_collectors;
-        kitchen_waste_positons += e.kitchen_waste_positons;
-        recyclable_waste_collectors += e.recyclable_waste_collectors;
-        recyclable_waste_positons += e.recyclable_waste_positons;
-        harmful_waste_collectors += e.harmful_waste_collectors;
-        harmful_waste_positons += e.harmful_waste_positons;
-        other_waste_collectors += e.other_waste_collectors;
-        other_waste_positons += e.other_waste_positons;
-        medic_waste_collectors += e.medic_waste_collectors;
-        medic_waste_positons += e.medic_waste_positons;
-        bulky_waste_positons += e.bulky_waste_positons;
-        kitchen_waste += e.kitchen_waste;
-        recyclable_waste += e.recyclable_waste;
-        harmful_waste += e.harmful_waste;
-        other_waste += e.other_waste;
-        medic_waste += e.medic_waste;
-        report_count ++;
+        let level = e.level;
+        consignee [level] += e.consignee;
+        guide [level] += e.guide;
+        inspector [level] += e.inspector;
+        kitchen_waste_collectors [level] += e.kitchen_waste_collectors;
+        kitchen_waste_positons [level] += e.kitchen_waste_positons;
+        recyclable_waste_collectors [level] += e.recyclable_waste_collectors;
+        recyclable_waste_positons [level] += e.recyclable_waste_positons;
+        harmful_waste_collectors [level] += e.harmful_waste_collectors;
+        harmful_waste_positons [level] += e.harmful_waste_positons;
+        other_waste_collectors [level] += e.other_waste_collectors;
+        other_waste_positons [level] += e.other_waste_positons;
+        medic_waste_collectors [level] += e.medic_waste_collectors;
+        medic_waste_positons [level] += e.medic_waste_positons;
+        bulky_waste_positons [level] += e.bulky_waste_positons;
+        kitchen_waste [level] += e.kitchen_waste;
+        recyclable_waste [level] += e.recyclable_waste;
+        harmful_waste [level] += e.harmful_waste;
+        other_waste [level] += e.other_waste;
+        medic_waste [level] += e.medic_waste;
+        report_count[level] ++;
     });
     const result = {
         consignee,
@@ -164,19 +166,20 @@ exports.summaryDomWeekly = async function(time){
 
 exports.summaryDomMonthly = async function(time){
     let data = await domesticMonthly.find({time});
-    let kitchen_waste = 0,
-        recyclable_waste = 0,
-        harmful_waste = 0,
-        bulky_waste = 0,
-        other_waste = 0,
-        report_count = 0;
+    let kitchen_waste = {},
+        recyclable_waste = {},
+        harmful_waste = {},
+        bulky_waste = {},
+        other_waste = {},
+        report_count = {};
     _.each(data,e =>{
-        kitchen_waste += e.kitchen_waste;
-        recyclable_waste += e.recyclable_waste;
-        harmful_waste += e.harmful_waste;
-        bulky_waste += e.bulky_waste;
-        other_waste += e.other_waste;
-        report_count ++;
+        let level = e.level;
+        kitchen_waste [level] += e.kitchen_waste;
+        recyclable_waste [level] += e.recyclable_waste;
+        harmful_waste [level] += e.harmful_waste;
+        bulky_waste [level] += e.bulky_waste;
+        other_waste [level] += e.other_waste;
+        report_count[level] ++;
     });
     let result = {
         kitchen_waste, recyclable_waste, harmful_waste, bulky_waste, other_waste, report_count
@@ -191,11 +194,12 @@ exports.summaryDomMonthly = async function(time){
 
 exports.summaryMedMonthly = async function(time){
     let data = await medicMonthly.find({time});
-    let total_weight = 0,
-        report_count = 0;
+    let total_weight = {},
+        report_count = {};
     _.each(data,e =>{
-        total_weight += e.total_weight;
-        report_count ++;
+        let level = e.level;
+        total_weight [level] += e.total_weight;
+        report_count[level] ++;
     });
     let result = {
         total_weight
