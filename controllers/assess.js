@@ -18,8 +18,8 @@ exports.fetchUserAssessList = async function (req, res) {
         assesseeList = _.chain(assesseeList).filter(e => !e.assessee_done).map(e => {
             return {
                 id: e._id,
-                startTime: e.start_time,
-                endTime: e.end_time,
+                startTime: formatTime(e.start_time && e.start_time.getTime()),
+                endTime: formatTime(e.end_time && e.end_time.getTime()),
                 name: e.name,
                 target: e.target,
                 content: e.template_content,
