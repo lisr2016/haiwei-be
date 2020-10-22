@@ -49,7 +49,7 @@ exports.uploadAssess = async function (req, res) {
     try {
         const uploadAssessInfo = await Joi.validate(req.body, uploadAssessSchema);
         let updateInfo = {};
-        switch (type) {
+        switch (uploadAssessInfo.type) {
             case '1':
                 updateInfo.assessor_content = uploadAssessInfo.content;
                 updateInfo.assessor_done = true;
