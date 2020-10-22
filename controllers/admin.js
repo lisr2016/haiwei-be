@@ -482,7 +482,7 @@ exports.fetchScreenSummary = async function (req, res) {
                         reportCount: data.report_count,
                     })
                 }
-                result = {list, weeks: midRst.weeks};
+                result = {list, segments: midRst.weeks};
                 break;
             case '2': // 年报
                 midRst = lib.calMonths(fetchScreenInfo.startTime, fetchScreenInfo.endTime);
@@ -499,7 +499,7 @@ exports.fetchScreenSummary = async function (req, res) {
                         bulkyWaste: data.bulky_waste,
                         reportCount: data.report_count,
                     });
-                    result = {list, months: midRst.months};
+                    result = {list, segments: midRst.months};
                 }
                 break;
             default:
