@@ -12,8 +12,8 @@ exports.fetchUserAssessList = async function (req, res) {
     try {
         let assesseeList = await Assess.find({assessee_id: user.organizationId});
         let assessorList = await Assess.find({assessor_id: user.organizationId});
-        let orgIds = _.chain(assesseeList).map(e => e.assessee_id).value();
-        let orgIds2 = _.chain(assessorList).map(e => e.assessor_id).value();
+        let orgIds = _.chain(assesseeList).map(e => e.assessor_id).value();
+        let orgIds2 = _.chain(assessorList).map(e => e.assessee_id).value();
         orgIds = _.chain(orgIds).concat(orgIds2).concat([req.user.organizationId]).uniq().value();
         const orgs = await Organization.find({_id: {$in: orgIds}});
         const orgInfoMap = _.keyBy(orgs, '_id');
@@ -26,8 +26,8 @@ exports.fetchUserAssessList = async function (req, res) {
                 name: e.name,
                 target: e.target,
                 content: e.template_content,
-                assesseeOrgName: e.assessee_id && orgInfoMap[e.assessee_id].name,
-                assessorOrgName: e.assessor_id && orgInfoMap[e.assessor_id].name,
+                assesseeOrgName: e.assessee_id && orgInfoMap[e.assessee_id] && orgInfoMap[e.assessee_id].name,
+                assessorOrgName: e.assessor_id && orgInfoMap[e.assessor_id] && orgInfoMap[e.assessor_id].name,
                 type: e.type,
                 createTime: formatTime(e.createdAt && e.createdAt.getTime())
             }
