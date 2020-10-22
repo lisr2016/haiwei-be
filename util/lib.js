@@ -15,6 +15,10 @@ let DomesticGarbageWeeklySummary = require('../models/DomesticGarbageWeeklySumma
 let DomesticGarbageMonthlySummary = require('../models/DomesticGarbageMonthlySummary');
 let MedicGarbageMonthlySummary = require('../models/MedicGarbageMonthlySummary');
 
+exports.formatTime = function (time) {
+    return dayjs(new Date(time)).add(8,'hour').format('YYYY-MM-DD');
+};
+
 exports.sendSms = async function (phone, code) {
     try {
         let content = `#code#=${code}&#app#=海卫后勤`;

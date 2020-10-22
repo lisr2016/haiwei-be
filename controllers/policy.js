@@ -1,6 +1,6 @@
 let _ = require('lodash');
 let Joi = require('joi');
-
+let { formatTime } = require('../util/lib');
 let Policy = require("../models/Policy");
 
 
@@ -18,7 +18,7 @@ exports.fetchPolicyList = async function (req, res) {
                 publisher: e.admin_name,
                 url: e.url,
                 filename: e.filename,
-                createTime: e.createdAt && e.createdAt.getTime()
+                createTime: formatTime(e.createdAt && e.createdAt.getTime())
             }
         });
         let count = await Policy.countDocuments();

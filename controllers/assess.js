@@ -5,6 +5,7 @@ let UploadFileLog = require('../models/UploadFileLog');
 let Joi = require('joi');
 let lib = require('../util/lib');
 let { v4: uuidv4 } = require('uuid');
+let { formatTime } = require('../util/lib');
 
 exports.fetchUserAssessList = async function (req, res) {
     let user = req.user;
@@ -25,7 +26,7 @@ exports.fetchUserAssessList = async function (req, res) {
                 assesseeOrgName: orgInfoMap[e.assessee_id].name,
                 assessorOrgName: orgInfoMap[e.assessor_id].name,
                 type: '2',
-                createTime: e.createdAt && e.createdAt.getTime()
+                createTime: formatTime(e.createdAt && e.createdAt.getTime())
             }
         }).value();
         let assessorList = await Assess.find({assesser_id: user.organizationId});

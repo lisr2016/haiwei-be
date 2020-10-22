@@ -19,6 +19,7 @@ let DomesticGarbageWeeklySummary = require('../models/DomesticGarbageWeeklySumma
 let DomesticGarbageMonthlySummary = require('../models/DomesticGarbageMonthlySummary');
 let MedicGarbageMonthlySummary = require('../models/MedicGarbageMonthlySummary');
 let Message = require("../models/Message");
+let { formatTime } = require('../util/lib');
 let ObjectId = require('mongodb').ObjectId;
 
 
@@ -707,7 +708,7 @@ exports.fetchPolicyList = async function (req, res) {
                 publisher: e.admin_name,
                 url: e.url,
                 filename: e.filename,
-                createTime: e.createdAt && e.createdAt.getTime()
+                createTime: formatTime(e.createdAt && e.createdAt.getTime())
             }
         });
         let count = await Policy.countDocuments();
@@ -933,7 +934,7 @@ exports.fetchAssessTemplateList = async function (req, res) {
                 id: e._id,
                 name: e.name,
                 content: e.content,
-                createTime: e.createdAt && e.createdAt.getTime()
+                createTime: formatTime(e.createdAt && e.createdAt.getTime())
             }
         });
         let count = await AssessTemplate.countDocuments();
@@ -982,7 +983,7 @@ exports.fetchAssessTaskList = async function (req, res) {
                 assesseeDone: e.assessee_done,
                 assesseeContent: e.assessee_content,
                 type: e.type,
-                createTime: e.createdAt && e.createdAt.getTime()
+                createTime: formatTime(e.createdAt && e.createdAt.getTime())
             }
         });
         let count = await AssessTask.countDocuments();

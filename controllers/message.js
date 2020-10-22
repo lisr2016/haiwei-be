@@ -1,4 +1,5 @@
 let _ = require('lodash');
+let { formatTime } = require('../util/lib');
 
 let Message = require("../models/Message");
 
@@ -13,7 +14,7 @@ exports.fetchUserMessageList = async function (req, res) {
                 title: e.title,
                 type: e.type,
                 isRead: e.is_read || false,
-                createTime: e.createdAt && e.createdAt.getTime()
+                createTime: formatTime(e.createdAt && e.createdAt.getTime())
             }
         }).value();
         res.status(200).send({code: 0, data, msg: '查询成功'});
