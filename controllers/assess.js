@@ -11,8 +11,11 @@ exports.fetchUserAssessList = async function (req, res) {
     let user = req.user;
     try {
         let assesseeList = await Assess.find({assessee_id: user.organizationId});
-        let orgIds = _.chain(assesseeList).map(e => e.assessor_id).uniq().value();
-        orgIds.push(req.user.organizationId);
+        let assessorList = await Assess.find({assessor_id: user.organizationId});
+        list = _.concat(list,assessorList);
+        let orgIds = _.chain(assesseeList).map(e => e.assessee_id).value();
+        let orgIds2 = _.chain(assessorList).map(e => e.assessor_id).value();
+        orgIds = _.chain(orgIds).concat(orgIds2).concat([req.user.organizationId]).uniq().value();
         const orgs = await Organization.find({_id: {$in: orgIds}});
         const orgInfoMap = _.keyBy(orgs, '_id');
         assesseeList = _.chain(assesseeList).filter(e => !e.assessee_done).map(e => {
@@ -25,22 +28,10 @@ exports.fetchUserAssessList = async function (req, res) {
                 content: e.template_content,
                 assesseeOrgName: orgInfoMap[e.assessee_id].name,
                 assessorOrgName: orgInfoMap[e.assessor_id].name,
-                type: '2',
+                type: e.type,
                 createTime: formatTime(e.createdAt && e.createdAt.getTime())
             }
         }).value();
-        let assessorList = await Assess.find({assesser_id: user.organizationId});
-        
-        // let data = _.chain(messageList).filter(e => !e.is_read).map(e => {
-        //     return {
-        //         id: e._id,
-        //         content: e.content,
-        //         title: e.title,
-        //         type: a[Math.floor(Math.random()*a.length)],
-        //         isRead: e.is_read || false,
-        //         createTime: e.createdAt
-        //     }
-        // }).value();
         res.status(200).send({code: 0, data: assesseeList, msg: '查询成功'});
     } catch (e) {
         console.log(e)
