@@ -26,8 +26,8 @@ exports.fetchUserAssessList = async function (req, res) {
                 name: e.name,
                 target: e.target,
                 content: e.template_content,
-                assesseeOrgName: orgInfoMap[e.assessee_id].name,
-                assessorOrgName: orgInfoMap[e.assessor_id].name,
+                assesseeOrgName: e.assessee_id && orgInfoMap[e.assessee_id].name,
+                assessorOrgName: e.assessor_id && orgInfoMap[e.assessor_id].name,
                 type: e.type,
                 createTime: formatTime(e.createdAt && e.createdAt.getTime())
             }
