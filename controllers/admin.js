@@ -974,7 +974,7 @@ exports.fetchAssessTaskList = async function (req, res) {
                 name: e.name,
                 target: e.target,
                 content: e.template_content,
-                assessorOrgName: e.assessee_id && orgInfoMap[e.assessor_id].name,
+                assessorOrgName: e.assessor_id && orgInfoMap[e.assessor_id].name,
                 assessorId: e.assessor_id,
                 assessorDone: e.assessor_done,
                 assessorContent: e.assessor_content,
