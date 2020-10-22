@@ -12,12 +12,12 @@ exports.fetchUserAssessList = async function (req, res) {
     try {
         let assesseeList = await Assess.find({assessee_id: user.organizationId});
         let assessorList = await Assess.find({assessor_id: user.organizationId});
-        list = _.concat(list,assessorList);
         let orgIds = _.chain(assesseeList).map(e => e.assessee_id).value();
         let orgIds2 = _.chain(assessorList).map(e => e.assessor_id).value();
         orgIds = _.chain(orgIds).concat(orgIds2).concat([req.user.organizationId]).uniq().value();
         const orgs = await Organization.find({_id: {$in: orgIds}});
         const orgInfoMap = _.keyBy(orgs, '_id');
+        assesseeList = _.concat(assesseeList,assessorList);
         assesseeList = _.chain(assesseeList).filter(e => !e.assessee_done).map(e => {
             return {
                 id: e._id,

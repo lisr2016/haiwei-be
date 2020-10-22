@@ -1040,8 +1040,8 @@ exports.newAssessTask = async function (req, res) {
             for(let userId of userIds){
                 const newMessage = new Message({
                     user_id:userId,
-                    title: '您有一件互查巡检任务需要处理',
-                    content: `${params.startTime}, ${params.endTime}, `,
+                    title: `互查任务:${params.name}`,
+                    content: `有一件互查任务指派给了您,请前往"考核验证"模块查看`,
                     type: '1'
                 });
                 await newMessage.save();
@@ -1053,8 +1053,8 @@ exports.newAssessTask = async function (req, res) {
         for(let userId of userIds){
             const newMessage = new Message({
                 user_id:userId,
-                title: `您有一件${params.type === '2' ? '互查' : '自查'}巡检任务需要处理`,
-                content: `${params.startTime}, ${params.endTime}, `,
+                title: `自查任务:${params.name}`,
+                content: `有一件自查任务指派给了您,请前往"考核验证"模块查看`,
                 type: '1'
             });
             await newMessage.save();
