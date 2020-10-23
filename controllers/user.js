@@ -148,6 +148,7 @@ exports.genVerifyCode = async function (req, res) {
         }
         let result = await lib.sendSms(req.query.phone, verifyCode);
         await SendMessageLog.updateOne({phone:req.query.phone}, {last_sms_time: new Date().getTime()}, {upsert: true});
+        console.log(result)
         if (result) {
             req.session[req.query.phone] = verifyCode;
             res.status(200).send({code: 0, msg: '获取成功'});
