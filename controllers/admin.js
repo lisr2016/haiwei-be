@@ -323,13 +323,13 @@ exports.updateUserPassword = async function (req, res) {
 
 const updateUserOrgSchema = {
     userId: Joi.string().required(),
-    orgId: Joi.string().required()
+    organizationId: Joi.string().required()
 };
 
 exports.updateUserOrg = async function (req, res) {
     try {
         const updateUserInfo = await Joi.validate(req.body, updateUserOrgSchema);
-        await User.updateOne({_id: ObjectId(updateUserInfo.userId)}, {organization_id: updateUserInfo.orgId});
+        await User.updateOne({_id: ObjectId(updateUserInfo.userId)}, {organization_id: updateUserInfo.organizationId});
         res.status(200).send({code: 0, msg: '更新成功'});
     } catch (e) {
         let data = '';
