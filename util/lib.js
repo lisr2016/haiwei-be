@@ -4,6 +4,7 @@ let _ = require('lodash');
 let dayjs = require('dayjs');
 let config = require('../config');
 let COS = require('cos-nodejs-sdk-v5');
+let { MEDIC_LEVEL } = require('../util/CONST')
 
 let domesticDaily = require("../models/DomesticGarbageDaily");
 let domesticMonthly = require("../models/DomesticGarbageMonthly");
@@ -57,8 +58,20 @@ exports.summaryDomDaily = async function(time){
         gov_inspection_times = {},
         gov_inspection_problems = {},
         report_count = {};
+    _.each(Object.keys(MEDIC_LEVEL), e =>{
+        meeting_times[e] = 0;
+        self_inspection_times[e] = 0;
+        self_inspection_problems[e] = 0;
+        advertise_times[e] = 0;
+        traning_times[e] = 0;
+        trainees[e] = 0;
+        gov_inspection_times[e] = 0;
+        gov_inspection_problems[e] = 0;
+        report_count[e] = 0;
+    });
     _.each(data,e =>{
         let level = e.level;
+        if(!e.level) console.log(data)
         meeting_times[level] += e.meeting_times;
         self_inspection_times [level] += e.self_inspection_times;
         self_inspection_problems [level] += e.self_inspection_problems;

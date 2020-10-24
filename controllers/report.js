@@ -4,13 +4,14 @@ let domesticDaily = require("../models/DomesticGarbageDaily");
 let domesticMonthly = require("../models/DomesticGarbageMonthly");
 let domesticWeekly = require("../models/DomesticGarbageWeekly");
 let medicMonthly = require("../models/MedicGarbageMonthly");
+let Organization = require("../models/Organization");
 
 let DomesticGarbageDailySummary = require('../models/DomesticGarbageDailySummary');
 let DomesticGarbageWeeklySummary = require('../models/DomesticGarbageWeeklySummary');
 let DomesticGarbageMonthlySummary = require('../models/DomesticGarbageMonthlySummary');
 let MedicGarbageMonthlySummary = require('../models/MedicGarbageMonthlySummary');
 
-const Joi = require('joi')
+const Joi = require('joi');
 
 const summitDomDailySchema = {
     time: Joi.date().required(),
@@ -45,10 +46,16 @@ exports.summitDomDaily = async function (req, res) {
     }
     try {
         const domDailyInfo = await Joi.validate(req.body, summitDomDailySchema);
+        let orgInfo = await Organization.findOne({_id:user.organizationId});
+        if(!orgInfo){
+            res.status(400).send({code: 5, msg: '用户机构信息错误'});
+            return
+        }
         let updateInfo = {
             time: domDailyInfo.time.getTime(),
             user_id: user.id,
             organization_id: user.organizationId,
+            type: orgInfo.type,
             
             meeting_times: domDailyInfo.meetingTimes,
             meeting_host: domDailyInfo.meetingHost,
@@ -127,10 +134,16 @@ exports.summitDomWeekly = async function (req, res) {
     }
     try {
         const domWeeklyInfo = await Joi.validate(req.body, summitDomWeeklySchema);
+        let orgInfo = await Organization.findOne({_id:user.organizationId});
+        if(!orgInfo){
+            res.status(400).send({code: 5, msg: '用户机构信息错误'});
+            return
+        }
         let updateInfo = {
             time: domWeeklyInfo.time.getTime(),
             user_id: user.id,
             organization_id: user.organizationId,
+            type: orgInfo.type,
             consignee: domWeeklyInfo.consignee,
             guide: domWeeklyInfo.guide,
             inspector: domWeeklyInfo.inspector,
@@ -191,10 +204,16 @@ exports.summitDomMonthly = async function (req, res) {
     }
     try {
         const domMonthlyInfo = await Joi.validate(req.body, summitDomMonthlySchema);
+        let orgInfo = await Organization.findOne({_id:user.organizationId});
+        if(!orgInfo){
+            res.status(400).send({code: 5, msg: '用户机构信息错误'});
+            return
+        }
         let updateInfo = new domesticMonthly({
             time: domMonthlyInfo.time.getTime(),
             user_id: user.id,
             organization_id: user.organizationId,
+            type: orgInfo.type,
             kitchen_waste: domMonthlyInfo.kitchenWaste,
             recyclable_waste: domMonthlyInfo.recyclableWaste,
             harmful_waste: domMonthlyInfo.harmfulWaste,
@@ -237,10 +256,18 @@ exports.summitMedMonthly = async function (req, res) {
     }
     try {
         const medMonthlyInfo = await Joi.validate(req.body, summitMedMonthlySchema);
+        
+        let orgInfo = await Organization.findOne({_id:user.organizationId});
+        if(!orgInfo){
+            res.status(400).send({code: 5, msg: '用户机构信息错误'});
+            return
+        }
+        
         let updateInfo = {
             time: medMonthlyInfo.time.getTime(),
             user_id: user.id,
             organization_id: user.organizationId,
+            type: orgInfo.type,
             total_weight: medMonthlyInfo.totalWeight,
         };
         await medicMonthly.updateOne({

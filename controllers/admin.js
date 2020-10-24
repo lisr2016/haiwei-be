@@ -372,9 +372,10 @@ exports.fetchDomDailySummary = async function (req, res) {
             level = req.body.level;
         }
         let data = await DomesticGarbageDailySummary.findOne({time: req.body.startTime});
-        if (!data || data.is_expired) {
+        if (!data || !data.is_expired) {
             data = await lib.summaryDomDaily(req.body.startTime)
         }
+        // console.log(data)
         res.status(200).send({
             code: 0, data: {
                 meetingTimes: level === 'all' ? _.sum(_.values(data.meeting_times)) :  data.meeting_times[level] || 0,

@@ -13,6 +13,11 @@ var DomesticGarbageMonthlySchema = new Schema({
     type: String,
     required: true
   },
+  // 填报机构级别
+  level: {
+    type: String,
+    required: true
+  },
   // 填报日期
   time: {
     type: Number,
