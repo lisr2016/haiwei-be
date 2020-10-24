@@ -6,7 +6,7 @@ let Message = require("../models/Message");
 exports.fetchUserMessageList = async function (req, res) {
     let user = req.user;
     try {
-        let messageList = await Message.find({user_id: user.id}).sort({updateAt: -1}).limit(1);
+        let messageList = await Message.find({user_id: user.id}).sort({updateAt: 1}).limit(30);
         let data = _.chain(messageList).map(e => {
             return {
                 id: e._id,
