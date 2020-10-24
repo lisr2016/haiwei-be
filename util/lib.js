@@ -71,7 +71,6 @@ exports.summaryDomDaily = async function(time){
     });
     _.each(data,e =>{
         let level = e.level;
-        if(!e.level) console.log(data)
         meeting_times[level] += e.meeting_times;
         self_inspection_times [level] += e.self_inspection_times;
         self_inspection_problems [level] += e.self_inspection_problems;
@@ -124,6 +123,28 @@ exports.summaryDomWeekly = async function(time){
         other_waste = {},
         medic_waste = {},
         report_count = {};
+    _.each(Object.keys(MEDIC_LEVEL), e =>{
+        consignee[e] = 0;
+        guide[e] = 0;
+        inspector[e] = 0;
+        kitchen_waste_collectors[e] = 0;
+        kitchen_waste_positons[e] = 0;
+        recyclable_waste_collectors[e] = 0;
+        recyclable_waste_positons[e] = 0;
+        harmful_waste_collectors[e] = 0;
+        harmful_waste_positons[e] = 0;
+        other_waste_collectors[e] = 0;
+        other_waste_positons[e] = 0;
+        medic_waste_collectors[e] = 0;
+        medic_waste_positons[e] = 0;
+        bulky_waste_positons[e] = 0;
+        kitchen_waste[e] = 0;
+        recyclable_waste[e] = 0;
+        harmful_waste[e] = 0;
+        other_waste[e] = 0;
+        medic_waste[e] = 0;
+        report_count[e] = 0;
+    });
     _.each(data,e =>{
         let level = e.level;
         consignee [level] += e.consignee;
@@ -185,6 +206,14 @@ exports.summaryDomMonthly = async function(time){
         bulky_waste = {},
         other_waste = {},
         report_count = {};
+    _.each(Object.keys(MEDIC_LEVEL), e =>{
+        kitchen_waste[e] = 0;
+        recyclable_waste[e] = 0;
+        harmful_waste[e] = 0;
+        bulky_waste[e] = 0;
+        other_waste[e] = 0;
+        report_count[e] = 0;
+    });
     _.each(data,e =>{
         let level = e.level;
         kitchen_waste [level] += e.kitchen_waste;
@@ -214,6 +243,10 @@ exports.summaryMedMonthly = async function(time){
         total_weight [level] += e.total_weight;
         report_count[level] ++;
     });
+    _.each(Object.keys(MEDIC_LEVEL), e => {
+        total_weight[e] = 0;
+        report_count[e] = 0;
+    });
     let result = {
         total_weight
     };
@@ -226,7 +259,7 @@ exports.summaryMedMonthly = async function(time){
 };
 
 exports.calWeeks = function(startTime, endTime){
-    while (dayjs(startTime).day() !== 4) {
+    while (dayjs(startTime).day() !== 5) {
         startTime = dayjs(startTime).add(-1, 'day');
     }
     startTime = dayjs(startTime).startOf('day');

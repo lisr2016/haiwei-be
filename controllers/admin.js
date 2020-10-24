@@ -372,10 +372,9 @@ exports.fetchDomDailySummary = async function (req, res) {
             level = req.body.level;
         }
         let data = await DomesticGarbageDailySummary.findOne({time: req.body.startTime});
-        if (!data || !data.is_expired) {
+        if (!data || data.is_expired) {
             data = await lib.summaryDomDaily(req.body.startTime)
         }
-        // console.log(data)
         res.status(200).send({
             code: 0, data: {
                 meetingTimes: level === 'all' ? _.sum(_.values(data.meeting_times)) :  data.meeting_times[level] || 0,
@@ -459,7 +458,7 @@ exports.fetchDomMonthlySummary = async function (req, res) {
             harmfulWaste: level === 'all' ? _.sum(_.values(data.harmful_waste)) : data.harmful_waste[level] || 0,
             bulkyWaste: level === 'all' ? _.sum(_.values(data.bulky_waste)) : data.bulky_waste[level] || 0,
             otherWaste: level === 'all' ? _.sum(_.values(data.other_waste)) : data.other_waste[level] || 0,
-            reportCount: level === 'all' ? _.sum(_.values(data.report_count)) : data.report_count[level]
+            reportCount: level === 'all' ? _.sum(_.values(data.report_count)) : data.report_count[level] || 0
         }
         res.status(200).send({
             code: 0, data: result, msg: '查询成功'
@@ -513,16 +512,17 @@ exports.fetchScreenSummary = async function (req, res) {
                 midRst = lib.calWeeks(fetchScreenInfo.startTime, fetchScreenInfo.endTime);
                 for (let i = 0; i < midRst.timestamps.length; i++) {
                     let data = await DomesticGarbageWeeklySummary.findOne({time: midRst.timestamps[i]});
+                    console.log(data)
                     if (!data || data.is_expired) {
                         data = await lib.summaryDomWeekly(midRst.timestamps[i]);
                     }
                     list.push({
-                        kitchenWaste: data.kitchen_waste['all'] || 0,
-                        recyclableWaste: data.recyclable_waste['all'] || 0,
-                        harmfulWaste: data.harmful_waste['all'] || 0,
-                        otherWaste: data.other_waste['all'] || 0,
-                        medicWaste: data.medic_waste['all'] || 0,
-                        reportCount: data.report_count['all'] || 0,
+                        kitchenWaste: _.sum(_.values(data.kitchen_waste)),
+                        recyclableWaste: _.sum(_.values(data.recyclable_waste)),
+                        harmfulWaste: _.sum(_.values(data.harmful_waste)),
+                        otherWaste: _.sum(_.values(data.other_waste)),
+                        medicWaste: _.sum(_.values(data.medic_waste)),
+                        reportCount: _.sum(_.values(data.report_count)),
                     })
                 }
                 result = {list, segments: midRst.weeks};
@@ -535,12 +535,12 @@ exports.fetchScreenSummary = async function (req, res) {
                         data = await lib.summaryDomMonthly(midRst.timestamps[i]);
                     }
                     list.push({
-                        kitchenWaste: data.kitchen_waste['all'] || 0,
-                        recyclableWaste: data.recyclable_waste['all'] || 0,
-                        harmfulWaste: data.harmful_waste['all'] || 0,
-                        otherWaste: data.other_waste['all'] || 0,
-                        bulkyWaste: data.bulky_waste['all'] || 0,
-                        reportCount: data.report_count['all'] || 0,
+                        kitchenWaste: _.sum(_.values(data.kitchen_waste)),
+                        recyclableWaste: _.sum(_.values(data.recyclable_waste)),
+                        harmfulWaste: _.sum(_.values(data.harmful_waste)),
+                        otherWaste: _.sum(_.values(data.other_waste)),
+                        bulkyWaste: _.sum(_.values(data.bulky_waste)),
+                        reportCount: _.sum(_.values(data.kitchen_waste)),
                     });
                     result = {list, segments: midRst.months};
                 }
