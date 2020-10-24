@@ -21,10 +21,10 @@ exports.login = function (req, res) {
             res.status(400).send({code: 5, msg: '手机号、密码或验证码缺少'});
             return
         }
-        if (req.session[phone] !== verifyCode) {
-            res.status(200).send({code: 5, msg: '验证码错误'});
-            return
-        }
+        // if (req.session[phone] !== verifyCode) {
+        //     res.status(200).send({code: 5, msg: '验证码错误'});
+        //     return
+        // }
     }
     User.findOne({
         phone
