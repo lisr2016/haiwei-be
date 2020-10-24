@@ -21,10 +21,10 @@ exports.login = function (req, res) {
             res.status(400).send({code: 5, msg: '手机号、密码或验证码缺少'});
             return
         }
-        // if (req.session[phone] !== verifyCode) {
-        //     res.status(200).send({code: 5, msg: '验证码错误'});
-        //     return
-        // }
+        if (req.session[phone] !== verifyCode) {
+            res.status(200).send({code: 5, msg: '验证码错误'});
+            return
+        }
     }
     User.findOne({
         phone
@@ -107,10 +107,10 @@ const signUpSchema = {
 exports.signUp = async function (req, res) {
     try {
         const signUpInfo = await Joi.validate(req.body, signUpSchema);
-        // if (req.session[signUpInfo.phone] !== signUpInfo.verifyCode) {
-        //     res.status(400).send({code: 5, msg: '验证码错误'});
-        //     return
-        // }
+        if (req.session[signUpInfo.phone] !== signUpInfo.verifyCode) {
+            res.status(400).send({code: 5, msg: '验证码错误'});
+            return
+        }
         bcrypt.genSalt(10, function (err, salt) {
             if (err) {
                 res.status(400).send({code: 5, msg: '注册失败'});
