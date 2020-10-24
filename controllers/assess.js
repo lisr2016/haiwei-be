@@ -86,8 +86,9 @@ exports.uploadPics = async function (req, res) {
             res.status(400).json({code: 5, msg: '未发现上传文件'});
             return;
         }
+        
         if (!req.body.filename) {
-            res.status(400).json({code: 5, msg: '缺少filename参数'});
+            res.status(400).json({code: 5, msg: 'param filename is needed'});
             return;
         }
         let size = req.file.size;
