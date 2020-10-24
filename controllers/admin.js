@@ -205,7 +205,7 @@ exports.deleteUser = async function (req, res) {
     try {
         const deleteUserInfo = await Joi.validate(req.body, deleteUserSchema);
         const updateInfo = {
-            is_delete: deleteUserInfo.isDelete,
+            is_deleted: deleteUserInfo.isDelete,
         };
         await User.updateOne({_id: ObjectId(deleteUserInfo.userId)}, updateInfo);
         let userInfo = await User.findOne({_id: deleteUserInfo.userId});
