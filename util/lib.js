@@ -29,7 +29,7 @@ exports.sendSms = async function (phone, code) {
             tpl_value: content
         });
         let result = await axios(sendurl);
-        return result.data && result.data.error_code === {};
+        return result.data && result.data.status === 200;
     } catch (e) {
         console.log(e);
         return false;
