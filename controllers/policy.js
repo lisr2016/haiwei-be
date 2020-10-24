@@ -1,15 +1,19 @@
 let _ = require('lodash');
-let Joi = require('joi');
 let { formatTime } = require('../util/lib');
 let Policy = require("../models/Policy");
-
-
+const ObjectId = require('mongodb').ObjectId;
 
 exports.fetchPolicyList = async function (req, res) {
     try {
-
+        let orgId = req.user && req.user.organizationId;
+        let orgInfo =  Organization.findOne({'_id': new ObjectId(orgId)});
+        if (!orgInfo) {
+            res.status(400).send({code: 5, msg: '用户所属机构信息错误,请联系管理员'});
+            return
+        }
+        let level = orgInfo.level;
         let list = await Policy.find();
-        list = _.map(list, e => {
+        list = _.chain(list).filter(e => !e.level || e.level === level).map(e => {
             return {
                 id: e._id,
                 title: e.title,
@@ -20,7 +24,7 @@ exports.fetchPolicyList = async function (req, res) {
                 filename: e.filename,
                 createTime: formatTime(e.createdAt && e.createdAt.getTime())
             }
-        });
+        }).value();
         let count = await Policy.countDocuments();
         res.status(200).send({code: 0, data: {list, count}, msg: '查询成功'});
     } catch (e) {

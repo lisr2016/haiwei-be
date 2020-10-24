@@ -1,5 +1,4 @@
 let _ = require('lodash');
-let lib = require('../util/lib');
 
 let User = require('../models/User');
 let Organization = require('../models/Organization');
@@ -54,10 +53,10 @@ exports.initOrgInfo = async function (req, res) {
     try {
         const initOrgInfo = await Joi.validate(req.body, initOrgInfoSchema);
         let orgInfo = await Organization.findById(user.organizationId);
-        if (!orgInfo) {
+        `if (!orgInfo) {
             res.status(400).send({code: 5, msg: '用户所属机构信息错误,请联系管理员'});
             return
-        }
+        }`
         const updateInfo = {
             is_initiated: true,
             corporation_phone: initOrgInfo.corporationPhone,

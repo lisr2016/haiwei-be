@@ -32,6 +32,11 @@ var PolicySchema = new Schema({
     type: String,
     default: false
   },
+  type: {
+    type: String,
+    default: 'all',
+    required: true
+  },
   // 文件名
   filename: {
     type: String,
@@ -39,6 +44,6 @@ var PolicySchema = new Schema({
   },
 }, {timestamps: {createAt: 'created', updateAt: 'updated'}});
 
-
+MessageSchema.index({ type: 1});
 
 module.exports = mongoose.model('policies', PolicySchema);

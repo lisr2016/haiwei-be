@@ -485,7 +485,7 @@ exports.fetchMedMonthlySummary = async function (req, res) {
         }
         res.status(200).send({
             code: 0, data: {
-                totalWeight: level === 'all' ? _.sum(_.values(data.kitchen_waste)) : data.total_weight || 0,
+                totalWeight: level === 'all' ? _.sum(_.values(data.total_weight)) : data.total_weight || 0,
                 reportCount: level === 'all' ? _.sum(_.values(data.report_count)) : data.report_count || 0
             }, msg: '查询成功'
         });
@@ -512,7 +512,6 @@ exports.fetchScreenSummary = async function (req, res) {
                 midRst = lib.calWeeks(fetchScreenInfo.startTime, fetchScreenInfo.endTime);
                 for (let i = 0; i < midRst.timestamps.length; i++) {
                     let data = await DomesticGarbageWeeklySummary.findOne({time: midRst.timestamps[i]});
-                    console.log(data)
                     if (!data || data.is_expired) {
                         data = await lib.summaryDomWeekly(midRst.timestamps[i]);
                     }
@@ -751,6 +750,7 @@ exports.fetchPolicyList = async function (req, res) {
                 publisher: e.admin_name,
                 url: e.url,
                 filename: e.filename,
+                level: e.level,
                 createTime: formatTime(e.createdAt && e.createdAt.getTime())
             }
         });
@@ -810,7 +810,6 @@ exports.uploadFile = async function (req, res) {
             key: key,
         });
         await newUploadFileLog.save();
-        console.log(result);
         res.status(500).json({code: 0, msg: '上传失败'});
     } catch (e) {
         console.log(e);
@@ -818,12 +817,12 @@ exports.uploadFile = async function (req, res) {
     }
 };
 
-
 const newPolicySchema = {
     title: Joi.string().required(),
     content: Joi.string().required(),
     url: Joi.string().required(),
     filename: Joi.string().required(),
+    level: Joi.string()
 };
 
 exports.newPolicy = async function (req, res) {
@@ -835,7 +834,8 @@ exports.newPolicy = async function (req, res) {
             admin_id: req.admin.id,
             url: params.url,
             admin_name: req.admin.username,
-            filename: params.filename
+            filename: params.filename,
+            level: params.level
         });
         await newNotify.save();
         res.status(200).send({code: 0, msg: '添加成功'});
