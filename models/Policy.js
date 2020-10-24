@@ -44,6 +44,6 @@ var PolicySchema = new Schema({
   },
 }, {timestamps: {createAt: 'created', updateAt: 'updated'}});
 
-MessageSchema.index({ type: 1});
+PolicySchema.index({ type: 1 });
 
 module.exports = mongoose.model('policies', PolicySchema);
