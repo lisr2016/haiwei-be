@@ -750,7 +750,7 @@ exports.fetchPolicyList = async function (req, res) {
                 publisher: e.admin_name,
                 url: e.url,
                 filename: e.filename,
-                level: e.level,
+                levels: e.levels,
                 createTime: formatTime(e.createdAt && e.createdAt.getTime())
             }
         });
@@ -822,7 +822,7 @@ const newPolicySchema = {
     content: Joi.string().required(),
     url: Joi.string().required(),
     filename: Joi.string().required(),
-    level: Joi.string()
+    levels: Joi.array()
 };
 
 exports.newPolicy = async function (req, res) {
@@ -835,7 +835,7 @@ exports.newPolicy = async function (req, res) {
             url: params.url,
             admin_name: req.admin.username,
             filename: params.filename,
-            level: params.level
+            levels: params.levels
         });
         await newNotify.save();
         res.status(200).send({code: 0, msg: '添加成功'});

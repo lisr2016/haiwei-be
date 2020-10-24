@@ -32,10 +32,8 @@ var PolicySchema = new Schema({
     type: String,
     default: false
   },
-  type: {
-    type: String,
-    default: 'all',
-    required: true
+  levels: {
+    type: Array,
   },
   // 文件名
   filename: {
@@ -43,7 +41,5 @@ var PolicySchema = new Schema({
     default: false
   },
 }, {timestamps: {createAt: 'created', updateAt: 'updated'}});
-
-PolicySchema.index({ type: 1 });
 
 module.exports = mongoose.model('policies', PolicySchema);

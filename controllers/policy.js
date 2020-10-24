@@ -13,7 +13,7 @@ exports.fetchPolicyList = async function (req, res) {
         }
         let level = orgInfo.level;
         let list = await Policy.find();
-        list = _.chain(list).filter(e => !e.level || e.level === level).map(e => {
+        list = _.chain(list).filter(e => !_.size(e.levels) || _.includes(e.levels, level)).map(e => {
             return {
                 id: e._id,
                 title: e.title,
