@@ -87,7 +87,7 @@ exports.uploadPics = async function (req, res) {
             return;
         }
         if (!(_.size(req.body.taskId) && _.size(req.body.contentIndex) && _.size(req.body.picIndex))) {
-            res.status(400).json({code: 5, msg: 'taskId、contentIndex 或 picIndex参数错误'});
+            res.status(400).json({code: 5, msg: 'taskId,contentIndex或picIndex参数错误'});
             return;
         }
         if (!req.body.filename) {
