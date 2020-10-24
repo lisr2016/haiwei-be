@@ -12,13 +12,15 @@ exports.fetchUserAssessList = async function (req, res) {
     try {
         let assesseeList = await Assess.find({assessee_id: user.organizationId});
         let assessorList = await Assess.find({assessor_id: user.organizationId});
+        assesseeList = _.filter(assesseeList, e => !e.assessee_done);
+        assessorList = _.filter(assessorList, e => !e.assessor_done);
         let orgIds = _.chain(assesseeList).map(e => e.assessor_id).value();
         let orgIds2 = _.chain(assessorList).map(e => e.assessee_id).value();
         orgIds = _.chain(orgIds).concat(orgIds2).concat([req.user.organizationId]).uniq().value();
         const orgs = await Organization.find({_id: {$in: orgIds}});
         const orgInfoMap = _.keyBy(orgs, '_id');
         assesseeList = _.concat(assesseeList,assessorList);
-        assesseeList = _.chain(assesseeList).filter(e => !e.assessee_done).map(e => {
+        let result = _.map(assesseeList, e => {
             return {
                 id: e._id,
                 startTime: formatTime(e.start_time && e.start_time.getTime()),
@@ -32,7 +34,7 @@ exports.fetchUserAssessList = async function (req, res) {
                 createTime: formatTime(e.createdAt && e.createdAt.getTime())
             }
         }).value();
-        res.status(200).send({code: 0, data: assesseeList, msg: '查询成功'});
+        res.status(200).send({code: 0, data: result, msg: '查询成功'});
     } catch (e) {
         console.log(e)
         res.status(400).send({code: 5, msg: '查询失败'});
