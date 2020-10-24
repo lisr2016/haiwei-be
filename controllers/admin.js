@@ -217,7 +217,6 @@ exports.deleteUser = async function (req, res) {
             registedUsers[`${deleteUserInfo.userId}`] = true;
         }
         let result = await Organization.updateOne({_id: userInfo.organization_id}, { registed_users: registedUsers });
-        console.log(result);
         res.status(200).send({code: 0, msg: '更新成功'});
     } catch (e) {
         let data = '';
@@ -283,14 +282,14 @@ exports.resetPassword = async function (req, res) {
     }
 };
 
-const updateUserInfoSchema = {
+const updateUserPasswordSchema = {
     userId: Joi.string().required(),
     password: Joi.string().required()
 };
 
-exports.updateUserInfo = async function (req, res) {
+exports.updateUserPassword = async function (req, res) {
     try {
-        const updateUserInfo = await Joi.validate(req.body, updateUserInfoSchema);
+        const updateUserInfo = await Joi.validate(req.body, updateUserPasswordSchema);
         bcrypt.genSalt(10, function (err, salt) {
             if (err) {
                 res.status(400).send({code: 5, msg: '更新失败'});
@@ -322,10 +321,40 @@ exports.updateUserInfo = async function (req, res) {
     }
 };
 
+const updateUserOrgSchema = {
+    userId: Joi.string().required(),
+    orgId: Joi.string().required()
+};
+
+exports.updateUserOrg = async function (req, res) {
+    try {
+        const updateUserInfo = await Joi.validate(req.body, updateUserOrgSchema);
+        await User.updateOne({_id: ObjectId(updateUserInfo.userId)}, {organization_id: updateUserInfo.orgId});
+        res.status(200).send({code: 0, msg: '更新成功'});
+    } catch (e) {
+        let data = '';
+        if (_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
+        console.log(e);
+        res.status(400).send({code: 5, data, msg: '更新失败'});
+    }
+};
+
 exports.fetchSummaryTotal = async function (req, res) {
     try {
-        const count = await Organization.countDocuments({is_deleted: {$ne: true}});
-        res.status(200).send({code: 0, data: {count}, msg: '查询成功'});
+        const orgs = await Organization.find();
+        let result = {all: 0};
+        _.each(orgs, e => {
+            if (!e.is_deleted) {
+                result.all++;
+                if (!result[e.level]) result[e.level] = 0;
+                result[e.level]++
+            }
+        });
+        res.status(200).send({code: 0, data: result, msg: '查询成功'});
     } catch (e) {
         console.log(e);
         res.status(400).send({code: 5, data, msg: '查询失败'});

@@ -28,7 +28,9 @@ router.post('/cms/new/user', ctrls.auth.verifyCmsToken, ctrls.admin.newUser);
 // 删除用户
 router.post('/cms/delete/user', ctrls.auth.verifyCmsToken, ctrls.admin.deleteUser);
 // 修改用户密码
-router.post('/cms/update/user/info', ctrls.auth.verifyCmsToken, ctrls.admin.updateUserInfo);
+router.post('/cms/update/user/password', ctrls.auth.verifyCmsToken, ctrls.admin.updateUserPassword);
+// 修改用户机构
+router.post('/cms/update/user/org', ctrls.auth.verifyCmsToken, ctrls.admin.updateUserOrg);
 
 // 获取机构列表
 router.post('/cms/get/org/list', ctrls.auth.verifyCmsToken, ctrls.admin.fetchOrgList);
