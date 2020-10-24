@@ -86,10 +86,6 @@ exports.uploadPics = async function (req, res) {
             res.status(400).json({code: 5, msg: '未发现上传文件'});
             return;
         }
-        if (!(_.size(req.body.taskId) && _.size(req.body.contentIndex) && _.size(req.body.picIndex))) {
-            res.status(400).json({code: 5, msg: 'taskId,contentIndex,picIndex params lost'});
-            return;
-        }
         if (!req.body.filename) {
             res.status(400).json({code: 5, msg: '缺少filename参数'});
             return;
