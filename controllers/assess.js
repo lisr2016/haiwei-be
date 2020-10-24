@@ -33,10 +33,10 @@ exports.fetchUserAssessList = async function (req, res) {
                 type: e.type,
                 createTime: formatTime(e.createdAt && e.createdAt.getTime())
             }
-        }).value();
+        });
         res.status(200).send({code: 0, data: result, msg: '查询成功'});
     } catch (e) {
-        console.log(e)
+        console.log(e);
         res.status(400).send({code: 5, msg: '查询失败'});
     }
 };
