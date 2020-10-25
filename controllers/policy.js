@@ -7,7 +7,7 @@ const ObjectId = require('mongodb').ObjectId;
 exports.fetchPolicyList = async function (req, res) {
     try {
         let orgId = req.user && req.user.organizationId;
-        let orgInfo =  Organization.findOne({'_id': new ObjectId(orgId)});
+        let orgInfo = await Organization.findOne({'_id': new ObjectId(orgId)});
         if (!orgInfo) {
             res.status(400).send({code: 5, msg: '用户所属机构信息错误,请联系管理员'});
             return

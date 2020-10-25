@@ -888,17 +888,13 @@ exports.updatePolicyInfo = async function (req, res) {
 
 const cancelPolicySchema = {
     policyId: Joi.string().required(),
-    isDelete: Joi.boolean().default(false),
 };
 
 exports.cancelPolicy = async function (req, res) {
     try {
-        const cancelNotifyInfo = await Joi.validate(req.body, cancelPolicySchema);
-        const updateInfo = {
-            is_deleted: cancelNotifyInfo.isDelete,
-        };
-        await Policy.updateOne({_id: ObjectId(cancelNotifyInfo.policyId)}, updateInfo);
-        res.status(200).send({code: 0, msg: '更新成功'});
+        const params = await Joi.validate(req.body, cancelPolicySchema);
+        await Policy.deleteOne({_id: params.policyId});
+        res.status(200).send({code: 0, msg: '删除成功'});
     } catch (e) {
         let data = '';
         if (_.size(e.details) > 0) {
