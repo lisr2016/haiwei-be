@@ -1,4 +1,5 @@
 let _ = require('lodash');
+let lib = require('../util/lib')
 
 let User = require('../models/User');
 let Organization = require('../models/Organization');
