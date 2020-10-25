@@ -6,8 +6,8 @@ const multer = require('multer');
 const upload = multer({
     storage: multer.memoryStorage(),
     limits: {
-        fileSize: 20971520, // 20mb
-        files: 1
+        fileSize: 52428800, // 20mb
+        files: 9
     }
 });
 
@@ -21,7 +21,7 @@ router.post('/reset/password', ctrls.user.resetPassword);
 // 获取用户考核任务
 router.get('/assess/list', ctrls.assess.fetchUserAssessList);
 // 用户上传图片
-router.post('/upload/pic', upload.single('file'),  ctrls.assess.uploadPics);
+router.post('/upload/pic', upload.array('file',9),  ctrls.assess.uploadPics);
 // 获取用户提交考核
 router.post('/upload/assess', ctrls.assess.uploadAssess);
 

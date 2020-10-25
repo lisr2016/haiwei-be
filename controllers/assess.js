@@ -82,48 +82,41 @@ exports.uploadAssess = async function (req, res) {
 
 exports.uploadPics = async function (req, res) {
     try {
-        if (!_.size(req.file)) {
+        let photos = req.files;
+        if (!_.size(photos)) {
             res.status(400).json({code: 5, msg: '未发现上传文件'});
             return;
         }
-        
-        if (!req.body.filename) {
-            res.status(400).json({code: 5, msg: 'param filename is needed'});
-            return;
+        let isSuccess = true;
+        let urls = [];
+        for(let photo of photos){
+            let size = photo.size;
+            let key = `policy/${uuidv4()}/${photo.originalname}`;
+            let buffer = photo.buffer;
+            let result = await lib.cosPutObject(key, buffer);
+            if (result.statusCode === 200) {
+                const newUploadFileLog = new UploadFileLog({
+                    uploader: req.user.phone,
+                    is_success: true,
+                    size: size,
+                    key: key,
+                });
+                await newUploadFileLog.save();
+                let url = await lib.cosGetObjectUrl(key);
+                if(!url){
+                    isSuccess = false;
+                    break;
+                }
+                urls.push(url);
+                continue;
+            }
+            isSuccess = false;
+            break;
         }
-        let size = req.file.size;
-        if (_.last(req.file.originalname.split('.')) !== _.last(req.body.filename.split('.'))) {
-            res.status(400).json({code: 5, msg: 'filename 文件类型和上传文件不匹配'});
-            return;
+        if(!isSuccess) {
+            res.status(400).json({code: 5, msg: '上传失败'});
         }
-        const suffixFilter = ['jpeg', 'jpg', 'gif', 'bmp', 'png'];
-        if (!_.includes(suffixFilter, _.last(req.file.originalname.split('.')))) {
-            res.status(400).json({code: 5, msg: '文件类型错误，请上传 jpeg, jpg, gif, bmp, png 文件'});
-            return;
-        }
-        let key = `policy/${uuidv4()}/${req.body.filename}`;
-        let buffer = req.file.buffer;
-        let result = await lib.cosPutObject(key, buffer);
-        if (result.statusCode === 200) {
-            const newUploadFileLog = new UploadFileLog({
-                uploader: req.user.phone,
-                is_success: true,
-                size: size,
-                key: key,
-            });
-            await newUploadFileLog.save();
-            let result = await lib.cosGetObjectUrl(key);
-            res.status(200).json({code: 0, data: result.Url, msg: '上传成功'});
-            return
-        }
-        const newUploadFileLog = new UploadFileLog({
-            uploader: req.user.phone,
-            is_success: false,
-            size: size,
-            key: key,
-        });
-        await newUploadFileLog.save();
-        res.status(400).json({code: 0, msg: '上传失败'});
+        res.status(200).json({code: 0, data: urls, msg: '上传成功'});
     } catch (e) {
         console.log(e);
         res.status(400).send({code: 5, msg: '上传失败'});
