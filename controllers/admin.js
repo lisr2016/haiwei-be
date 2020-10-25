@@ -857,7 +857,7 @@ const updatePolicyInfoSchema = {
     content: Joi.string(),
     url: Joi.string().required(),
     filename: Joi.string().required(),
-    array:Joi.array(),
+    levels:Joi.array(),
 };
 
 exports.updatePolicyInfo = async function (req, res) {
@@ -868,7 +868,7 @@ exports.updatePolicyInfo = async function (req, res) {
         if (updatePolicyInfo.content) updateInfo.content = updatePolicyInfo.content;
         if (updatePolicyInfo.url) updateInfo.url = updatePolicyInfo.url;
         if (updatePolicyInfo.filename) updateInfo.filename = updatePolicyInfo.filename;
-        if (_.size(updatePolicyInfo.array)) updateInfo.array = updatePolicyInfo.array;
+        if (_.size(updatePolicyInfo.levels)) updateInfo.levels = updatePolicyInfo.levels;
         await Policy.updateOne({_id: ObjectId(updatePolicyInfo.policyId)}, updateInfo);
         res.status(200).send({code: 0, msg: '更新成功'});
     } catch (e) {
