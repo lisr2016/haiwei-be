@@ -21,6 +21,7 @@ let MedicGarbageMonthlySummary = require('../models/MedicGarbageMonthlySummary')
 let Message = require("../models/Message");
 let { formatTime } = require('../util/lib');
 let ObjectId = require('mongodb').ObjectId;
+let { MEDIC_LEVEL } = require('../util/CONST')
 
 
 let { v4: uuidv4 } = require('uuid');
@@ -828,6 +829,7 @@ const newPolicySchema = {
 exports.newPolicy = async function (req, res) {
     try {
         const params = await Joi.validate(req.body, newPolicySchema);
+        if(_.size(params.levels) === _.size(MEDIC_LEVEL)) params.levels = null;
         const newNotify = new Policy({
             title: params.title,
             content: params.content,
@@ -864,6 +866,7 @@ exports.updatePolicyInfo = async function (req, res) {
     try {
         const updatePolicyInfo = await Joi.validate(req.body, updatePolicyInfoSchema);
         const updateInfo = {};
+        if(_.size(updatePolicyInfo.levels) === _.size(MEDIC_LEVEL)) updatePolicyInfo.levels = null;
         if (updatePolicyInfo.title) updateInfo.title = updatePolicyInfo.title;
         if (updatePolicyInfo.content) updateInfo.content = updatePolicyInfo.content;
         if (updatePolicyInfo.url) updateInfo.url = updatePolicyInfo.url;
