@@ -209,21 +209,30 @@ exports.summitDomMonthly = async function (req, res) {
             res.status(400).send({code: 5, msg: '用户机构信息错误'});
             return
         }
-        let updateInfo = new domesticMonthly({
-            time: domMonthlyInfo.time.getTime(),
-            user_id: user.id,
-            organization_id: user.organizationId,
-            type: orgInfo.type,
-            kitchen_waste: domMonthlyInfo.kitchenWaste,
-            recyclable_waste: domMonthlyInfo.recyclableWaste,
-            harmful_waste: domMonthlyInfo.harmfulWaste,
-            bulky_waste: domMonthlyInfo.bulkyWaste,
-            other_waste: domMonthlyInfo.otherWaste,
-        });
-        await domesticMonthly.updateOne({
+        let existed = await domesticMonthly.findOne({
             time: domMonthlyInfo.time.getTime(),
             organization_id: user.organizationId
-        }, updateInfo, {upsert: true});
+        });
+        if(existed){
+            await domesticMonthly.updateOne({
+                time: domMonthlyInfo.time.getTime(),
+                organization_id: user.organizationId
+            }, updateInfo, {upsert: true});
+        }else {
+            let newDomesticMonthly = new domesticMonthly({
+                time: domMonthlyInfo.time.getTime(),
+                user_id: user.id,
+                organization_id: user.organizationId,
+                type: orgInfo.type,
+                kitchen_waste: domMonthlyInfo.kitchenWaste,
+                recyclable_waste: domMonthlyInfo.recyclableWaste,
+                harmful_waste: domMonthlyInfo.harmfulWaste,
+                bulky_waste: domMonthlyInfo.bulkyWaste,
+                other_waste: domMonthlyInfo.otherWaste,
+            });
+            await newDomesticMonthly.save();
+        }
+        
         let result = await DomesticGarbageMonthlySummary.findOne({time: domMonthlyInfo.time.getTime()});
         if (result) {
             await DomesticGarbageMonthlySummary.updateOne({
