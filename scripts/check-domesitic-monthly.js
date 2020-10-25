@@ -1,50 +1,44 @@
+// 每周月最后一天18：05点检查本月生活垃圾日报是否上报。未完成上报的机构用户会收到提醒。范围是所有激活状态的机构下,type为"1"、"2"的用户
 let Organization = require('../models/Organization');
+let Message = require('../models/Message');
+let DomesticGarbageDaily = require('../models/DomesticGarbageDaily');
 let config = require('../config');
 let mongoose = require('mongoose');
+let dayjs = require('dayjs');
+let _ = require('lodash');
 
-let Excel = require('exceljs');
 
 mongoose.connect(config.database, {useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true});
 
 main();
 
-// 每周月最后一天18：05点检查本月生活垃圾日报是否上报。未完成上报的机构用户会收到提醒。范围是所有激活状态的机构下,type为"1"、"2"的用户
+// 每天15点40分检查当日生活垃圾日报是否上报。未完成上报的机构用户会收到提醒。范围是所有激活状态的机构下,type为"1"、"2"的用户
 
 async function main () {
-    const wb = new Excel.Workbook();
-    await wb.xlsx.readFile('./scripts/orgList.xlsx');
-    const ws = wb.worksheets[0];
-    const orgTypeMap = {
-        '门诊部':'4',
-        '诊所':'5',
-        '医务室':'7',
-        '卫生室':'8',
-        '社区卫生服务中心':'9',
-        '社区卫生服务站':'10'
-    };
-    let orgKeys = Object.keys(orgTypeMap);
-
-    const orgs = [];
-    for (let i = 2;i < 1261;i++){
-        const name = ws.getCell(`A${i}`).value;
-        const address = ws.getCell(`B${i}`).value;
-        let level = '6';
-        for(let j of orgKeys){
-            if(name.indexOf(j)>0){
-                level = orgTypeMap[j]
-            }
-        }
-        let orgInfo = {
-            name: name,
-            level: level,
-            address: address,
-            manager_phone: ws.getCell(`C${i}`).value
-        };
-        orgs.push(orgInfo)
+    let time = dayjs().startOf('month').toDate();
+    let day = `${dayjs().month()}月${dayjs().date()}日`
+    let submitted = await DomesticGarbageDaily.find({time});
+    let submittedOrg = {};
+    _.each(submitted, e => {
+        submittedOrg[e.organization_id] = true
+    });
+    submited = null;
+    let userIds = [];
+    let orgs = await Organization.find({is_deleted:{$ne:true}});
+    _.each(orgs, org => {
+        if (org && org._id && !submittedOrg[org._id]) userIds = _.concat(userIds,_.keys(org.registed_users))
+    });
+    orgs = null;
+    let messages = [];
+    for(let userId of userIds){
+        messages.push({
+            user_id:userId,
+            title: `${day}生活垃圾日报,请按时提交`,
+            content: `请在${day}下午4点前完成，点击下方按钮前往提交`,
+            type: '2'
+        });
     }
-    console.log(orgs[orgs.length - 1])
-    Organization.insertMany(orgs, function (err) {
-        // console.log(err);
+    Message.insertMany(messages, function (err) {
         process.exit(1);
     });
 }

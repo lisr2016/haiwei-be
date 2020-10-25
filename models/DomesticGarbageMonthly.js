@@ -20,7 +20,7 @@ var DomesticGarbageMonthlySchema = new Schema({
   },
   // 填报日期
   time: {
-    type: Number,
+    type: Date,
     required: true
   },
   // 垃圾收集情况
