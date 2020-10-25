@@ -1,5 +1,6 @@
 let _ = require('lodash');
 let { formatTime } = require('../util/lib');
+let Organization = require("../models/Organization");
 let Policy = require("../models/Policy");
 const ObjectId = require('mongodb').ObjectId;
 
