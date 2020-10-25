@@ -5,7 +5,7 @@ var Schema = mongoose.Schema;
 var DomesticGarbageMonthlySummarySchema = new Schema({
   // 填报日期
   time: {
-    type: Number,
+    type: Date,
     unique: true,
     required: true
   },
