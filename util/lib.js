@@ -259,7 +259,7 @@ exports.summaryMedMonthly = async function(time){
 };
 
 exports.calWeeks = function(startTime, endTime){
-    while (dayjs(startTime).day() !== 5) {
+    while (dayjs(startTime).day() !== 1) {
         startTime = dayjs(startTime).add(-1, 'day');
     }
     startTime = dayjs(startTime).startOf('day');
