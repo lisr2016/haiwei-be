@@ -27,6 +27,9 @@ var MessageSchema = new Schema({
   type: {
     type: String,
     required: true
+  },
+  publish_time : {
+    type: Date
   }
 }, {timestamps: {createAt: 'created', updateAt: 'updated'}});
 

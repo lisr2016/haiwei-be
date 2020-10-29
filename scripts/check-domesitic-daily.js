@@ -11,7 +11,7 @@ mongoose.connect(config.database, {useCreateIndex: true, useNewUrlParser: true, 
 
 main();
 
-// 每天15点40分检查当日生活垃圾日报是否上报。未完成上报的机构用户会收到提醒。范围是所有激活状态的机构下,type为"1"、"2"的用户
+// 每天上午9点发送。范围是所有激活状态的机构下,type为"1"、"2"的用户
 
 async function main () {
     let time = dayjs().startOf('day').toDate();
@@ -30,7 +30,7 @@ async function main () {
             user_id:userId,
             title: `${day}生活垃圾日报提交提醒`,
             content: `请您按时上报${day}垃圾分类工作日报，谢谢！`,
-            type: '2'
+            type: '2',
         });
     }
     Message.insertMany(messages, function (err) {

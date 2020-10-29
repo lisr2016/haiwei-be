@@ -14,7 +14,7 @@ exports.fetchUserMessageList = async function (req, res) {
                 title: e.title,
                 type: e.type,
                 isRead: e.is_read || false,
-                createTime: formatTime(e.createdAt && e.createdAt.getTime())
+                createTime: formatTime(e.publish_time && e.publish_time.getTime() || e.createdAt && e.createdAt.getTime())
             }
         }).value();
         res.status(200).send({code: 0, data, msg: '查询成功'});
