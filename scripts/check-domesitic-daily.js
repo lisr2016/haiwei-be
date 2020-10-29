@@ -15,12 +15,8 @@ main();
 
 async function main () {
     let time = dayjs().startOf('day').toDate();
-    let day = `${dayjs().month()}月${dayjs().date()}日`
-    let submitted = await DomesticGarbageDaily.find({time});
+    let day = `${dayjs().month() + 1}月${dayjs().date()}日`
     let submittedOrg = {};
-    _.each(submitted, e => {
-        submittedOrg[e.organization_id] = true
-    });
     submited = null;
     let userIds = [];
     let orgs = await Organization.find({is_deleted:{$ne:true}});
@@ -32,8 +28,8 @@ async function main () {
     for(let userId of userIds){
         messages.push({
             user_id:userId,
-            title: `${day}生活垃圾日报,请按时提交`,
-            content: `请在${day}下午4点前完成，点击下方按钮前往提交`,
+            title: `${day}生活垃圾日报提交提醒`,
+            content: `请您按时上报${day}垃圾分类工作日报，谢谢！`,
             type: '2'
         });
     }
