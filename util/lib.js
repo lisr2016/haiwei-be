@@ -17,7 +17,7 @@ let DomesticGarbageMonthlySummary = require('../models/DomesticGarbageMonthlySum
 let MedicGarbageMonthlySummary = require('../models/MedicGarbageMonthlySummary');
 
 exports.formatTime = function (time,format) {
-    return dayjs(new Date(time)).add(8,'hour').format(format || 'YYYY-MM-DD-HH-MM');
+    return dayjs(new Date(time)).format(format || 'YYYY-MM-DD HH:MM');
 };
 
 exports.sendSms = async function (phone, code) {
