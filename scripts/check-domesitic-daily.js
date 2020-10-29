@@ -1,6 +1,6 @@
 let Organization = require('../models/Organization');
 let Message = require('../models/Message');
-let DomesticGarbageDaily = require('../models/DomesticGarbageDaily');
+let User = require('../models/User');
 let config = require('../config');
 let mongoose = require('mongoose');
 let dayjs = require('dayjs');
@@ -14,14 +14,19 @@ main();
 // 每天上午9点发送。范围是所有激活状态的机构下,type为"1"、"2"的用户
 
 async function main () {
-    let time = dayjs().startOf('day').toDate();
     let day = `${dayjs().month() + 1}月${dayjs().date()}日`
-    let submittedOrg = {};
     submited = null;
     let userIds = [];
     let orgs = await Organization.find({is_deleted:{$ne:true}});
+    let data = await User.find({type:'3'});
+    let forbidUserIds = {};
+    _.each(data, e => {
+        forbidUserIds[e._id] = true
+    });
     _.each(orgs, org => {
-        if (org && org._id && !submittedOrg[org._id]) userIds = _.concat(userIds,_.keys(org.registed_users))
+        let addUserIds = _.chain(org.registed_users).keys().filter(e => !forbidUserIds[e]
+        ).value();
+        userIds = _.concat(userIds,addUserIds)
     });
     orgs = null;
     let messages = [];

@@ -1,6 +1,8 @@
-// 每周月最后一天18：05点检查本月生活垃圾日报是否上报。未完成上报的机构用户会收到提醒。范围是所有激活状态的机构下,type为"1"、"2"的用户
+
+// 每周四18点检查当前星期生活垃圾日报是否上报。未完成上报的机构用户会收到提醒。范围是所有激活状态的机构下,type为"1"、"2"的用户
 let Organization = require('../models/Organization');
 let Message = require('../models/Message');
+let User = require('../models/User');
 let DomesticGarbageDaily = require('../models/DomesticGarbageDaily');
 let config = require('../config');
 let mongoose = require('mongoose');
@@ -12,30 +14,33 @@ mongoose.connect(config.database, {useCreateIndex: true, useNewUrlParser: true, 
 
 main();
 
-// 每天15点40分检查当日生活垃圾日报是否上报。未完成上报的机构用户会收到提醒。范围是所有激活状态的机构下,type为"1"、"2"的用户
-
 async function main () {
-    let time = dayjs().startOf('month').toDate();
-    let day = `${dayjs().month()}月${dayjs().date()}日`
-    let submitted = await DomesticGarbageDaily.find({time});
-    let submittedOrg = {};
-    _.each(submitted, e => {
-        submittedOrg[e.organization_id] = true
-    });
-    submited = null;
+    let month = `${dayjs().month()}月`;
+    
     let userIds = [];
+    
     let orgs = await Organization.find({is_deleted:{$ne:true}});
-    _.each(orgs, org => {
-        if (org && org._id && !submittedOrg[org._id]) userIds = _.concat(userIds,_.keys(org.registed_users))
+    let data = await User.find({type:'3'});
+    let forbidUserIds = {};
+    _.each(data, e => {
+        forbidUserIds[e._id] = true
     });
-    orgs = null;
+    _.each(orgs, org => {
+        let addUserIds = _.chain(org.registed_users).keys().filter(e => !forbidUserIds[e]
+        ).value();
+        userIds = _.concat(userIds,addUserIds)
+    });
+    
+    userIds = ['5f95a7e48b5a19d73444db8f'];
+    
     let messages = [];
     for(let userId of userIds){
         messages.push({
             user_id:userId,
-            title: `${day}生活垃圾日报,请按时提交`,
-            content: `请在${day}下午4点前完成，点击下方按钮前往提交`,
-            type: '2'
+            title: `${month}生活垃圾月报,请按时提交`,
+            content: `请各机构于5日前上报垃圾处置情况台账月报，谢谢！`,
+            type: '4',
+            publish_time: `${dayjs().startOf('day').add(9.5,'hour').toDate()}`
         });
     }
     Message.insertMany(messages, function (err) {
