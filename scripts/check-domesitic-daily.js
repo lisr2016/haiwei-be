@@ -31,6 +31,7 @@ async function main () {
             title: `${day}生活垃圾日报提交提醒`,
             content: `请您按时上报${day}垃圾分类工作日报，谢谢！`,
             type: '2',
+            publish_time: `${dayjs().startOf('day').add(9,'hour').toDate()}`
         });
     }
     Message.insertMany(messages, function (err) {
