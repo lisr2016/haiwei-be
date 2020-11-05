@@ -22,7 +22,7 @@ exports.login = function (req, res) {
             return
         }
         if (req.session[phone] !== verifyCode) {
-            res.status(200).send({code: 5, msg: '验证码错误'});
+            res.status(400).send({code: 5, msg: '验证码错误'});
             return
         }
     }

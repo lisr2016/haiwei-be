@@ -37,7 +37,7 @@ async function main () {
         userIds = _.concat(userIds,addUserIds)
     });
     
-    userIds = ['5f95a7e48b5a19d73444db8f'];
+    // userIds = ['5f95a7e48b5a19d73444db8f'];
     
     let messages = [];
     for(let userId of userIds){
