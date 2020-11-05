@@ -866,7 +866,7 @@ exports.updatePolicyInfo = async function (req, res) {
     try {
         const updatePolicyInfo = await Joi.validate(req.body, updatePolicyInfoSchema);
         const updateInfo = {};
-        if(_.size(updatePolicyInfo.levels) === _.size(MEDIC_LEVEL)) updatePolicyInfo.levels = null;
+        // if(_.size(updatePolicyInfo.levels) === _.size(MEDIC_LEVEL)) updatePolicyInfo.levels = null;
         if (updatePolicyInfo.title) updateInfo.title = updatePolicyInfo.title;
         if (updatePolicyInfo.content) updateInfo.content = updatePolicyInfo.content;
         if (updatePolicyInfo.url) updateInfo.url = updatePolicyInfo.url;
