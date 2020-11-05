@@ -30,7 +30,7 @@ exports.fetchUserAssessList = async function (req, res) {
                 content: e.template_content,
                 assesseeOrgName: e.assessee_id && orgInfoMap[e.assessee_id] && orgInfoMap[e.assessee_id].name,
                 assessorOrgName: e.assessor_id && orgInfoMap[e.assessor_id] && orgInfoMap[e.assessor_id].name,
-                type: e.type,
+                type: e.assessee_id === user.organizationId ? '2' : '1',
                 createTime: formatTime(e.createdAt && e.createdAt.getTime())
             }
         });
