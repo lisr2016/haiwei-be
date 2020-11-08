@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": " NODE_ENV=development nodemon $NODE_DEBUG_OPTION --max_old_space_size=2048 index.js"
+    "dev": " NODE_ENV=development nodemon $NODE_DEBUG_OPTION --max_old_space_size=2048 index.js",
+    "pro": " NODE_ENV=production nodemon $NODE_DEBUG_OPTION --max_old_space_size=2048 index.js"
   },
   "dependencies": {
     "append-query": "2.1.0",
