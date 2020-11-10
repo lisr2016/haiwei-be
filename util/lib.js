@@ -70,7 +70,7 @@ exports.summaryDomDaily = async function(time){
         report_count[e] = 0;
     });
     _.each(data,e =>{
-        let level = e.level;
+        let level = e.level || '6';
         meeting_times[level] += e.meeting_times;
         self_inspection_times [level] += e.self_inspection_times;
         self_inspection_problems [level] += e.self_inspection_problems;
