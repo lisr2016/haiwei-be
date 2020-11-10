@@ -146,7 +146,7 @@ exports.summaryDomWeekly = async function(time){
         report_count[e] = 0;
     });
     _.each(data,e =>{
-        let level = e.level;
+        let level =  e.level || '6';
         consignee [level] += e.consignee;
         guide [level] += e.guide;
         inspector [level] += e.inspector;
@@ -215,7 +215,7 @@ exports.summaryDomMonthly = async function(time){
         report_count[e] = 0;
     });
     _.each(data,e =>{
-        let level = e.level;
+        let level =  e.level || '6';
         kitchen_waste [level] += e.kitchen_waste;
         recyclable_waste [level] += e.recyclable_waste;
         harmful_waste [level] += e.harmful_waste;
