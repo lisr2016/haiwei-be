@@ -57,6 +57,7 @@ exports.summitDomDaily = async function (req, res) {
             user_id: user.id,
             organization_id: user.organizationId,
             type: orgInfo.type,
+            level: orgInfo.level,
             
             meeting_times: domDailyInfo.meetingTimes,
             meeting_host: domDailyInfo.meetingHost,
@@ -145,6 +146,7 @@ exports.summitDomWeekly = async function (req, res) {
             user_id: user.id,
             organization_id: user.organizationId,
             type: orgInfo.type,
+            level: orgInfo.level,
             consignee: domWeeklyInfo.consignee,
             guide: domWeeklyInfo.guide,
             inspector: domWeeklyInfo.inspector,
@@ -231,6 +233,7 @@ exports.summitDomMonthly = async function (req, res) {
                 user_id: user.id,
                 organization_id: user.organizationId,
                 type: orgInfo.type,
+                level: orgInfo.level,
                 kitchen_waste: domMonthlyInfo.kitchenWaste,
                 recyclable_waste: domMonthlyInfo.recyclableWaste,
                 harmful_waste: domMonthlyInfo.harmfulWaste,
@@ -294,6 +297,7 @@ exports.summitBarrelMonthly = async function (req, res) {
                 user_id: user.id,
                 organization_id: user.organizationId,
                 type: orgInfo.type,
+                level: orgInfo.level,
                 person_count_on_duty: barrelMonthlyInfo.personCountOnDuty
             });
             await newBarrelDutyMonthly.save();
@@ -302,7 +306,7 @@ exports.summitBarrelMonthly = async function (req, res) {
         let result = await DomesticGarbageMonthlySummary.findOne({time: barrelMonthlyInfo.time.getTime()});
         if (result) {
             await DomesticGarbageMonthlySummary.updateOne({
-                time: domMonthlyInfo.time.getTime()
+                time: barrelMonthlyInfo.time.getTime()
             }, {is_expired: true});
         }
         res.status(200).send({code: 0, msg: '提交成功'});
@@ -343,6 +347,7 @@ exports.summitMedMonthly = async function (req, res) {
             user_id: user.id,
             organization_id: user.organizationId,
             type: orgInfo.type,
+            level: orgInfo.level,
             total_weight: medMonthlyInfo.totalWeight,
         };
         await medicMonthly.updateOne({
