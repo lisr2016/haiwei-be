@@ -36,6 +36,8 @@ router.post('/domestic/daily', ctrls.report.summitDomDaily);
 router.post('/domestic/weekly', ctrls.report.summitDomWeekly);
 // 提交生活垃圾月报
 router.post('/domestic/monthly', ctrls.report.summitDomMonthly);
+// 提交桶前值守月报
+router.post('/barrel/monthly', ctrls.report.summitBarrelMonthly);
 // 提交医疗垃圾月报
 router.post('/medic/monthly', ctrls.report.summitMedMonthly);
 

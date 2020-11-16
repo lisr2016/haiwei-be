@@ -20,14 +20,28 @@ exports.formatTime = function (time,format) {
     return dayjs(new Date(time)).format(format || 'YYYY-MM-DD HH:mm');
 };
 
-exports.sendSms = async function (phone, code) {
+exports.verifyCodeSms = async function (phone, code, content) {
     try {
-        let content = `#code#=${code}&#app#=海卫后勤`;
         let sendurl = appendQuery('http://v.juhe.cn/sms/send', {
             key: 'ccef2ee30337d1f97f06110cedfd232d',
             mobile: phone,
             tpl_id: 42378,
-            tpl_value: content
+            tpl_value: content ||`#code#=${code}&#app#=海卫后勤`
+        });
+        let result = await axios(sendurl);
+        return result.data && result.data.error_code === 0;
+    } catch (e) {
+        console.log(e);
+        return false;
+    }
+};
+
+exports.sms = async function (phone) {
+    try {
+        let sendurl = appendQuery('http://v.juhe.cn/sms/send', {
+            key: 'ccef2ee30337d1f97f06110cedfd232d',
+            mobile: phone,
+            tpl_id: 226264
         });
         let result = await axios(sendurl);
         return result.data && result.data.error_code === 0;

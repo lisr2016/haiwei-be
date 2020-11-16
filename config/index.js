@@ -5,6 +5,6 @@ const base = {
     CosRegion: 'ap-beijing'
 };
 
-let env = process.env.NODE_ENV || 'development';
+let env = process.env.NODE_ENV || 'production';
 const config = require(`./${env}.js`);
 module.exports = Object.assign({}, base, config);

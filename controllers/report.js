@@ -1,6 +1,7 @@
 let _ = require('lodash');
 
 let domesticDaily = require("../models/DomesticGarbageDaily");
+let barrelDutyMonthly = require("../models/BarrelDutyMonthly");
 let domesticMonthly = require("../models/DomesticGarbageMonthly");
 let domesticWeekly = require("../models/DomesticGarbageWeekly");
 let medicMonthly = require("../models/MedicGarbageMonthly");
@@ -214,6 +215,12 @@ exports.summitDomMonthly = async function (req, res) {
             organization_id: user.organizationId
         });
         if(existed){
+            const updateInfo = {};
+            if(domMonthlyInfo.kitchenWaste) updateInfo.kitchen_waste = domMonthlyInfo.kitchenWaste;
+            if(domMonthlyInfo.recyclableWaste) updateInfo.recyclable_waste = domMonthlyInfo.recyclableWaste;
+            if(domMonthlyInfo.harmfulWaste) updateInfo.harmful_waste = domMonthlyInfo.harmfulWaste;
+            if(domMonthlyInfo.bulkyWaste) updateInfo.bulky_waste = domMonthlyInfo.bulkyWaste;
+            if(domMonthlyInfo.otherWaste) updateInfo.other_waste = domMonthlyInfo.otherWaste;
             await domesticMonthly.updateOne({
                 time: domMonthlyInfo.time.getTime(),
                 organization_id: user.organizationId
@@ -234,6 +241,65 @@ exports.summitDomMonthly = async function (req, res) {
         }
         
         let result = await DomesticGarbageMonthlySummary.findOne({time: domMonthlyInfo.time.getTime()});
+        if (result) {
+            await DomesticGarbageMonthlySummary.updateOne({
+                time: domMonthlyInfo.time.getTime()
+            }, {is_expired: true});
+        }
+        res.status(200).send({code: 0, msg: '提交成功'});
+    } catch (e) {
+        let data = '';
+        if (_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
+        console.log(e);
+        res.status(400).send({code: 5, data, msg: '提交失败'});
+    }
+};
+
+const summitBarrelMonthlySchema = {
+    time: Joi.date().required(),
+    personCountOnDuty: Joi.number().required(),
+}
+
+exports.summitBarrelMonthly = async function (req, res) {
+    const user = req.user;
+    if (!user.organizationId) {
+        res.status(400).send({code: 5, msg: '用户所属机构信息错误,请联系管理员'});
+        return
+    }
+    try {
+        const barrelMonthlyInfo = await Joi.validate(req.body, summitBarrelMonthlySchema);
+        let orgInfo = await Organization.findOne({_id:user.organizationId});
+        if(!orgInfo){
+            res.status(400).send({code: 5, msg: '用户机构信息错误'});
+            return
+        }
+        let existed = await barrelDutyMonthly.findOne({
+            time: barrelMonthlyInfo.time.getTime(),
+            organization_id: user.organizationId
+        });
+        if(existed){
+            const updateInfo = {};
+            if(barrelMonthlyInfo.personCountOnDuty) updateInfo.person_count_on_duty = barrelMonthlyInfo.personCountOnDuty;
+            await barrelDutyMonthly.updateOne({
+                time: barrelMonthlyInfo.time.getTime(),
+                organization_id: user.organizationId
+            }, updateInfo, {upsert: true});
+        }else {
+            let newBarrelDutyMonthly = new barrelDutyMonthly({
+                time: barrelMonthlyInfo.time.getTime(),
+                user_id: user.id,
+                organization_id: user.organizationId,
+                type: orgInfo.type,
+                person_count_on_duty: barrelMonthlyInfo.personCountOnDuty
+            });
+            await newBarrelDutyMonthly.save();
+        }
+        
+        let result = await DomesticGarbageMonthlySummary.findOne({time: barrelMonthlyInfo.time.getTime()});
         if (result) {
             await DomesticGarbageMonthlySummary.updateOne({
                 time: domMonthlyInfo.time.getTime()
