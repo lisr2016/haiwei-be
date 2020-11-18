@@ -56,6 +56,11 @@ router.post('/cms/summary/medic/monthly', ctrls.auth.verifyCmsToken, ctrls.admin
 // 数据大屏数据汇总
 router.post('/cms/summary/screen', ctrls.auth.verifyCmsToken, ctrls.admin.fetchScreenSummary);
 
+// 查看报告已提交&未提交列表
+router.post('/cms/report/submitted', ctrls.auth.verifyCmsToken, ctrls.admin.reportSubmitted);
+// 查看报告详情
+router.post('/cms/report/detail', ctrls.auth.verifyCmsToken, ctrls.admin.reportDetail);
+
 // 获取考核模板列表
 router.post('/cms/get/assess/template/list', ctrls.auth.verifyCmsToken, ctrls.admin.fetchAssessTemplateList);
 // 更新考核模板

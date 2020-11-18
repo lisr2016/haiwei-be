@@ -14,6 +14,7 @@ let DomesticGarbageDaily = require('../models/DomesticGarbageDaily');
 let DomesticGarbageWeekly = require('../models/DomesticGarbageWeekly');
 let DomesticGarbageMonthly = require('../models/DomesticGarbageMonthly');
 let MedicGarbageMonthly = require('../models/MedicGarbageMonthly');
+let BarrelDutyMonthly = require('../models/BarrelDutyMonthly');
 let DomesticGarbageDailySummary = require('../models/DomesticGarbageDailySummary');
 let DomesticGarbageWeeklySummary = require('../models/DomesticGarbageWeeklySummary');
 let DomesticGarbageMonthlySummary = require('../models/DomesticGarbageMonthlySummary');
@@ -497,7 +498,7 @@ exports.fetchMedMonthlySummary = async function (req, res) {
 };
 
 const fetchScreenSchema = {
-    type: Joi.string().valid(['1', '2', '3', '4']).required(),
+    type: Joi.string().valid(['1', '2', '3', '4','5']).required(),
     startTime: Joi.date().required(),
     endTime: Joi.date().required(),
 };
@@ -546,6 +547,109 @@ exports.fetchScreenSummary = async function (req, res) {
                 }
                 break;
             default:
+        }
+        res.status(200).send({code: 0, data: result, msg: '查询成功'});
+    } catch (e) {
+        let data = '';
+        if (_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
+        console.log(e);
+        res.status(400).send({code: 5, data, msg: '查询失败'});
+    }
+};
+
+const reportSubmittedSchema = {
+    type: Joi.string().valid(['1', '2', '3', '4','5']).required(),
+    isSubmit: Joi.boolean().default(true),
+    time: Joi.date().required(),
+    level: Joi.string().default('all')
+};
+
+exports.reportSubmitted = async function (req, res) {
+    try {
+        const reportSubmittedInfo = await Joi.validate(req.body, reportSubmittedSchema);
+        let options = {time:reportSubmittedInfo.time};
+        if(reportSubmittedInfo.level !== 'all')options.level = reportSubmittedInfo.level;
+        let allOrgs = await Organization.find({},['name']);
+        let submittedOrg = [];
+        let unSubmittedOrg = [];
+        let submitted = [];
+        let submittedMap = {};
+        switch (reportSubmittedInfo.type) {
+            case '1': // 生活垃圾日报
+                submitted = await DomesticGarbageDaily.find(options,['_id','organization_id']);
+                break;
+            case '2': // 生活垃圾周报
+                submitted = await DomesticGarbageWeekly.find(options,['_id','organization_id']);
+                break;
+            case '3': // 生活垃圾月报
+                submitted = await DomesticGarbageMonthly.find(options,['_id','organization_id']);
+                break;
+            case '4': // 医疗垃圾周报
+                submitted = await MedicGarbageMonthly.find(options,['_id','organization_id']);
+                break;
+            case '5': // 桶前值守月报
+                submitted = await BarrelDutyMonthly.find(options,['_id','organization_id']);
+        }
+        submittedMap = _.keyBy(submitted,'organization_id');
+        // 已完成：
+        _.each(allOrgs, org => {
+            if(submittedMap[org._id]){
+                submittedOrg.push({orgId:org._id,name:org.name,reportId:submittedMap[org._id]._id})
+            } else {
+                unSubmittedOrg.push({orgId:org._id,name:org.name})
+            }
+        });
+        let result = { submittedOrg };
+        if(reportSubmittedInfo.level !== 'all') result.unSubmittedOrg = unSubmittedOrg;
+        res.status(200).send({code: 0, data: result, msg: '查询成功'});
+    } catch (e) {
+        let data = '';
+        if (_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
+        console.log(e);
+        res.status(400).send({code: 5, data, msg: '查询失败'});
+    }
+};
+
+const reportDetailSchema = {
+    type: Joi.string().valid(['1', '2', '3', '4','5']).required(),
+    reportId: Joi.string().required(),
+};
+
+exports.reportDetail = async function (req, res) {
+    try {
+        let report = {};
+        const reportDetailInfo = await Joi.validate(req.body, reportDetailSchema);
+        switch (reportDetailInfo.type) {
+            case '1': // 生活垃圾日报
+                report = await DomesticGarbageDaily.findOne({_id: reportDetailInfo.reportId});
+                break;
+            case '2': // 生活垃圾周报
+                report = await DomesticGarbageWeekly.findOne({_id: reportDetailInfo.reportId});
+                break;
+            case '3': // 生活垃圾月报
+                report = await DomesticGarbageMonthly.findOne({_id: reportDetailInfo.reportId});
+                break;
+            case '4': // 医疗垃圾周报
+                report = await MedicGarbageMonthly.findOne({_id: reportDetailInfo.reportId});
+                break;
+            case '5': // 桶前值守月报
+                report = await BarrelDutyMonthly.findOne({_id: reportDetailInfo.reportId});
+        }
+        let result = _.clone(report._doc);
+        delete result['__v'];
+        if (_.size(result) > 0 && result.user_id) {
+            let userInfo = await User.findOne({_id: result.user_id});
+            if (userInfo && userInfo.phone) {
+                result.phone = userInfo.phone;
+            }
         }
         res.status(200).send({code: 0, data: result, msg: '查询成功'});
     } catch (e) {
