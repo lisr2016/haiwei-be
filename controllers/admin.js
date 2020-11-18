@@ -19,6 +19,7 @@ let DomesticGarbageDailySummary = require('../models/DomesticGarbageDailySummary
 let DomesticGarbageWeeklySummary = require('../models/DomesticGarbageWeeklySummary');
 let DomesticGarbageMonthlySummary = require('../models/DomesticGarbageMonthlySummary');
 let MedicGarbageMonthlySummary = require('../models/MedicGarbageMonthlySummary');
+let BarrelDutyMonthlySummary = require('../models/BarrelDutyMonthlySummary');
 let Message = require("../models/Message");
 let { formatTime } = require('../util/lib');
 let ObjectId = require('mongodb').ObjectId;
@@ -488,6 +489,32 @@ exports.fetchMedMonthlySummary = async function (req, res) {
         res.status(200).send({
             code: 0, data: {
                 totalWeight: level === 'all' ? _.sum(_.values(data.total_weight)) : data.total_weight || 0,
+                reportCount: level === 'all' ? _.sum(_.values(data.report_count)) : data.report_count || 0
+            }, msg: '查询成功'
+        });
+    } catch (e) {
+        console.log(e);
+        res.status(400).send({code: 5, msg: '查询失败'});
+    }
+};
+
+exports.fetchBarrelMonthlySummary = async function (req, res) {
+    try {
+        if (!req.body.startTime) {
+            res.status(400).send({code: 5, msg: '参数错误'});
+            return
+        }
+        let level = 'all';
+        if(req.body.level){
+            level = req.body.level;
+        }
+        let data = await BarrelDutyMonthlySummary.findOne({time: req.body.startTime});
+        if (!data || data.is_expired) {
+            data = await lib.summaryBarrelMonthly(req.body.startTime);
+        }
+        res.status(200).send({
+            code: 0, data: {
+                personCountOnDuty: level === 'all' ? _.sum(_.values(data.person_count_on_duty)) : data.person_count_on_duty || 0,
                 reportCount: level === 'all' ? _.sum(_.values(data.report_count)) : data.report_count || 0
             }, msg: '查询成功'
         });

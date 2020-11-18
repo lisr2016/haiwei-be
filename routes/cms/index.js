@@ -53,6 +53,8 @@ router.post('/cms/summary/domestic/weekly', ctrls.auth.verifyCmsToken, ctrls.adm
 router.post('/cms/summary/domestic/monthly', ctrls.auth.verifyCmsToken, ctrls.admin.fetchDomMonthlySummary);
 // 医疗垃圾月报汇总
 router.post('/cms/summary/medic/monthly', ctrls.auth.verifyCmsToken, ctrls.admin.fetchMedMonthlySummary);
+// 桶前值守月报汇总
+router.post('/cms/summary/barrel/monthly', ctrls.auth.verifyCmsToken, ctrls.admin.fetchBarrelMonthlySummary);
 // 数据大屏数据汇总
 router.post('/cms/summary/screen', ctrls.auth.verifyCmsToken, ctrls.admin.fetchScreenSummary);
 

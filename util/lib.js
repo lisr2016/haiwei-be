@@ -15,6 +15,7 @@ let DomesticGarbageDailySummary = require('../models/DomesticGarbageDailySummary
 let DomesticGarbageWeeklySummary = require('../models/DomesticGarbageWeeklySummary');
 let DomesticGarbageMonthlySummary = require('../models/DomesticGarbageMonthlySummary');
 let MedicGarbageMonthlySummary = require('../models/MedicGarbageMonthlySummary');
+let BarrelDutyMonthlySummary = require('../models/BarrelDutyMonthlySummary');
 
 exports.formatTime = function (time,format) {
     return dayjs(new Date(time)).format(format || 'YYYY-MM-DD HH:mm');
@@ -269,6 +270,30 @@ exports.summaryMedMonthly = async function(time){
         is_expired: false
     });
     await MedicGarbageMonthlySummary.updateOne({time}, updateInfo, {upsert: true});
+    return result
+};
+
+exports.summaryBarrelMonthly = async function(time){
+    let data = await medicMonthly.find({time});
+    let person_count_on_duty = {},
+        report_count = {};
+    _.each(data,e =>{
+        let level = e.level;
+        person_count_on_duty [level] += e.person_count_on_duty;
+        report_count[level] ++;
+    });
+    _.each(Object.keys(MEDIC_LEVEL), e => {
+        person_count_on_duty[e] = 0;
+        report_count[e] = 0;
+    });
+    let result = {
+        person_count_on_duty
+    };
+    let updateInfo = Object.assign(result, {
+        time,
+        is_expired: false
+    });
+    await BarrelDutyMonthlySummary.updateOne({time}, updateInfo, {upsert: true});
     return result
 };
 
