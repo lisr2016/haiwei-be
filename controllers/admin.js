@@ -599,8 +599,12 @@ exports.reportSubmitted = async function (req, res) {
     try {
         const reportSubmittedInfo = await Joi.validate(req.body, reportSubmittedSchema);
         let options = {time:reportSubmittedInfo.time};
-        if(reportSubmittedInfo.level !== 'all')options.level = reportSubmittedInfo.level;
-        let allOrgs = await Organization.find({},['name']);
+        let orgOptions = {};
+        if(reportSubmittedInfo.level !== 'all') {
+            options.level = reportSubmittedInfo.level;
+            orgOptions.level = reportSubmittedInfo.level;
+        }
+        let allOrgs = await Organization.find(orgOptions,['name']);
         let submittedOrg = [];
         let unSubmittedOrg = [];
         let submitted = [];
