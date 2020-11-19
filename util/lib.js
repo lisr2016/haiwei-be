@@ -287,7 +287,7 @@ exports.summaryBarrelMonthly = async function(time){
         report_count[e] = 0;
     });
     let result = {
-        person_count_on_duty
+        person_count_on_duty, report_count
     };
     let updateInfo = Object.assign(result, {
         time,

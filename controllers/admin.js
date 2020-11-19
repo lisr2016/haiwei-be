@@ -488,8 +488,8 @@ exports.fetchMedMonthlySummary = async function (req, res) {
         }
         res.status(200).send({
             code: 0, data: {
-                totalWeight: level === 'all' ? _.sum(_.values(data.total_weight)) : data.total_weight || 0,
-                reportCount: level === 'all' ? _.sum(_.values(data.report_count)) : data.report_count || 0
+                totalWeight: level === 'all' ? _.sum(_.values(data.total_weight)) : data.total_weight[level] || 0,
+                reportCount: level === 'all' ? _.sum(_.values(data.report_count)) : data.report_count[level] || 0
             }, msg: '查询成功'
         });
     } catch (e) {
@@ -514,8 +514,8 @@ exports.fetchBarrelMonthlySummary = async function (req, res) {
         }
         res.status(200).send({
             code: 0, data: {
-                personCountOnDuty: level === 'all' ? _.sum(_.values(data.person_count_on_duty)) : data.person_count_on_duty || 0,
-                reportCount: level === 'all' ? _.sum(_.values(data.report_count)) : data.report_count || 0
+                personCountOnDuty: level === 'all' ? _.sum(_.values(data.person_count_on_duty)) : data.person_count_on_duty[level] || 0,
+                reportCount: level === 'all' ? _.sum(_.values(data.report_count)) : data.report_count[level] || 0
             }, msg: '查询成功'
         });
     } catch (e) {
