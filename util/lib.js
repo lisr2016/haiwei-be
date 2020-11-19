@@ -263,7 +263,8 @@ exports.summaryMedMonthly = async function(time){
         report_count[e] = 0;
     });
     let result = {
-        total_weight
+        total_weight,
+        report_count
     };
     let updateInfo = Object.assign(result, {
         time,
