@@ -10,6 +10,7 @@ let domesticDaily = require("../models/DomesticGarbageDaily");
 let domesticMonthly = require("../models/DomesticGarbageMonthly");
 let domesticWeekly = require("../models/DomesticGarbageWeekly");
 let medicMonthly = require("../models/MedicGarbageMonthly");
+let barrelDutyMonthly = require("../models/BarrelDutyMonthly");
 
 let DomesticGarbageDailySummary = require('../models/DomesticGarbageDailySummary');
 let DomesticGarbageWeeklySummary = require('../models/DomesticGarbageWeeklySummary');
@@ -43,6 +44,21 @@ exports.sms = async function (phone) {
             key: 'ccef2ee30337d1f97f06110cedfd232d',
             mobile: phone,
             tpl_id: 226264
+        });
+        let result = await axios(sendurl);
+        return result.data && result.data.error_code === 0;
+    } catch (e) {
+        console.log(e);
+        return false;
+    }
+};
+
+exports.smsBarrel = async function (phone) {
+    try {
+        let sendurl = appendQuery('http://v.juhe.cn/sms/send', {
+            key: 'ccef2ee30337d1f97f06110cedfd232d',
+            mobile: phone,
+            tpl_id: 226587
         });
         let result = await axios(sendurl);
         return result.data && result.data.error_code === 0;
@@ -214,7 +230,7 @@ exports.summaryDomWeekly = async function(time){
 };
 
 exports.summaryDomMonthly = async function(time){
-    let data = await domesticMonthly.find({time});
+    let data = await domesticMonthly.find({});
     let kitchen_waste = {},
         recyclable_waste = {},
         harmful_waste = {},
@@ -253,14 +269,14 @@ exports.summaryMedMonthly = async function(time){
     let data = await medicMonthly.find({time});
     let total_weight = {},
         report_count = {};
+    _.each(Object.keys(MEDIC_LEVEL), e =>{
+        total_weight[e] = 0;
+        report_count[e] = 0;
+    });
     _.each(data,e =>{
         let level = e.level;
         total_weight [level] += e.total_weight;
         report_count[level] ++;
-    });
-    _.each(Object.keys(MEDIC_LEVEL), e => {
-        total_weight[e] = 0;
-        report_count[e] = 0;
     });
     let result = {
         total_weight,
@@ -275,17 +291,17 @@ exports.summaryMedMonthly = async function(time){
 };
 
 exports.summaryBarrelMonthly = async function(time){
-    let data = await medicMonthly.find({time});
+    let data = await barrelDutyMonthly.find({time});
     let person_count_on_duty = {},
         report_count = {};
+    _.each(Object.keys(MEDIC_LEVEL), e =>{
+        person_count_on_duty[e] = 0;
+        report_count[e] = 0;
+    });
     _.each(data,e =>{
         let level = e.level;
         person_count_on_duty [level] += e.person_count_on_duty;
         report_count[level] ++;
-    });
-    _.each(Object.keys(MEDIC_LEVEL), e => {
-        person_count_on_duty[e] = 0;
-        report_count[e] = 0;
     });
     let result = {
         person_count_on_duty, report_count

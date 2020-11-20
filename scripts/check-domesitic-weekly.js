@@ -158,21 +158,21 @@ async function main () {
     users = _.keyBy(users, '_id')
     
     for(let userId of userIds){
-        messages.push({
-            user_id:userId,
-            title: `生活垃圾周报,请按时提交`,
-            content: `您尚未提交机构本周生活垃圾周报,请抓紧在今天14:00前完成`,
-            type: '3',
-            publish_time: `${dayjs().startOf('day').add(13,'hour').toDate()}`
-        });
-        // if(users[userId]) {
-        //     await lib.sms(users[userId].phone)
-        // }
+        // messages.push({
+        //     user_id:userId,
+        //     title: `生活垃圾周报,请按时提交`,
+        //     content: `您尚未提交机构本周生活垃圾周报,请抓紧在今天14:00前完成`,
+        //     type: '3',
+        //     publish_time: `${dayjs().startOf('day').add(13,'hour').toDate()}`
+        // });
+        if(users[userId]) {
+            await lib.sms(users[userId].phone)
+        }
     }
     // await lib.sms('18810698509', '您尚未提交机构本周生活垃圾周报,请抓紧在今天14:00前完成')
     console.log(orgUn)
-    // Message.insertMany(messages, function (err) {
-    //     process.exit(1);
-    // });
+    Message.insertMany(messages, function (err) {
+        process.exit(1);
+    });
     process.exit(1);
 }
