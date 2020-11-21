@@ -36,7 +36,7 @@ var AssessTaskSchema = new Schema({
     required: true
   },
   // 考核单位考核项
-  assessor_content:[Object],
+  assessor_content:Object,
   // 考核单位已填报
   assessor_done: {
     type: Boolean,
