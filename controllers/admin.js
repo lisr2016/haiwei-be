@@ -450,8 +450,8 @@ exports.fetchDomMonthlySummary = async function (req, res) {
         let level = 'all';
         if(req.body.level){
             level = req.body.level;
-        }
-        let data = await DomesticGarbageMonthlySummary.findOne({time: req.body.startTime});
+        };
+        let data = await DomesticGarbageMonthlySummary.findOne({time:req.body.startTime});
         if (!data || data.is_expired) {
             data = await lib.summaryDomMonthly(req.body.startTime);
         }
@@ -462,7 +462,7 @@ exports.fetchDomMonthlySummary = async function (req, res) {
             bulkyWaste: level === 'all' ? _.sum(_.values(data.bulky_waste)) : data.bulky_waste[level] || 0,
             otherWaste: level === 'all' ? _.sum(_.values(data.other_waste)) : data.other_waste[level] || 0,
             reportCount: level === 'all' ? _.sum(_.values(data.report_count)) : data.report_count[level] || 0
-        }
+        };
         res.status(200).send({
             code: 0, data: result, msg: '查询成功'
         });
@@ -1152,7 +1152,6 @@ exports.fetchAssessTaskList = async function (req, res) {
                 endTime: formatTime(e.end_time && e.end_time.getTime()),
                 name: e.name,
                 target: e.target,
-                content: e.template_content,
                 assessorOrgName: e.assessor_id && orgInfoMap[e.assessor_id].name,
                 assessorId: e.assessor_id,
                 assessorDone: e.assessor_done,
@@ -1180,7 +1179,6 @@ exports.fetchAssessTaskList = async function (req, res) {
 };
 
 const newAssessTaskSchema = {
-    templateId: Joi.string().required(),
     type: Joi.string().required(),
     startTime: Joi.date().required(),
     endTime: Joi.date().required(),
@@ -1193,16 +1191,9 @@ const newAssessTaskSchema = {
 exports.newAssessTask = async function (req, res) {
     try {
         const params = await Joi.validate(req.body, newAssessTaskSchema);
-        const template = await AssessTemplate.findOne({_id: params.templateId});
-        if (!template) {
-            res.status(400).send({code: 5, msg: '模板id错误'});
-            return
-        }
         const newAssessTask = new AssessTask({
-            template_id: params.templateId,
             start_time: params.startTime,
             end_time: params.endTime,
-            template_content: template.content,
             name: params.name,
             type: params.type,
             target: params.target,

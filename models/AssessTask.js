@@ -35,8 +35,6 @@ var AssessTaskSchema = new Schema({
     type: String,
     required: true
   },
-  // 模板考核内容
-  template_content:[String],
   // 考核单位,组织id
   assessor_id: {
     type: String,
@@ -54,7 +52,7 @@ var AssessTaskSchema = new Schema({
     type: String,
   },
   // 考核对象考核项
-  assessee_content:[Object],
+  assessee_content:Object,
   // 考核对象已填报
   assessee_done: {
     type: Boolean,
