@@ -191,7 +191,7 @@ exports.checkVerifyCode = async function (req, res) {
 const newAssessTaskSchema = {
     time: Joi.date().required(),
     name: Joi.string().default('监督员分配考核任务'),
-    assessorId: Joi.string().required(),
+    organizationId: Joi.string().required(),
 };
 
 exports.newAssessTask = async function (req, res) {
@@ -208,10 +208,10 @@ exports.newAssessTask = async function (req, res) {
             name: params.name,
             type: '1',
             target: '监督员分配考核任务',
-            assessor_id: params.assessorId
+            assessor_id: params.organizationId
         });
         await newAssessTask.save();
-        let orgInfo = await Organization.findOne({_id: params.assessorId});
+        let orgInfo = await Organization.findOne({_id: params.organizationId});
         let registed_users = orgInfo.registed_users || {};
         let userIds = Object.keys(registed_users);
         for(let userId of userIds){
