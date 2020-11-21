@@ -44,7 +44,7 @@ exports.fetchUserAssessList = async function (req, res) {
 const uploadAssessSchema = {
     id: Joi.string().required(),
     type: Joi.string().required(),
-    content: Joi.array().required(),
+    content: Joi.object().required(),
 };
 
 exports.uploadAssess = async function (req, res) {
