@@ -48,7 +48,7 @@ router.get('/get/policy/list', ctrls.policy.fetchPolicyList);
 router.get('/user/info', ctrls.user.fetchUserInfo);
 
 // 监督员指派任务
-router.get('/assessment', ctrls.user.newAssessTask);
+router.post('/assessment', ctrls.user.newAssessTask);
 
 module.exports = function vRouter (app) {
     app.use('/v1', router)
