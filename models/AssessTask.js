@@ -3,11 +3,6 @@ var Schema = mongoose.Schema;
 
 // 考核任务
 var AssessTaskSchema = new Schema({
-  // 考核模板id
-  template_id: {
-    type: String,
-    required: true
-  },
   // 考核类型
   // 1.自我考核，2.互相考核
   type: {
