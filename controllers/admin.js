@@ -1211,7 +1211,7 @@ exports.newAssessTask = async function (req, res) {
                 const newMessage = new Message({
                     user_id:userId,
                     title: `互查任务:${params.name}`,
-                    content: `有一件互查任务指派给了您,请前往"考核验证"模块查看`,
+                    content: `有一件互查任务指派给了您,请前往"考核评价"模块查看`,
                     type: '1'
                 });
                 await newMessage.save();
@@ -1224,7 +1224,7 @@ exports.newAssessTask = async function (req, res) {
             const newMessage = new Message({
                 user_id:userId,
                 title: `自查任务:${params.name}`,
-                content: `有一件自查任务指派给了您,请前往"考核验证"模块查看`,
+                content: `有一件自查任务指派给了您,请前往"考核评价"模块查看`,
                 type: '1'
             });
             await newMessage.save();

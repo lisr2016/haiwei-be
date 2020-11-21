@@ -4,6 +4,7 @@ let lib = require('../util/lib')
 let User = require('../models/User');
 let Organization = require('../models/Organization');
 let SendMessageLog = require('../models/SendMessageLog');
+let AssessTask = require('../models/AssessTask');
 const ObjectId = require('mongodb').ObjectId;
 const dayjs = require('dayjs');
 
@@ -187,3 +188,50 @@ exports.checkVerifyCode = async function (req, res) {
     }
 };
 
+const newAssessTaskSchema = {
+    time: Joi.date().required(),
+    name: Joi.string().default('监督员分配考核任务'),
+    assessorId: Joi.string().required(),
+};
+
+exports.newAssessTask = async function (req, res) {
+    try {
+        let type = req.user.type;
+        if(type !== '4'){
+            res.status(400).send({code: 5, msg: '无权限分配任务'});
+            return
+        }
+        const params = await Joi.validate(req.body, newAssessTaskSchema);
+        const newAssessTask = new AssessTask({
+            start_time: params.time,
+            end_time: params.time + 86400000,
+            name: params.name,
+            type: '1',
+            target: '监督员分配考核任务',
+            assessor_id: params.assessorId
+        });
+        await newAssessTask.save();
+        let orgInfo = await Organization.findOne({_id: params.assessorId});
+        let registed_users = orgInfo.registed_users || {};
+        let userIds = Object.keys(registed_users);
+        for(let userId of userIds){
+            const newMessage = new Message({
+                user_id:userId,
+                title: `自查任务:${params.name}`,
+                content: `有一件自查任务指派给了您,请前往"考核评价"模块查看`,
+                type: '1'
+            });
+            await newMessage.save();
+        }
+        res.status(200).send({code: 0, msg: '添加成功'});
+    } catch (e) {
+        let data = '';
+        if (_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
+        console.log(e);
+        res.status(400).send({code: 5, data, msg: '添加失败'});
+    }
+};
