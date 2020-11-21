@@ -5,6 +5,7 @@ let User = require('../models/User');
 let Organization = require('../models/Organization');
 let SendMessageLog = require('../models/SendMessageLog');
 let AssessTask = require('../models/AssessTask');
+let Message = require('../models/Message');
 const ObjectId = require('mongodb').ObjectId;
 const dayjs = require('dayjs');
 
