@@ -7,37 +7,45 @@ let SendMessageLog = require('../models/SendMessageLog');
 const ObjectId = require('mongodb').ObjectId;
 const dayjs = require('dayjs');
 
-const { MEDIC_LEVEL } = require('../util/CONST');
+const {MEDIC_LEVEL} = require('../util/CONST');
 
 const Joi = require('joi');
 var bcrypt = require('bcrypt-nodejs');
 
 exports.fetchUserInfo = function (req, res) {
     let user = req.user;
-    if (!user.organizationId) {
-        res.status(400).send({code: 5, msg: '用户所属机构信息错误,请联系管理员'});
-        return
-    }
-    Organization.findOne({
-        '_id': new ObjectId(user.organizationId)
-    }, function (err, org) {
-        if (err) throw err;
-        if (!org) {
+    if (user.type === '4') {
+        const orgInfo = {
+            name: '任务指派',
+            initialized: true,
+        };
+        res.status(200).send({code: 0, data: {type: 4, orgInfo}, msg: '查询成功'});
+    } else {
+        if (!user.organizationId) {
             res.status(400).send({code: 5, msg: '用户所属机构信息错误,请联系管理员'});
-        } else {
-            const orgInfo = {
-                name: org.name,
-                initialized: org.is_initiated,
-                corporationPhone: org.corporation_phone || '',
-                managerPhone: org.manager_phone || '',
-                bednum: org.bednum,
-                address: org.address,
-                level: org.level,
-                street: org.street,
-            };
-            res.status(200).send({code: 0, data: {type: user.type || '1', orgInfo}, msg: '查询成功'});
+            return
         }
-    });
+        Organization.findOne({
+            '_id': new ObjectId(user.organizationId)
+        }, function (err, org) {
+            if (err) throw err;
+            if (!org) {
+                res.status(400).send({code: 5, msg: '用户所属机构信息错误,请联系管理员'});
+            } else {
+                const orgInfo = {
+                    name: org.name,
+                    initialized: org.is_initiated,
+                    corporationPhone: org.corporation_phone || '',
+                    managerPhone: org.manager_phone || '',
+                    bednum: org.bednum,
+                    address: org.address,
+                    level: org.level,
+                    street: org.street,
+                };
+                res.status(200).send({code: 0, data: {type: user.type || '1', orgInfo}, msg: '查询成功'});
+            }
+        });
+    }
 };
 
 const initOrgInfoSchema = {
@@ -71,7 +79,7 @@ exports.initOrgInfo = async function (req, res) {
         res.status(200).send({code: 0, msg: '更新成功'});
     } catch (e) {
         let data = '';
-        if(_.size(e.details) > 0) {
+        if (_.size(e.details) > 0) {
             _.each(e.details, item => {
                 data += item.message;
             });
@@ -135,7 +143,7 @@ exports.genVerifyCode = async function (req, res) {
             res.status(400).send({code: 5, msg: '缺少phone参数'});
             return
         }
-        let data = await SendMessageLog.findOne({phone:req.query.phone});
+        let data = await SendMessageLog.findOne({phone: req.query.phone});
         if (data && data.last_sms_time) {
             if (!dayjs().isAfter(dayjs(data.last_sms_time).add(smsLimit, 'second'))) {
                 res.status(400).send({code: 5, msg: `${smsLimit}秒内只能发送一次`});
@@ -147,7 +155,7 @@ exports.genVerifyCode = async function (req, res) {
             verifyCode += Math.floor(Math.random() * 10);
         }
         let result = await lib.verifyCodeSms(req.query.phone, verifyCode);
-        await SendMessageLog.updateOne({phone:req.query.phone}, {last_sms_time: new Date().getTime()}, {upsert: true});
+        await SendMessageLog.updateOne({phone: req.query.phone}, {last_sms_time: new Date().getTime()}, {upsert: true});
         if (result) {
             req.session[req.query.phone] = verifyCode;
             res.status(200).send({code: 0, msg: '获取成功'});
