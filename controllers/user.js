@@ -19,7 +19,7 @@ exports.fetchUserInfo = function (req, res) {
             name: '任务指派',
             initialized: true,
         };
-        res.status(200).send({code: 0, data: {type: 4, orgInfo}, msg: '查询成功'});
+        res.status(200).send({code: 0, data: {type: user.type, orgInfo}, msg: '查询成功'});
     } else {
         if (!user.organizationId) {
             res.status(400).send({code: 5, msg: '用户所属机构信息错误,请联系管理员'});
