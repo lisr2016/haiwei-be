@@ -588,6 +588,66 @@ exports.fetchScreenSummary = async function (req, res) {
     }
 };
 
+const fetchSummaryExcelDataSchema = {
+    type: Joi.string().valid(['1', '2', '3', '4','5']).required(),
+    time: Joi.date().required(),
+    level: Joi.string().default('all')
+};
+
+exports.fetchSummaryExcelData = async function (req, res) {
+    try {
+        const reportSubmittedInfo = await Joi.validate(req.body, fetchSummaryExcelDataSchema);
+        let options = {time:reportSubmittedInfo.time};
+        let orgOptions = {};
+        if(reportSubmittedInfo.level !== 'all') {
+            options.level = reportSubmittedInfo.level;
+            orgOptions.level = reportSubmittedInfo.level;
+        }
+        let allOrgs = await Organization.find(orgOptions,['name']);
+        let submittedOrg = [];
+        let unSubmittedOrg = [];
+        let submitted = [];
+        let submittedMap = {};
+        switch (reportSubmittedInfo.type) {
+            case '1': // 生活垃圾日报
+                submitted = await DomesticGarbageDaily.find(options,['_id','organization_id']);
+                break;
+            case '2': // 生活垃圾周报
+                submitted = await DomesticGarbageWeekly.find(options,['_id','organization_id']);
+                break;
+            case '3': // 生活垃圾月报
+                submitted = await DomesticGarbageMonthly.find(options,['_id','organization_id']);
+                break;
+            case '4': // 医疗垃圾周报
+                submitted = await MedicGarbageMonthly.find(options,['_id','organization_id']);
+                break;
+            case '5': // 桶前值守月报
+                submitted = await BarrelDutyMonthly.find(options,['_id','organization_id']);
+        }
+        submittedMap = _.keyBy(submitted,'organization_id');
+        // 已完成：
+        _.each(allOrgs, org => {
+            if(submittedMap[org._id]){
+                submittedOrg.push({orgId:org._id,name:org.name,reportId:submittedMap[org._id]._id})
+            } else {
+                unSubmittedOrg.push({orgId:org._id,name:org.name})
+            }
+        });
+        let result = { submittedOrg };
+        if(reportSubmittedInfo.level !== 'all') result.unSubmittedOrg = unSubmittedOrg;
+        res.status(200).send({code: 0, data: result, msg: '查询成功'});
+    } catch (e) {
+        let data = '';
+        if (_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
+        console.log(e);
+        res.status(400).send({code: 5, data, msg: '查询失败'});
+    }
+};
+
 const reportSubmittedSchema = {
     type: Joi.string().valid(['1', '2', '3', '4','5']).required(),
     isSubmit: Joi.boolean().default(true),
@@ -1132,19 +1192,31 @@ exports.fetchAssessTemplateList = async function (req, res) {
 
 const fetchAssessTaskListSchema = {
     offset: Joi.number().default(1),
-    limit: Joi.number().default(50)
+    limit: Joi.number().default(50),
+    organizationId: Joi.String(),
 };
 
 exports.fetchAssessTaskList = async function (req, res) {
     try {
         const params = await Joi.validate(req.body, fetchAssessTaskListSchema);
         const skip = (params.offset - 1) * params.limit;
-        const data = await AssessTask.find().skip(skip).limit(params.limit);
-        let orgIds = _.chain(data).map(e => e.assessor_id).value();
-        let orgIds2 = _.chain(data).map(e => e.assessee_id).value();
-        orgIds = _.chain(orgIds).concat(orgIds2).uniq().value();
-        const orgs = await Organization.find({_id: {$in: orgIds}});
-        const orgInfoMap = _.keyBy(orgs, '_id');
+        let data = [];
+        let orgMap = {};
+        if(params.organizationId){
+            let assesorData = await AssessTask.find({assessor_id: params.organizationId});
+            let asseseeData = await AssessTask.find({type: 2, assessee_id: params.organizationId});
+            data = data.concat(assesorData);
+            data = data.concat(asseseeData);
+            data = data.slice(skip).slice(0,limit);
+            orgMap[params.organizationId] = await Organization.findOne({_id: params.organizationId});
+        }else{
+            data = await AssessTask.find().skip(skip).limit(params.limit);
+            let orgIds = _.chain(data).map(e => e.assessor_id).value();
+            let orgIds2 = _.chain(data).map(e => e.assessee_id).value();
+            orgIds = _.chain(orgIds).concat(orgIds2).uniq().value();
+            const orgs = await Organization.find({_id: {$in: orgIds}});
+            orgInfoMap = _.keyBy(orgs, '_id');
+        }
         let list = _.map(data, e => {
             return {
                 id: e._id,
@@ -1184,7 +1256,8 @@ const newAssessTaskSchema = {
     endTime: Joi.date().required(),
     name: Joi.string().required(),
     target: Joi.string().required(),
-    assessorId: Joi.string().required(),
+    level: Joi.string(),
+    assessorId: Joi.string(),
     assesseeId: Joi.string(),
 };
 

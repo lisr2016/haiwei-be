@@ -5,7 +5,7 @@ let config = require('../config');
 let mongoose = require('mongoose');
 let dayjs = require('dayjs');
 let _ = require('lodash');
-let lib = require('../util/lib')
+
 
 mongoose.connect(config.database, {useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true});
 
@@ -29,23 +29,17 @@ async function main () {
         userIds = _.concat(userIds,addUserIds)
     });
     orgs = null;
-    let users = await User.find({_id:{$in: userIds}});
-    
-    users = _.keyBy(users, '_id')
     let messages = [];
     for(let userId of userIds){
         messages.push({
             user_id:userId,
-            title: `桶前值守月报提交提醒`,
-            content: `请您按时上报本月桶前值守月报，谢谢！`,
-            type: '1',
-            publish_time: `${dayjs().startOf('day').add(15,'hour').toDate()}`
+            title: `${day}生活垃圾日报提交提醒`,
+            content: `请您按时上报${day}垃圾分类工作日报，谢谢！`,
+            type: '2',
+            publish_time: `${dayjs().startOf('day').add(9,'hour').toDate()}`
         });
-        if(users[userId]) {
-            await lib.smsBarrel(users[userId].phone)
-        }
     }
-    // Message.insertMany(messages, function (err) {
-    //     process.exit(1);
-    // });
+    Message.insertMany(messages, function (err) {
+        process.exit(1);
+    });
 }

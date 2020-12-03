@@ -57,6 +57,8 @@ router.post('/cms/summary/medic/monthly', ctrls.auth.verifyCmsToken, ctrls.admin
 router.post('/cms/summary/barrel/monthly', ctrls.auth.verifyCmsToken, ctrls.admin.fetchBarrelMonthlySummary);
 // 数据大屏数据汇总
 router.post('/cms/summary/screen', ctrls.auth.verifyCmsToken, ctrls.admin.fetchScreenSummary);
+// 获取数据汇总excel数据
+router.post('/cms/summary/data', ctrls.auth.verifyCmsToken, ctrls.admin.fetchSummaryExcelData);
 
 // 查看报告已提交&未提交列表
 router.post('/cms/report/submitted', ctrls.auth.verifyCmsToken, ctrls.admin.reportSubmitted);

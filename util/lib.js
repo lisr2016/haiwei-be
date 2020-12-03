@@ -7,6 +7,7 @@ let COS = require('cos-nodejs-sdk-v5');
 let { MEDIC_LEVEL } = require('../util/CONST')
 
 let domesticDaily = require("../models/DomesticGarbageDaily");
+let Organization = require("../models/Organization");
 let domesticMonthly = require("../models/DomesticGarbageMonthly");
 let domesticWeekly = require("../models/DomesticGarbageWeekly");
 let medicMonthly = require("../models/MedicGarbageMonthly");
@@ -38,7 +39,7 @@ exports.verifyCodeSms = async function (phone, code, content) {
     }
 };
 
-exports.sms = async function (phone) {
+exports.smsDomWeek = async function (phone) {
     try {
         let sendurl = appendQuery('http://v.juhe.cn/sms/send', {
             key: 'ccef2ee30337d1f97f06110cedfd232d',
@@ -282,6 +283,7 @@ exports.summaryMedMonthly = async function(time){
         total_weight,
         report_count
     };
+    console.log(result)
     let updateInfo = Object.assign(result, {
         time,
         is_expired: false
@@ -291,7 +293,21 @@ exports.summaryMedMonthly = async function(time){
 };
 
 exports.summaryBarrelMonthly = async function(time){
-    let data = await barrelDutyMonthly.find({time});
+    let data = await barrelDutyMonthly.find({time},['organization_id','person_count_on_duty']);
+    console.log(data)
+    let orgids = _.map(data, i => i.organization_id)
+    let orgs = await Organization.find({_id:{$in: orgids}});
+    let orgmap = _.keyBy(orgs,'_id')
+    _.each(data,e=>{
+        console.log(orgmap[e.organization_id].name)
+    })
+    _.each(data,e=>{
+        console.log(orgmap[e.organization_id].manager_phone)
+    })
+    _.each(data,e=>{
+        console.log(e.person_count_on_duty)
+    })
+    let map
     let person_count_on_duty = {},
         report_count = {};
     _.each(Object.keys(MEDIC_LEVEL), e =>{

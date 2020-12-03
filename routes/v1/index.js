@@ -40,6 +40,8 @@ router.post('/domestic/monthly', ctrls.report.summitDomMonthly);
 router.post('/barrel/monthly', ctrls.report.summitBarrelMonthly);
 // 提交医疗垃圾月报
 router.post('/medic/monthly', ctrls.report.summitMedMonthly);
+// 查看已提交报告
+router.post('/report/list', ctrls.report.fetchReportHistory);
 
 // 获取政策文件列表
 router.get('/get/policy/list', ctrls.policy.fetchPolicyList);

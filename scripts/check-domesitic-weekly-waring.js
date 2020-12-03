@@ -17,13 +17,11 @@ main();
 
 async function main () {
     let time = dayjs().startOf('day').add(-4, 'day').toDate();
-    let day = `${dayjs().month()}月${dayjs().date()}日`
     let submitted = await DomesticGarbageWeekly.find({time});
     let submittedOrg = {};
     _.each(submitted, e => {
         submittedOrg[e.organization_id] = true
     });
-    // console.log(submittedOrg)
     
    let list = [
         '5f95a27c21b931a194f51d31',
@@ -127,14 +125,8 @@ async function main () {
             '5f95a27c21b931a194f51c6e'
         ]
     
-    
-    
-    
-    // submited = null;
-    
     let userIds = [];
    let orgUn = []
-    
     let orgs = await Organization.find({_id:{$in: list}});
     let data = await User.find({type:'3'});
     let forbidUserIds = {};
@@ -149,8 +141,6 @@ async function main () {
             userIds = _.concat(userIds, addUserIds)
         }
     });
-    // console.log(orgUn)
-    // userIds = ['5f95a7e48b5a19d73444db8f'];
     
     let messages = [];
     let users = await User.find({_id:{$in: userIds}});
@@ -166,7 +156,7 @@ async function main () {
         //     publish_time: `${dayjs().startOf('day').add(13,'hour').toDate()}`
         // });
         if(users[userId]) {
-            await lib.sms(users[userId].phone)
+            await lib.smsDomWeek(users[userId].phone)
         }
     }
     // await lib.sms('18810698509', '您尚未提交机构本周生活垃圾周报,请抓紧在今天14:00前完成')

@@ -12,6 +12,12 @@ let DomesticGarbageWeeklySummary = require('../models/DomesticGarbageWeeklySumma
 let DomesticGarbageMonthlySummary = require('../models/DomesticGarbageMonthlySummary');
 let MedicGarbageMonthlySummary = require('../models/MedicGarbageMonthlySummary');
 
+let DomesticGarbageDaily = require('../models/DomesticGarbageDaily');
+let DomesticGarbageWeekly = require('../models/DomesticGarbageWeekly');
+let DomesticGarbageMonthly = require('../models/DomesticGarbageMonthly');
+let MedicGarbageMonthly = require('../models/MedicGarbageMonthly');
+let BarrelDutyMonthly = require('../models/BarrelDutyMonthly');
+
 const Joi = require('joi');
 
 const summitDomDailySchema = {
@@ -361,6 +367,50 @@ exports.summitMedMonthly = async function (req, res) {
             }, {is_expired: true});
         }
         res.status(200).send({code: 0, msg: '提交成功'});
+    } catch (e) {
+        let data = '';
+        if (_.size(e.details) > 0) {
+            _.each(e.details, item => {
+                data += item.message;
+            });
+        }
+        console.log(e);
+        res.status(400).send({code: 5, data, msg: '提交失败'});
+    }
+};
+
+const fetchReportHistorySchema = {
+    type: Joi.string().required()
+};
+
+exports.fetchReportHistory = async function (req, res) {
+    const user = req.user;
+    if (!user.organizationId) {
+        res.status(400).send({code: 5, msg: '用户所属机构信息错误,请联系管理员'});
+        return
+    }
+    try {
+        const fetchReportHistoryInfo = await Joi.validate(req.body, fetchReportHistorySchema);
+        let list = [];
+        switch (fetchReportHistoryInfo.type) {
+            case '1':
+                list = await DomesticGarbageDaily.find({organization_id:user.organizationId});
+                break;
+            case '2':
+                list = await DomesticGarbageWeekly.find({organization_id:user.organizationId});
+                break;
+            case '3':
+                list = await DomesticGarbageMonthly.find({organization_id:user.organizationId});
+                break;
+            case '4':
+                list = await MedicGarbageMonthly.find({organization_id:user.organizationId});
+                break;
+            case '5':
+                list = await BarrelDutyMonthly.find({organization_id:user.organizationId});
+                break;
+            default:
+        }
+        res.status(200).send({code: 0, data: list, msg: '提交成功'});
     } catch (e) {
         let data = '';
         if (_.size(e.details) > 0) {
