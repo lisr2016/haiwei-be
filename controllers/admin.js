@@ -1193,7 +1193,7 @@ exports.fetchAssessTemplateList = async function (req, res) {
 const fetchAssessTaskListSchema = {
     offset: Joi.number().default(1),
     limit: Joi.number().default(50),
-    organizationId: Joi.String(),
+    organizationId: Joi.string(),
 };
 
 exports.fetchAssessTaskList = async function (req, res) {
