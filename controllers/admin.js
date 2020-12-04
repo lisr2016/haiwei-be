@@ -1207,7 +1207,7 @@ exports.fetchAssessTaskList = async function (req, res) {
             let asseseeData = await AssessTask.find({type: 2, assessee_id: params.organizationId});
             data = data.concat(assesorData);
             data = data.concat(asseseeData);
-            data = data.slice(skip).slice(0,limit);
+            data = data.slice(skip).slice(0,params.limit);
             orgMap[params.organizationId] = await Organization.findOne({_id: params.organizationId});
         }else{
             data = await AssessTask.find().skip(skip).limit(params.limit);
