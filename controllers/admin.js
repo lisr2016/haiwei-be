@@ -596,46 +596,29 @@ const fetchSummaryExcelDataSchema = {
 
 exports.fetchSummaryExcelData = async function (req, res) {
     try {
-        const reportSubmittedInfo = await Joi.validate(req.body, fetchSummaryExcelDataSchema);
-        let options = {time:reportSubmittedInfo.time};
-        let orgOptions = {};
-        if(reportSubmittedInfo.level !== 'all') {
-            options.level = reportSubmittedInfo.level;
-            orgOptions.level = reportSubmittedInfo.level;
+        const fetchSummaryExcelDataInfo = await Joi.validate(req.body, fetchSummaryExcelDataSchema);
+        let options = {time:fetchSummaryExcelDataInfo.time};
+        let data = null;
+        if(fetchSummaryExcelDataInfo.level !== 'all') {
+            options.level = fetchSummaryExcelDataInfo.level;
         }
-        let allOrgs = await Organization.find(orgOptions,['name']);
-        let submittedOrg = [];
-        let unSubmittedOrg = [];
-        let submitted = [];
-        let submittedMap = {};
-        switch (reportSubmittedInfo.type) {
+        switch (fetchSummaryExcelDataInfo.type) {
             case '1': // 生活垃圾日报
-                submitted = await DomesticGarbageDaily.find(options,['_id','organization_id']);
+                data = await DomesticGarbageDaily.find(options);
                 break;
             case '2': // 生活垃圾周报
-                submitted = await DomesticGarbageWeekly.find(options,['_id','organization_id']);
+                data = await DomesticGarbageWeekly.find(options);
                 break;
             case '3': // 生活垃圾月报
-                submitted = await DomesticGarbageMonthly.find(options,['_id','organization_id']);
+                data = await DomesticGarbageMonthly.find(options);
                 break;
             case '4': // 医疗垃圾周报
-                submitted = await MedicGarbageMonthly.find(options,['_id','organization_id']);
+                data = await MedicGarbageMonthly.find(options);
                 break;
             case '5': // 桶前值守月报
-                submitted = await BarrelDutyMonthly.find(options,['_id','organization_id']);
+                data = await BarrelDutyMonthly.find(options);
         }
-        submittedMap = _.keyBy(submitted,'organization_id');
-        // 已完成：
-        _.each(allOrgs, org => {
-            if(submittedMap[org._id]){
-                submittedOrg.push({orgId:org._id,name:org.name,reportId:submittedMap[org._id]._id})
-            } else {
-                unSubmittedOrg.push({orgId:org._id,name:org.name})
-            }
-        });
-        let result = { submittedOrg };
-        if(reportSubmittedInfo.level !== 'all') result.unSubmittedOrg = unSubmittedOrg;
-        res.status(200).send({code: 0, data: result, msg: '查询成功'});
+        res.status(200).send({code: 0, data, msg: '查询成功'});
     } catch (e) {
         let data = '';
         if (_.size(e.details) > 0) {
