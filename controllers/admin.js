@@ -1247,43 +1247,72 @@ const newAssessTaskSchema = {
 exports.newAssessTask = async function (req, res) {
     try {
         const params = await Joi.validate(req.body, newAssessTaskSchema);
-        const newAssessTask = new AssessTask({
-            start_time: params.startTime,
-            end_time: params.endTime,
-            name: params.name,
-            type: params.type,
-            target: params.target,
-            assessor_id: params.assessorId,
-            assessee_id: params.assesseeId,
-            assessor_content: params.assessorContent,
-            assessee_content: params.assesseeContent || null,
-        });
-        await newAssessTask.save();
-        if (params.assesseeId && params.type === '2') { // 互查情况下给机构assesseeId下的用户发送提醒信息
-            let orgInfo = await Organization.findOne({_id: params.assesseeId});
+        if(params.level) {
+            let orgs = await Organization.find({level:params.level},'_id');
+            for( let i = 0 ; i < orgs.length;i++){
+                let orgId = orgs[i]._id;
+                const newAssessTask = new AssessTask({
+                    start_time: params.startTime,
+                    end_time: params.endTime,
+                    name: params.name,
+                    type: params.type,
+                    target: params.target,
+                    assessor_id: orgId,
+                    assessor_content: params.assessorContent,
+                });
+                await newAssessTask.save();
+                let orgInfo = await Organization.findOne({_id: orgId});
+                let registed_users = orgInfo.registed_users || {};
+                let userIds = Object.keys(registed_users);
+                for (let userId of userIds) {
+                    const newMessage = new Message({
+                        user_id: userId,
+                        title: `自查任务:${params.name}`,
+                        content: `有一件自查任务指派给了您,请前往"考核评价"模块查看`,
+                        type: '1'
+                    });
+                    await newMessage.save();
+                }
+            }
+        }else {
+            const newAssessTask = new AssessTask({
+                start_time: params.startTime,
+                end_time: params.endTime,
+                name: params.name,
+                type: params.type,
+                target: params.target,
+                assessor_id: params.assessorId,
+                assessee_id: params.assesseeId,
+                assessor_content: params.assessorContent,
+                assessee_content: params.assesseeContent || null,
+            });
+            await newAssessTask.save();
+            if (params.assesseeId && params.type === '2') { // 互查情况下给机构assesseeId下的用户发送提醒信息
+                let orgInfo = await Organization.findOne({_id: params.assesseeId});
+                let registed_users = orgInfo.registed_users || {};
+                let userIds = Object.keys(registed_users);
+                for (let userId of userIds) {
+                    const newMessage = new Message({
+                        user_id: userId,
+                        title: `互查任务:${params.name}`,
+                        content: `有一件互查任务指派给了您,请前往"考核评价"模块查看`,
+                        type: '1'
+                    });
+                    await newMessage.save();
+                }
+            }
+            let orgInfo = await Organization.findOne({_id: params.assessorId});
             let registed_users = orgInfo.registed_users || {};
             let userIds = Object.keys(registed_users);
-            for(let userId of userIds){
+            for (let userId of userIds) {
                 const newMessage = new Message({
-                    user_id:userId,
-                    title: `互查任务:${params.name}`,
-                    content: `有一件互查任务指派给了您,请前往"考核评价"模块查看`,
+                    user_id: userId,
+                    title: `自查任务:${params.name}`,
+                    content: `有一件自查任务指派给了您,请前往"考核评价"模块查看`,
                     type: '1'
                 });
                 await newMessage.save();
             }
-        }
-        let orgInfo = await Organization.findOne({_id: params.assessorId});
-        let registed_users = orgInfo.registed_users || {};
-        let userIds = Object.keys(registed_users);
-        for(let userId of userIds){
-            const newMessage = new Message({
-                user_id:userId,
-                title: `自查任务:${params.name}`,
-                content: `有一件自查任务指派给了您,请前往"考核评价"模块查看`,
-                type: '1'
-            });
-            await newMessage.save();
         }
         res.status(200).send({code: 0, msg: '添加成功'});
     } catch (e) {
