@@ -1239,7 +1239,7 @@ const newAssessTaskSchema = {
     endTime: Joi.date().required(),
     name: Joi.string().required(),
     target: Joi.string().required(),
-    level: Joi.string(),
+    levels: Joi.string(),
     assessorId: Joi.string(),
     assesseeId: Joi.string(),
 };
@@ -1247,34 +1247,36 @@ const newAssessTaskSchema = {
 exports.newAssessTask = async function (req, res) {
     try {
         const params = await Joi.validate(req.body, newAssessTaskSchema);
-        if(params.level) {
-            let orgs = await Organization.find({level:params.level},'_id');
-            for( let i = 0 ; i < orgs.length;i++){
-                let orgId = orgs[i]._id;
-                const newAssessTask = new AssessTask({
-                    start_time: params.startTime,
-                    end_time: params.endTime,
-                    name: params.name,
-                    type: params.type,
-                    target: params.target,
-                    assessor_id: orgId,
-                    assessor_content: params.assessorContent,
-                });
-                await newAssessTask.save();
-                let orgInfo = await Organization.findOne({_id: orgId});
-                let registed_users = orgInfo.registed_users || {};
-                let userIds = Object.keys(registed_users);
-                for (let userId of userIds) {
-                    const newMessage = new Message({
-                        user_id: userId,
-                        title: `自查任务:${params.name}`,
-                        content: `有一件自查任务指派给了您,请前往"考核评价"模块查看`,
-                        type: '1'
+        if (params.levels) {
+            let array = params.levels.split(',');
+            for (let i = 0; i < array.length; i++) {
+                let orgs = await Organization.find({level: array[i]}, ['_id', 'registed_users']);
+                for (let j = 0; j < orgs.length; j++) {
+                    let orgId = orgs[j]._id;
+                    let registed_users = orgs[j].registed_users || {};
+                    const newAssessTask = new AssessTask({
+                        start_time: params.startTime,
+                        end_time: params.endTime,
+                        name: params.name,
+                        type: params.type,
+                        target: params.target,
+                        assessor_id: orgId,
+                        assessor_content: params.assessorContent,
                     });
-                    await newMessage.save();
+                    await newAssessTask.save();
+                    let userIds = Object.keys(registed_users);
+                    for (let userId of userIds) {
+                        const newMessage = new Message({
+                            user_id: userId,
+                            title: `自查任务:${params.name}`,
+                            content: `有一件自查任务指派给了您,请前往"考核评价"模块查看`,
+                            type: '1'
+                        });
+                        await newMessage.save();
+                    }
                 }
             }
-        }else {
+        } else {
             const newAssessTask = new AssessTask({
                 start_time: params.startTime,
                 end_time: params.endTime,
