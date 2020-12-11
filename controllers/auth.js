@@ -55,10 +55,10 @@ exports.verifyToken = function (req, res, next) {
     }
     try {
         let decode = jwt.verify(token, config.secret);
-        if (!decode.jwtime || dayjs(decode.jwtime).isBefore(dayjs().add(-1, 'month'))) {
-            res.status(500).json({msg: `登陆已过期`});
-            return;
-        }
+        // if (!decode.jwtime || dayjs(decode.jwtime).isBefore(dayjs().add(-1, 'month'))) {
+        //     res.status(500).json({msg: `登陆已过期`});
+        //     return;
+        // }
         req.user = {
             id: decode._id,
             type: decode.type,
@@ -80,10 +80,10 @@ exports.verifyCmsToken = function (req, res, next) {
     }
     try {
         let decode = jwt.verify(token, config.cms_secret);
-        if (!decode.jwtime || dayjs(decode.jwtime).isBefore(dayjs().add(-1, 'month'))) {
-            res.status(500).json({msg: `登陆已过期`});
-            return;
-        }
+        // if (!decode.jwtime || dayjs(decode.jwtime).isBefore(dayjs().add(-1, 'month'))) {
+        //     res.status(500).json({msg: `登陆已过期`});
+        //     return;
+        // }
         req.admin = {
             id: decode._id,
             phone: decode.phone,
