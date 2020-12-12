@@ -618,6 +618,14 @@ exports.fetchSummaryExcelData = async function (req, res) {
             case '5': // 桶前值守月报
                 data = await BarrelDutyMonthly.find(options);
         }
+        let orgIds = _.uniq(_.map(data,i => i.organization_id));
+        let orgData = await Organization.find({_id: {$in: orgIds}});
+        let orgInfoMap = {};
+        _.each(orgData, e => {orgInfoMap[e._id] = {name: e.name, phone: e.corporation_phone}});
+        _.each(data, (e, i) => {
+            e._doc.name = orgInfoMap[e.organization_id].name;
+            e._doc.concact_phone = orgInfoMap[e.organization_id].phone;
+         });
         res.status(200).send({code: 0, data, msg: '查询成功'});
     } catch (e) {
         let data = '';
