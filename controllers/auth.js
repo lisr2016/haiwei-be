@@ -8,7 +8,7 @@ const bcrypt = require('bcrypt-nodejs');
 let User = require('../models/User');
 let Organization = require('../models/Organization');
 
-exports.login = function (req, res) {
+exports.login = async function (req, res) {
     let phone = req.body.phone;
     let password = req.body.password;
     const verifyCode = req.body.verifyCode;
@@ -17,12 +17,28 @@ exports.login = function (req, res) {
         phone = '18810698509';
         password = '111111';
     }else {
-        if (!phone || !password || !verifyCode) {
-            res.status(400).send({code: 5, msg: '手机号、密码或验证码缺少'});
+        if (!phone) {
+            res.status(400).send({code: 5, msg: '缺少手机号'});
             return
         }
-        if (req.session[phone] !== verifyCode) {
-            res.status(400).send({code: 5, msg: '验证码错误'});
+        if (!password && !verifyCode) {
+            res.status(400).send({code: 5, msg: '密码或验证码缺少'});
+            return
+        }
+        if (verifyCode){
+            if (req.session[phone] !== verifyCode) {
+                res.status(400).send({code: 5, msg: '验证码错误'});
+                return
+            }
+            let user = await User.findOne(phone);
+            if(!user || user.is_deleted){
+                res.status(400).send({code: 5, msg: '用户不存在'});
+                return
+            }
+            user = user.toJSON();
+            user.jwtime = new Date().getTime();
+            let token = jwt.sign(user, config.secret);
+            res.json({code: 0, data: {token: token}, msg: '登陆成功'});
             return
         }
     }
