@@ -30,7 +30,7 @@ exports.login = async function (req, res) {
                 res.status(400).send({code: 5, msg: '验证码错误'});
                 return
             }
-            let user = await User.findOne(phone);
+            let user = await User.findOne({phone});
             if(!user || user.is_deleted){
                 res.status(400).send({code: 5, msg: '用户不存在'});
                 return
