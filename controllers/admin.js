@@ -1193,12 +1193,14 @@ exports.fetchAssessTaskList = async function (req, res) {
         const skip = (params.offset - 1) * params.limit;
         let data = [];
         let orgInfoMap = {};
+        let count = 0;
         if(params.organizationId){
             let assesorData = await AssessTask.find({assessor_id: params.organizationId});
             let asseseeData = await AssessTask.find({type: 2, assessee_id: params.organizationId});
             data = data.concat(assesorData);
             data = data.concat(asseseeData);
             data = data.slice(skip).slice(0,params.limit);
+            count = data.length;
             orgInfoMap[params.organizationId] = await Organization.findOne({_id: params.organizationId});
         }else{
             data = await AssessTask.find().skip(skip).limit(params.limit);
@@ -1207,6 +1209,7 @@ exports.fetchAssessTaskList = async function (req, res) {
             orgIds = _.chain(orgIds).concat(orgIds2).uniq().value();
             const orgs = await Organization.find({_id: {$in: orgIds}});
             orgInfoMap = _.keyBy(orgs, '_id');
+            count = await AssessTask.countDocuments();
         }
         let list = _.map(data, e => {
             return {
@@ -1227,7 +1230,6 @@ exports.fetchAssessTaskList = async function (req, res) {
                 createTime: formatTime(e.createdAt && e.createdAt.getTime())
             }
         });
-        let count = await AssessTask.countDocuments();
         res.status(200).send({code: 0, data: {list, count}, msg: '查询成功'});
     } catch (e) {
         let data = '';
