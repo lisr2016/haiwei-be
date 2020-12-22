@@ -293,21 +293,9 @@ exports.summaryMedMonthly = async function(time){
 };
 
 exports.summaryBarrelMonthly = async function(time){
-    let data = await barrelDutyMonthly.find({time},['organization_id','person_count_on_duty']);
-    console.log(data)
+    let data = await barrelDutyMonthly.find({time});
     let orgids = _.map(data, i => i.organization_id)
     let orgs = await Organization.find({_id:{$in: orgids}});
-    let orgmap = _.keyBy(orgs,'_id')
-    _.each(data,e=>{
-        console.log(orgmap[e.organization_id].name)
-    })
-    _.each(data,e=>{
-        console.log(orgmap[e.organization_id].manager_phone)
-    })
-    _.each(data,e=>{
-        console.log(e.person_count_on_duty)
-    })
-    let map
     let person_count_on_duty = {},
         report_count = {};
     _.each(Object.keys(MEDIC_LEVEL), e =>{
