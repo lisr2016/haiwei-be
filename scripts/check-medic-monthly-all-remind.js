@@ -1,5 +1,3 @@
-
-// 每周四18点检查当前星期生活垃圾日报是否上报。未完成上报的机构用户会收到提醒。范围是所有激活状态的机构下,type为"1"、"2"的用户
 let Organization = require('../models/Organization');
 let User = require('../models/User');
 let Message = require('../models/Message');
@@ -17,9 +15,7 @@ main();
 
 async function main () {
     let month = `${dayjs().month()}月`;
-    
     let userIds = [];
-    
     let orgs = await Organization.find({is_deleted:{$ne:true}});
     let data = await User.find({type:'2'});
     let forbidUserIds = {};
@@ -31,16 +27,14 @@ async function main () {
         ).value();
         userIds = _.concat(userIds,addUserIds)
     });
-    
-    // userIds = ['5f95a7e48b5a19d73444db8f'];
     let messages = [];
     for(let userId of userIds){
         messages.push({
             user_id:userId,
             title: `${month}医疗垃圾月报,请按时提交`,
-            content: `请各机构于5日前上报医疗垃圾处置情况台账月报，谢谢！`,
-            type: '5',
-            publish_time: `${dayjs().startOf('day').add(9.5,'hour').toDate()}`
+            content: `${month}医疗垃圾月报,请按时提交，谢谢！`,
+            type: '4',
+            publish_time: `${dayjs().startOf('day').add(8.5,'hour').toDate()}`
         });
     }
     Message.insertMany(messages, function (err) {

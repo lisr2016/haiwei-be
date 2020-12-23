@@ -1,5 +1,3 @@
-
-// 每周四18点检查当前星期生活垃圾日报是否上报。未完成上报的机构用户会收到提醒。范围是所有激活状态的机构下,type为"1"、"2"的用户
 let Organization = require('../models/Organization');
 let Message = require('../models/Message');
 let User = require('../models/User');
@@ -38,7 +36,7 @@ async function main () {
         messages.push({
             user_id:userId,
             title: `${month}生活垃圾月报,请按时提交`,
-            content: `请各机构于5日前上报生活垃圾处置情况台账月报，谢谢！`,
+            content: `各单位:请5日前报垃圾处置情况台账月报，谢谢！`,
             type: '4',
             publish_time: `${dayjs().startOf('day').add(9.5,'hour').toDate()}`
         });

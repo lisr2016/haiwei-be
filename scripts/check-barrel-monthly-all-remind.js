@@ -1,5 +1,3 @@
-
-// 每周四18点检查当前星期生活垃圾日报是否上报。未完成上报的机构用户会收到提醒。范围是所有激活状态的机构下,type为"1"、"2"的用户
 let Organization = require('../models/Organization');
 let User = require('../models/User');
 let Message = require('../models/Message');
@@ -17,28 +15,22 @@ main();
 
 async function main () {
     let month = `${dayjs().month()}月`;
-    
+    let lastmonth = `${dayjs().month() === 1 ? 12: dayjs().month() - 1}月`;
     let userIds = [];
-    
     let orgs = await Organization.find({is_deleted:{$ne:true}});
-    // let data = await User.find({type:'2'});
     let forbidUserIds = {};
-    // _.each(data, e => {
-    //     forbidUserIds[e._id] = true
-    // });
     _.each(orgs, org => {
         let addUserIds = _.chain(org.registed_users).keys().filter(e => !forbidUserIds[e]
         ).value();
         userIds = _.concat(userIds,addUserIds)
     });
-    
-    // userIds = ['5f95a7e48b5a19d73444db8f'];
+
     let messages = [];
     for(let userId of userIds){
         messages.push({
             user_id:userId,
             title: `${month}桶前值守月报,请按时提交`,
-            content: `请各机构于18日前上报桶前值守月报，谢谢！`,
+            content: `请各机构提交${lastmonth}18日-${month}18日桶前值守人数(不是人次数)，谢谢！`,
             type: '1',
             publish_time: `${dayjs().startOf('day').add(9.5,'hour').toDate()}`
         });

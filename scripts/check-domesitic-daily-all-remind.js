@@ -11,8 +11,6 @@ mongoose.connect(config.database, {useCreateIndex: true, useNewUrlParser: true, 
 
 main();
 
-// 每天上午9点发送。范围是所有激活状态的机构下,type为"1"、"2"的用户
-
 async function main () {
     let day = `${dayjs().month() + 1}月${dayjs().date()}日`
     submited = null;
