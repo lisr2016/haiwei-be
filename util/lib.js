@@ -231,7 +231,7 @@ exports.summaryDomWeekly = async function(time){
 };
 
 exports.summaryDomMonthly = async function(time){
-    let data = await domesticMonthly.find({});
+    let data = await domesticMonthly.find({time});
     let kitchen_waste = {},
         recyclable_waste = {},
         harmful_waste = {},
