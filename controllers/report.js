@@ -10,6 +10,7 @@ let Organization = require("../models/Organization");
 let DomesticGarbageDailySummary = require('../models/DomesticGarbageDailySummary');
 let DomesticGarbageWeeklySummary = require('../models/DomesticGarbageWeeklySummary');
 let DomesticGarbageMonthlySummary = require('../models/DomesticGarbageMonthlySummary');
+let BarrelDutyMonthlySummary = require('../models/BarrelDutyMonthlySummary');
 let MedicGarbageMonthlySummary = require('../models/MedicGarbageMonthlySummary');
 
 let DomesticGarbageDaily = require('../models/DomesticGarbageDaily');
@@ -309,9 +310,9 @@ exports.summitBarrelMonthly = async function (req, res) {
             await newBarrelDutyMonthly.save();
         }
         
-        let result = await DomesticGarbageMonthlySummary.findOne({time: barrelMonthlyInfo.time.getTime()});
+        let result = await BarrelDutyMonthlySummary.findOne({time: barrelMonthlyInfo.time.getTime()});
         if (result) {
-            await DomesticGarbageMonthlySummary.updateOne({
+            await BarrelDutyMonthlySummary.updateOne({
                 time: barrelMonthlyInfo.time.getTime()
             }, {is_expired: true});
         }
